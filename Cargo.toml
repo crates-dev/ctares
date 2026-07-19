@@ -1,6 +1,6 @@
 [package]
 name = "jwt-service"
-version = "0.2.6"
+version = "0.2.7"
 readme = "README.md"
 edition = "2024"
 authors = ["root@ltpp.vip"]
@@ -13,7 +13,7 @@ exclude = ["target", "Cargo.lock", "sh", ".github"]
 
 [dependencies]
 serde_json = "1.0.150"
-serde = { version = "1.0.228", features = ["derive"] }
+serde = { version = "1.0.229", features = ["derive"] }
 jsonwebtoken = { version = "10.4.0", features = ["rust_crypto"] }
 
 [profile.dev]
