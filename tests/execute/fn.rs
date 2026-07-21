@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 #[test]
 fn test_execute() {
@@ -6,7 +6,7 @@ fn test_execute() {
         data.iter().sum()
     }
     fn add_offset(data: &[i32], offset: i32) -> i32 {
-        data.iter().map(|x| x + offset).sum()
+        data.iter().map(|value: &i32| value + offset).sum()
     }
     let nums: Vec<i32> = vec![1, 2, 3];
     let total: i32 = execute!(sum, &nums);
@@ -19,7 +19,7 @@ fn test_execute() {
 async fn test_execute_async() {
     let data: Vec<i32> = vec![1, 2, 3];
     async fn async_func(data: &[i32], offset: i32) -> i32 {
-        data.iter().map(|x| x + offset).sum()
+        data.iter().map(|value: &i32| value + offset).sum()
     }
     let res: i32 = execute_async!(async_func, &data, 1).await;
     assert_eq!(res, 9);

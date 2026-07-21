@@ -1,6 +1,6 @@
 [package]
 name = "std-macro-extensions"
-version = "1.0.10"
+version = "1.0.11"
 readme = "README.md"
 edition = "2024"
 authors = ["root@ltpp.vip"]
@@ -12,7 +12,7 @@ categories = ["data-structures", "development-tools"]
 exclude = ["target", "Cargo.lock", "sh", ".github"]
 
 [dev-dependencies]
-tokio = { version = "1.53.0", features = ["full"] }
+tokio = { version = "1.53.1", features = ["full"] }
 
 [profile.dev]
 incremental = false

@@ -1,8 +1,8 @@
-use crate::*;
+use super::*;
 
 #[test]
 fn test_arc_num() {
-    use crate::*;
+    use super::*;
     const NUM: i32 = 1;
     let num_arc: Arc<i32> = arc!(NUM);
     let num: i32 = *num_arc.as_ref();
@@ -12,7 +12,7 @@ fn test_arc_num() {
 
 #[test]
 fn test_arc_str() {
-    use crate::*;
+    use super::*;
     const STR: &str = "test";
     let str_arc: Arc<&str> = arc!(STR);
     let tmp_str: &str = str_arc.as_ref();
@@ -22,7 +22,7 @@ fn test_arc_str() {
 
 #[test]
 fn test_arc_string() {
-    use crate::*;
+    use super::*;
     const STR: &str = "test";
     let string_from_str: String = STR.to_string();
     let string_arc: Arc<String> = arc!(string_from_str.clone());
