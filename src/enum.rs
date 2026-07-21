@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub enum JwtValidationError {

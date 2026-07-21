@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 /// JWT configuration struct containing secret key, expiration time, and issuer.
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

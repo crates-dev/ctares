@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 impl JwtConfig {
     /// Creates a new JwtConfig instance.
