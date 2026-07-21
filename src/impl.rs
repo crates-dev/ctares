@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 /// Provides a default implementation for `ServerManager`.
 impl Default for ServerManager {
@@ -151,7 +151,7 @@ impl ServerManager {
             .stderr(Stdio::null())
             .stdin(Stdio::null());
         cmd.spawn()
-            .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
+            .map_err(|error: Error| Box::new(error) as Box<dyn std::error::Error>)?;
         Ok(())
     }
 
@@ -176,7 +176,7 @@ impl ServerManager {
             .stdin(Stdio::null())
             .creation_flags(0x00000008);
         cmd.spawn()
-            .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
+            .map_err(|error: Error| Box::new(error) as Box<dyn std::error::Error>)?;
         Ok(())
     }
 
@@ -327,11 +327,11 @@ impl ServerManager {
             .stdin(Stdio::inherit());
         let mut child: Child = command
             .spawn()
-            .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
+            .map_err(|error: Error| Box::new(error) as Box<dyn std::error::Error>)?;
         if wait {
             child
                 .wait()
-                .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
+                .map_err(|error: Error| Box::new(error) as Box<dyn std::error::Error>)?;
         }
         exit(0);
     }

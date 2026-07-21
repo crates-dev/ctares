@@ -20,6 +20,7 @@ use r#const::*;
 use std::{
     fs,
     future::Future,
+    io::Error,
     path::{Path, PathBuf},
     pin::Pin,
     process::{Child, Command, ExitStatus, Output, Stdio, exit, id},
