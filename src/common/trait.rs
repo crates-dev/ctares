@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 /// Trait alias for functions that can be executed in a recoverable context.
 ///

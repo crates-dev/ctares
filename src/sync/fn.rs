@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 /// Executes a recoverable function within a panic-safe context.
 ///

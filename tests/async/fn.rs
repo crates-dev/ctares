@@ -1,4 +1,6 @@
-use crate::*;
+use super::*;
+
+use std::sync::Arc;
 
 #[tokio::test]
 async fn test_async_recoverable_spawn() {
@@ -17,7 +19,7 @@ async fn test_async_recoverable_spawn_catch() {
         move || async move {
             panic!("{}", msg);
         },
-        move |err| async move {
+        move |err: Arc<String>| async move {
             println!("async handle error => {err}");
         },
     )
@@ -32,7 +34,7 @@ async fn test_async_recoverable_spawn_catch_finally() {
         move || async move {
             panic!("{}", msg);
         },
-        move |err| async move {
+        move |err: Arc<String>| async move {
             println!("async handle error => {err}");
             panic!("{}", err);
         },

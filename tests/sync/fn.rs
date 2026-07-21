@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 #[test]
 fn test_recoverable_spawn() {
@@ -16,7 +16,7 @@ fn test_recoverable_spawn_catch() {
         move || {
             panic!("{}", msg);
         },
-        |err| {
+        |err: &str| {
             println!("handle error => {err}");
         },
     );
@@ -30,7 +30,7 @@ fn test_recoverable_spawn_catch_finally() {
         move || {
             panic!("{}", msg);
         },
-        |err| {
+        |err: &str| {
             println!("handle error => {err}");
             panic!("{}", err);
         },
