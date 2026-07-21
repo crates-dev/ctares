@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 /// Internal function to handle hot restart process.
 ///
@@ -19,7 +19,7 @@ where
     let check_output: Output = Command::new("cargo")
         .args(["install", "--list"])
         .output()
-        .map_err(|e| HotRestartError::Other(e.to_string()))?;
+        .map_err(|error: Error| HotRestartError::Other(error.to_string()))?;
     let check_output_str: Cow<'_, str> = String::from_utf8_lossy(&check_output.stdout);
     if !check_output_str.contains("cargo-watch") {
         eprintln!("Cargo-watch is not installed. Attempting to install...");
@@ -42,11 +42,11 @@ where
         .stdin(Stdio::inherit());
     let mut child: Child = command
         .spawn()
-        .map_err(|e| HotRestartError::CommandSpawnFailed(e.to_string()))?;
+        .map_err(|error: Error| HotRestartError::CommandSpawnFailed(error.to_string()))?;
     if wait {
         child
             .wait()
-            .map_err(|e| HotRestartError::CommandWaitFailed(e.to_string()))?;
+            .map_err(|error: Error| HotRestartError::CommandWaitFailed(error.to_string()))?;
     }
     exit(0);
 }
