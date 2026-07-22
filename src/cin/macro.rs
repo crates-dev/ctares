@@ -6,7 +6,7 @@
 macro_rules! cin {
     () => {{
         let mut input: String = String::new();
-        let _ = std::io::stdin().read_line(&mut input);
+        let _: ::std::io::Result<usize> = std::io::stdin().read_line(&mut input);
         input
     }};
 }

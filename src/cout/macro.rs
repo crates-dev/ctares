@@ -9,7 +9,7 @@
 macro_rules! cout {
     ($($args: tt)*) => {
         ::std::print!($($args)*);
-        let _ = ::std::io::Write::flush(&mut ::std::io::stdout());
+        let _: ::std::io::Result<()> = ::std::io::Write::flush(&mut ::std::io::stdout());
     };
 }
 
