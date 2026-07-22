@@ -216,7 +216,7 @@ impl ServerManager {
     /// - `ServerManagerResult` - Operation result.
     #[cfg(not(windows))]
     fn kill_process(&self, pid: i32) -> ServerManagerResult {
-        let result: Result<Output, std::io::Error> = Command::new("kill")
+        let result: Result<Output, IoError> = Command::new("kill")
             .arg("-TERM")
             .arg(pid.to_string())
             .output();
