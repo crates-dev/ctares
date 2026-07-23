@@ -216,11 +216,11 @@ impl ServerManager {
     /// - `ServerManagerResult` - Operation result.
     #[cfg(not(windows))]
     fn kill_process(&self, pid: i32) -> ServerManagerResult {
-        let result: Result<Output, IoError> = Command::new("kill")
+        match Command::new("kill")
             .arg("-TERM")
             .arg(pid.to_string())
-            .output();
-        match result {
+            .output()
+        {
             Ok(output) if output.status.success() => Ok(()),
             Ok(output) => Err(format!(
                 "Failed to kill process with pid: {}, error: {}",
@@ -243,27 +243,20 @@ impl ServerManager {
     /// - `ServerManagerResult` - Operation result.
     #[cfg(windows)]
     fn kill_process(&self, pid: i32) -> ServerManagerResult {
-        use std::ffi::c_void;
-        type Dword = u32;
-        type Bool = i32;
-        type Handle = *mut c_void;
-        type Uint = u32;
-        const PROCESS_TERMINATE: Dword = 0x0001;
-        const PROCESS_ALL_ACCESS: Dword = 0x1F0FFF;
         unsafe extern "system" {
             fn OpenProcess(
-                dwDesiredAccess: Dword,
-                bInheritHandle: Bool,
-                dwProcessId: Dword,
-            ) -> Handle;
-            fn TerminateProcess(hProcess: Handle, uExitCode: Uint) -> Bool;
-            fn CloseHandle(hObject: Handle) -> Bool;
-            fn GetLastError() -> Dword;
+                dwDesiredAccess: u32,
+                bInheritHandle: i32,
+                dwProcessId: u32,
+            ) -> *mut c_void;
+            fn TerminateProcess(hProcess: *mut c_void, uExitCode: u32) -> i32;
+            fn CloseHandle(hObject: *mut c_void) -> i32;
+            fn GetLastError() -> u32;
         }
-        let process_id: Dword = pid as Dword;
-        let mut process_handle: Handle = unsafe { OpenProcess(PROCESS_TERMINATE, 0, process_id) };
+        let process_id: u32 = pid as u32;
+        let mut process_handle: *mut c_void = unsafe { OpenProcess(0x0001, 0, process_id) };
         if process_handle.is_null() {
-            process_handle = unsafe { OpenProcess(PROCESS_ALL_ACCESS, 0, process_id) };
+            process_handle = unsafe { OpenProcess(0x1F0FFF, 0, process_id) };
         }
         if process_handle.is_null() {
             let error_code = unsafe { GetLastError() };
@@ -272,7 +265,7 @@ impl ServerManager {
             )
             .into());
         }
-        let terminate_result: Bool = unsafe { TerminateProcess(process_handle, 1) };
+        let terminate_result: i32 = unsafe { TerminateProcess(process_handle, 1) };
         if terminate_result == 0 {
             let error_code = unsafe { GetLastError() };
             unsafe {

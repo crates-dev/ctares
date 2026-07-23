@@ -27,4 +27,7 @@ use std::{
     sync::Arc,
 };
 
+#[cfg(windows)]
+use std::ffi::c_void;
+
 use tokio::runtime::Runtime;
