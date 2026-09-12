@@ -229,7 +229,8 @@ fn generate_param_type(
             }
         }
     } else {
-        quote! { #field_type }
+        let normalized_field_type: Type = normalize_signature_type(field_type);
+        quote! { #normalized_field_type }
     }
 }
 
@@ -307,6 +308,156 @@ fn generate_assignment_tuple(
     }
 }
 
+/// Adds an explicit `+ 'static` bound to bare trait objects inside a field
+/// type so the type means the same thing in a generated method signature as
+/// it does in the struct field declaration.
+///
+/// In a struct field, `*mut dyn Trait` (no enclosing reference) defaults
+/// the trait object lifetime to `'static`. When the derive re-emits that
+/// type in a method return position (`-> &*mut dyn Trait`), Rust's elision
+/// rules instead bind the trait object to the enclosing `&self` lifetime,
+/// and the invariance of `*mut` turns that mismatch into a compile error
+/// ("lifetime may not live long enough"). Pinning bare trait objects to
+/// `+ 'static` — the same default the field declaration applied — makes
+/// the generated signatures type-check, which is what enables getter and
+/// setter generation for raw pointer fields such as `*mut dyn FnMut()`.
+///
+/// A trait object that already sits behind a reference (`&'a dyn Trait`)
+/// is left untouched: its object lifetime already resolves to the
+/// reference's lifetime in both positions.
+///
+/// # Arguments
+///
+/// - `&Type` - The field type to normalize.
+///
+/// # Returns
+///
+/// - `Type` - The normalized type.
+fn normalize_signature_type(ty: &Type) -> Type {
+    normalize_type_inner(ty, false)
+}
+
+/// Recursive worker for [`normalize_signature_type`].
+///
+/// `behind_reference` tracks whether the current position is transitively
+/// inside a `&`/`&mut` elem: bare trait objects there inherit the
+/// reference's lifetime and must not be pinned. Descending into generic
+/// path arguments resets the flag, because trait objects in type-argument
+/// position default to `'static` in both the field declaration and the
+/// generated signature.
+///
+/// # Arguments
+///
+/// - `&Type` - The type to normalize.
+/// - `bool` - Whether the position is inside a reference.
+///
+/// # Returns
+///
+/// - `Type` - The normalized type.
+fn normalize_type_inner(ty: &Type, behind_reference: bool) -> Type {
+    match ty {
+        Type::TraitObject(trait_object) => {
+            let mut trait_object: TypeTraitObject = trait_object.clone();
+            let has_lifetime: bool = trait_object
+                .bounds
+                .iter()
+                .any(|bound: &TypeParamBound| matches!(bound, TypeParamBound::Lifetime(_)));
+            let pin_static: bool = !behind_reference && !has_lifetime;
+            if pin_static {
+                trait_object.bounds.push(parse_quote!('static));
+            }
+            for bound in trait_object.bounds.iter_mut() {
+                if let TypeParamBound::Trait(trait_bound) = bound {
+                    for segment in trait_bound.path.segments.iter_mut() {
+                        if let PathArguments::AngleBracketed(args) = &mut segment.arguments {
+                            normalize_angle_bracketed_args(args);
+                        }
+                    }
+                }
+            }
+            if pin_static {
+                // A multi-bound trait object (`dyn FnMut() + 'static`) is
+                // ambiguous without parentheses in pointer / tuple / return
+                // positions, so the normalized form is parenthesized —
+                // always legal and semantics-preserving.
+                Type::Paren(TypeParen {
+                    paren_token: Default::default(),
+                    elem: Box::new(Type::TraitObject(trait_object)),
+                })
+            } else {
+                Type::TraitObject(trait_object)
+            }
+        }
+        Type::Reference(reference) => {
+            let mut reference: TypeReference = reference.clone();
+            reference.elem = Box::new(normalize_type_inner(&reference.elem, true));
+            Type::Reference(reference)
+        }
+        Type::Ptr(ptr) => {
+            let mut ptr: TypePtr = ptr.clone();
+            ptr.elem = Box::new(normalize_type_inner(&ptr.elem, behind_reference));
+            Type::Ptr(ptr)
+        }
+        Type::Path(type_path) => {
+            let mut type_path: TypePath = type_path.clone();
+            for segment in type_path.path.segments.iter_mut() {
+                if let PathArguments::AngleBracketed(args) = &mut segment.arguments {
+                    normalize_angle_bracketed_args(args);
+                }
+            }
+            Type::Path(type_path)
+        }
+        Type::Tuple(tuple) => {
+            let mut tuple: TypeTuple = tuple.clone();
+            for elem in tuple.elems.iter_mut() {
+                *elem = normalize_type_inner(elem, behind_reference);
+            }
+            Type::Tuple(tuple)
+        }
+        Type::Paren(paren) => {
+            let mut paren: TypeParen = paren.clone();
+            paren.elem = Box::new(normalize_type_inner(&paren.elem, behind_reference));
+            Type::Paren(paren)
+        }
+        Type::Group(group) => {
+            let mut group: TypeGroup = group.clone();
+            group.elem = Box::new(normalize_type_inner(&group.elem, behind_reference));
+            Type::Group(group)
+        }
+        Type::Array(array) => {
+            let mut array: TypeArray = array.clone();
+            array.elem = Box::new(normalize_type_inner(&array.elem, behind_reference));
+            Type::Array(array)
+        }
+        Type::Slice(slice) => {
+            let mut slice: TypeSlice = slice.clone();
+            slice.elem = Box::new(normalize_type_inner(&slice.elem, behind_reference));
+            Type::Slice(slice)
+        }
+        _ => ty.clone(),
+    }
+}
+
+/// Normalizes every type argument inside angle brackets, including
+/// associated type bindings such as `Iterator<Item = *mut dyn FnMut()>`.
+///
+/// # Arguments
+///
+/// - `&mut AngleBracketedGenericArguments` - The angle bracketed arguments to normalize in place.
+fn normalize_angle_bracketed_args(args: &mut AngleBracketedGenericArguments) {
+    for arg in args.args.iter_mut() {
+        match arg {
+            GenericArgument::Type(inner_ty) => {
+                *inner_ty = normalize_type_inner(inner_ty, false);
+            }
+            GenericArgument::AssocType(assoc_type) => {
+                assoc_type.ty = normalize_type_inner(&assoc_type.ty, false);
+            }
+            _ => {}
+        }
+    }
+}
+
 /// Generates the appropriate return type based on the field type and return type strategy.
 ///
 /// # Arguments
@@ -318,6 +469,8 @@ fn generate_assignment_tuple(
 ///
 /// - `TokenStream2` - The generated return type as tokens.
 fn generate_return_type(field_type: &Type, return_type: ReturnType) -> proc_macro2::TokenStream {
+    let normalized_field_type: Type = normalize_signature_type(field_type);
+    let field_type: &Type = &normalized_field_type;
     match return_type {
         ReturnType::Reference => {
             if is_option_type(field_type) || is_result_type(field_type) {
@@ -504,6 +657,8 @@ fn build_named_try_get_quote(
     if !need_getter || !is_option_type(attr_ty) && !is_result_type(attr_ty) {
         return quote! {};
     }
+    let normalized_attr_ty: Type = normalize_signature_type(attr_ty);
+    let attr_ty: &Type = &normalized_attr_ty;
     let try_get_name: Ident = format_ident!("{}{}", TRY_GET_METHOD_PREFIX, get_name);
     match return_type {
         ReturnType::Reference => quote! {
@@ -573,6 +728,7 @@ fn build_named_get_mut_quote(
     attr_ty: &Type,
 ) -> proc_macro2::TokenStream {
     if need_getter_mut {
+        let attr_ty: Type = normalize_signature_type(attr_ty);
         quote! {
             #[inline(always)]
             #vis fn #get_mut_name(&mut self) -> &mut #attr_ty {
@@ -884,6 +1040,8 @@ fn build_tuple_try_get_quote(
     if !need_getter || !is_option_type(attr_ty) && !is_result_type(attr_ty) {
         return quote! {};
     }
+    let normalized_attr_ty: Type = normalize_signature_type(attr_ty);
+    let attr_ty: &Type = &normalized_attr_ty;
     let try_get_name: Ident = format_ident!("{}{}", TRY_GET_METHOD_PREFIX, get_name);
     match return_type {
         ReturnType::Reference => quote! {
@@ -953,6 +1111,7 @@ fn build_tuple_get_mut_quote(
     attr_ty: &Type,
 ) -> proc_macro2::TokenStream {
     if need_getter_mut {
+        let attr_ty: Type = normalize_signature_type(attr_ty);
         quote! {
             #[inline(always)]
             #vis fn #get_mut_name(&mut self) -> &mut #attr_ty {

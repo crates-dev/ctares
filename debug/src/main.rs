@@ -393,4 +393,94 @@ fn main() {
     let copied_count: u64 = copy_test.get_count();
     assert!(copied_flag);
     assert_eq!(copied_count, 1000);
+    let mut value: u8 = 7;
+    let mut generic_ptr: GenericPtr<u8> = GenericPtr {
+        ptr: &mut value as *mut u8,
+    };
+    assert_eq!(unsafe { **generic_ptr.get_ptr() }, 7);
+    generic_ptr.set_ptr(std::ptr::null_mut());
+    assert!(generic_ptr.get_ptr().is_null());
+    let mut callback: Box<dyn FnMut()> = Box::new(|| {});
+    let callback_ptr: *mut dyn FnMut() = &mut *callback;
+    let mut dst_ptr: DstPtr = DstPtr { ptr: callback_ptr };
+    assert!(!dst_ptr.get_ptr().is_null());
+    assert!(!dst_ptr.get_mut_ptr().is_null());
+    let mut callback_two: Box<dyn FnMut()> = Box::new(|| {});
+    dst_ptr.set_ptr(&mut *callback_two as *mut dyn FnMut());
+    assert!(!dst_ptr.get_ptr().is_null());
+    let mut const_callback: Box<dyn FnMut()> = Box::new(|| {});
+    let mut const_ptr: ConstPtr = ConstPtr {
+        cptr: &mut *const_callback as *mut dyn FnMut(),
+    };
+    assert!(!const_ptr.get_cptr().is_null());
+    let const_debug: String = format!("{const_ptr:?}");
+    assert!(const_debug.contains("cptr"));
+    const_ptr.set_cptr(&*callback as *const dyn FnMut());
+    assert!(!const_ptr.get_cptr().is_null());
+    let mut opt_ptr: OptPtr = OptPtr { opt: None };
+    assert!(opt_ptr.try_get_opt().is_none());
+    opt_ptr.set_opt(Some(&mut value as *mut u8));
+    assert_eq!(unsafe { *opt_ptr.get_opt() }, 7);
+    assert!(opt_ptr.try_get_opt().is_some());
+    let mut opt_dst_ptr: OptDstPtr = OptDstPtr { opt: None };
+    assert!(opt_dst_ptr.try_get_opt().is_none());
+    opt_dst_ptr.set_opt(Some(&mut *callback as *mut dyn FnMut()));
+    assert!(!opt_dst_ptr.get_opt().is_null());
+    let copy_ptr: CopyPtr = CopyPtr {
+        ptr: &mut value as *mut u8,
+    };
+    let copied_ptr: *mut u8 = copy_ptr.get_ptr();
+    assert_eq!(unsafe { *copied_ptr }, 7);
+    let mut tuple_ptr: TuplePtr = TuplePtr(&mut *callback_two as *mut dyn FnMut(), 3);
+    assert!(!tuple_ptr.get_0().is_null());
+    assert_eq!(*tuple_ptr.get_1(), 3);
+    let mut callback_three: Box<dyn FnMut()> = Box::new(|| {});
+    tuple_ptr.set_0(&mut *callback_three as *mut dyn FnMut());
+    assert!(!tuple_ptr.get_0().is_null());
+    let dst_debug: String = format!("{dst_ptr:?}");
+    assert!(dst_debug.contains("ptr"));
 }
+
+#[derive(Clone, Data, Debug)]
+struct GenericPtr<T> {
+    #[get(pub)]
+    #[set(pub)]
+    ptr: *mut T,
+}
+
+#[derive(Clone, Data, Debug)]
+struct DstPtr {
+    #[get(pub)]
+    #[get_mut(pub)]
+    #[set(pub)]
+    ptr: *mut dyn FnMut(),
+}
+
+#[derive(Clone, Data, Debug)]
+struct ConstPtr {
+    #[get(pub)]
+    #[set(pub)]
+    cptr: *const dyn FnMut(),
+}
+
+#[derive(Clone, Data, Debug)]
+struct OptPtr {
+    #[get(pub)]
+    opt: Option<*mut u8>,
+}
+
+#[derive(Clone, Data, Debug)]
+struct OptDstPtr {
+    #[get(pub)]
+    opt: Option<*mut dyn FnMut()>,
+}
+
+#[derive(Clone, Data, Debug)]
+struct CopyPtr {
+    #[get(pub, type(copy))]
+    #[set(pub)]
+    ptr: *mut u8,
+}
+
+#[derive(Clone, Data, Debug)]
+struct TuplePtr(#[get(pub)] #[set(pub)] *mut dyn FnMut(), #[get(pub)] i32);

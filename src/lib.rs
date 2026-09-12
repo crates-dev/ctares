@@ -18,8 +18,10 @@ use {
     proc_macro2::{Delimiter, token_stream::IntoIter},
     quote::{ToTokens, format_ident, quote},
     syn::{
-        Data, DeriveInput, Field, Fields, GenericArgument, GenericParam, Generics, Ident, Index,
-        Lifetime, PathArguments, Type, TypeParam, Variant, WhereClause, parse_macro_input, parse2,
+        AngleBracketedGenericArguments, Data, DeriveInput, Field, Fields, GenericArgument,
+        GenericParam, Generics, Ident, Index, Lifetime, PathArguments, Type, TypeArray, TypeGroup,
+        TypeParam, TypeParamBound, TypeParen, TypePath, TypePtr, TypeReference, TypeSlice,
+        TypeTraitObject, TypeTuple, Variant, WhereClause, parse_macro_input, parse_quote, parse2,
     },
 };
 
