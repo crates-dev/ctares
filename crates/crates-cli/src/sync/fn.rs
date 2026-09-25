@@ -176,6 +176,9 @@ fn rewrite_entry_version(deps: &mut dyn TableLike, current_alias: &str, workspac
 ///   version first, plain package version as fallback). Errors out if
 ///   neither exists.
 /// * Reads `[workspace.members]`. Errors out if it is missing.
+/// * When the root manifest also has `[package]` (monorepo with a root
+///   package), the root package itself is processed first as member path
+///   `"."`, so a `path = "."` entry stays aligned too.
 /// * For each member path:
 ///     1. Opens `<member_path>/Cargo.toml` and reads its `[package].name`.
 ///     2. Locates the existing `[workspace.dependencies]` entry whose
@@ -209,7 +212,15 @@ pub async fn execute_sync(manifest_path: &str) -> Result<SyncReport, SyncError> 
     let mut renamed_entries: Vec<(String, String)> = Vec::new();
     let mut versioned_entries: Vec<(String, String)> = Vec::new();
     let mut needs_rewrite: bool = false;
-    for member_path in &members {
+    // A root package (monorepo with `[package]` at the workspace root) can
+    // itself be referenced as `path = "."` in `[workspace.dependencies]`;
+    // include it so its entry stays aligned with the workspace version.
+    let mut member_paths: Vec<String> = Vec::new();
+    if doc.get("package").is_some() {
+        member_paths.push(".".to_string());
+    }
+    member_paths.extend(members.iter().cloned());
+    for member_path in &member_paths {
         let member_manifest_path: PathBuf = path
             .parent()
             .unwrap_or_else(|| Path::new("."))
