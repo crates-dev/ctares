@@ -7,6 +7,7 @@ fn test_package_creation() {
         version: "0.1.0".to_string(),
         path: PathBuf::from("."),
         local_dependencies: vec![],
+        publish: true,
     };
     assert_eq!(package.name, "test-package");
     assert_eq!(package.version, "0.1.0");
@@ -20,6 +21,7 @@ fn test_package_clone() {
         version: "0.1.0".to_string(),
         path: PathBuf::from("."),
         local_dependencies: vec!["dep1".to_string()],
+        publish: true,
     };
     let cloned: Package = package.clone();
     assert_eq!(cloned.name, package.name);
@@ -34,12 +36,14 @@ fn test_package_equality() {
         version: "0.1.0".to_string(),
         path: PathBuf::from("."),
         local_dependencies: vec![],
+        publish: true,
     };
     let package2: Package = Package {
         name: "test".to_string(),
         version: "0.1.0".to_string(),
         path: PathBuf::from("."),
         local_dependencies: vec![],
+        publish: true,
     };
     assert_eq!(package1, package2);
 }
@@ -242,4 +246,113 @@ fn test_is_already_published() {
         "error: failed to verify project tarball"
     ));
     assert!(!is_already_published(""));
+}
+
+#[tokio::test]
+async fn test_resolve_publish_order_positions_root_before_dependents() {
+    let temp_dir: PathBuf = temp_dir().join("crates_cli_test_order_root_middle");
+    let _cleanup = fs::remove_dir_all(&temp_dir).await;
+    fs::create_dir_all(&temp_dir).await.unwrap();
+    fs::write(
+        temp_dir.join("Cargo.toml"),
+        "[package]\nname = \"facade\"\nversion = \"1.0.0\"\nedition = \"2021\"\n\n[dependencies]\ncore = { path = \"core\" }\n\n[workspace]\nmembers = [\"core\", \"ui\"]\n",
+    )
+    .await
+    .unwrap();
+    create_test_package(&temp_dir, "core", "").await;
+    create_test_package(
+        &temp_dir,
+        "ui",
+        "\n[dependencies]\nfacade = { path = \"..\" }\n",
+    )
+    .await;
+    let manifest_path: String = temp_dir.join("Cargo.toml").to_string_lossy().to_string();
+    let packages: Vec<Package> = resolve_publish_order(&manifest_path).await.unwrap();
+    assert_eq!(package_names(&packages), vec!["core", "facade", "ui"]);
+    let _ = fs::remove_dir_all(&temp_dir).await;
+}
+
+#[tokio::test]
+async fn test_resolve_publish_order_root_position_conflict_errors() {
+    let temp_dir: PathBuf = temp_dir().join("crates_cli_test_order_root_conflict");
+    let _cleanup = fs::remove_dir_all(&temp_dir).await;
+    fs::create_dir_all(&temp_dir).await.unwrap();
+    fs::write(
+        temp_dir.join("Cargo.toml"),
+        "[package]\nname = \"facade\"\nversion = \"1.0.0\"\nedition = \"2021\"\n\n[dependencies]\ncore = { path = \"core\" }\n\n[workspace]\nmembers = [\"ui\", \"core\"]\n",
+    )
+    .await
+    .unwrap();
+    create_test_package(&temp_dir, "core", "").await;
+    create_test_package(
+        &temp_dir,
+        "ui",
+        "\n[dependencies]\nfacade = { path = \"..\" }\n",
+    )
+    .await;
+    let manifest_path: String = temp_dir.join("Cargo.toml").to_string_lossy().to_string();
+    let result: Result<Vec<Package>, PublishError> = resolve_publish_order(&manifest_path).await;
+    match result {
+        Err(PublishError::InvalidPublishOrder(message)) => {
+            assert!(message.contains("facade"));
+            assert!(message.contains("workspace.members"));
+        }
+        _ => panic!("expected InvalidPublishOrder"),
+    }
+    let _ = fs::remove_dir_all(&temp_dir).await;
+}
+
+#[tokio::test]
+async fn test_resolve_publish_order_resolves_workspace_inherited_version() {
+    let temp_dir: PathBuf = temp_dir().join("crates_cli_test_order_inherited_version");
+    let _cleanup = fs::remove_dir_all(&temp_dir).await;
+    fs::create_dir_all(&temp_dir).await.unwrap();
+    fs::write(
+        temp_dir.join("Cargo.toml"),
+        "[workspace]\nmembers = [\"inherited\"]\n\n[workspace.package]\nversion = \"9.9.9\"\nedition = \"2021\"\n",
+    )
+    .await
+    .unwrap();
+    let package_dir: PathBuf = temp_dir.join("inherited");
+    fs::create_dir_all(&package_dir).await.unwrap();
+    fs::write(
+        package_dir.join("Cargo.toml"),
+        "[package]\nname = \"inherited\"\nversion.workspace = true\nedition.workspace = true\n",
+    )
+    .await
+    .unwrap();
+    let manifest_path: String = temp_dir.join("Cargo.toml").to_string_lossy().to_string();
+    let packages: Vec<Package> = resolve_publish_order(&manifest_path).await.unwrap();
+    assert_eq!(packages.len(), 1);
+    assert_eq!(packages[0].version, "9.9.9");
+    let _ = fs::remove_dir_all(&temp_dir).await;
+}
+
+#[tokio::test]
+async fn test_resolve_publish_order_reads_publish_flag() {
+    let temp_dir: PathBuf = temp_dir().join("crates_cli_test_order_publish_flag");
+    let _cleanup = fs::remove_dir_all(&temp_dir).await;
+    fs::create_dir_all(&temp_dir).await.unwrap();
+    fs::write(
+        temp_dir.join("Cargo.toml"),
+        "[workspace]\nmembers = [\"skipme\", \"shipme\"]\n",
+    )
+    .await
+    .unwrap();
+    let skip_dir: PathBuf = temp_dir.join("skipme");
+    fs::create_dir_all(&skip_dir).await.unwrap();
+    fs::write(
+        skip_dir.join("Cargo.toml"),
+        "[package]\nname = \"skipme\"\nversion = \"0.1.0\"\nedition = \"2021\"\npublish = false\n",
+    )
+    .await
+    .unwrap();
+    create_test_package(&temp_dir, "shipme", "").await;
+    let manifest_path: String = temp_dir.join("Cargo.toml").to_string_lossy().to_string();
+    let packages: Vec<Package> = resolve_publish_order(&manifest_path).await.unwrap();
+    assert_eq!(packages[0].name, "skipme");
+    assert!(!packages[0].publish);
+    assert_eq!(packages[1].name, "shipme");
+    assert!(packages[1].publish);
+    let _ = fs::remove_dir_all(&temp_dir).await;
 }
