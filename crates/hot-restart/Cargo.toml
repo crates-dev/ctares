@@ -1,0 +1,33 @@
+[package]
+name = "hot-restart"
+version = "0.6.27"
+readme = "README.md"
+edition = "2024"
+authors = ["root@ltpp.vip"]
+license = "MIT"
+description = """A Rust library for hot restarting applications without downtime. Provides seamless process replacement for servers and long-running services, enabling zero-downtime updates and configuration reloads."""
+keywords = ["hot", "restart", "cargo", "watch", "file"]
+repository = "https://github.com/crates-dev/hot-restart.git"
+categories = ["network-programming", "web-programming"]
+exclude = ["target", "Cargo.lock", "sh", ".github"]
+
+[dev-dependencies]
+tokio = { version = "1.53.1", features = ["full"] }
+
+[profile.dev]
+incremental = false
+opt-level = 3
+lto = true
+panic = "unwind"
+debug = false
+codegen-units = 1
+strip = "debuginfo"
+
+[profile.release]
+incremental = false
+opt-level = 3
+lto = true
+panic = "unwind"
+debug = false
+codegen-units = 1
+strip = "debuginfo"
