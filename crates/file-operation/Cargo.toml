@@ -1,6 +1,6 @@
 [package]
 name = "file-operation"
-version = "0.8.32"
+version = "0.9.0"
 readme = "README.md"
 edition = "2024"
 authors = ["root@ltpp.vip"]
@@ -12,22 +12,4 @@ categories = ["network-programming", "web-programming"]
 exclude = ["target", "Cargo.lock", "sh", ".github"]
 
 [dependencies]
-tokio = { version = "1.53.1", features = ["full"] }
-
-[profile.dev]
-incremental = false
-opt-level = 3
-lto = true
-panic = "unwind"
-debug = false
-codegen-units = 1
-strip = "debuginfo"
-
-[profile.release]
-incremental = false
-opt-level = 3
-lto = true
-panic = "unwind"
-debug = false
-codegen-units = 1
-strip = "debuginfo"
+tokio = { workspace = true }

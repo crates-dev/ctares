@@ -1,6 +1,6 @@
 [package]
 name = "china_identification_card"
-version = "1.1.39"
+version = "1.2.0"
 readme = "README.md"
 edition = "2024"
 authors = ["root@ltpp.vip"]
@@ -9,21 +9,3 @@ description = "A Rust library for validating Chinese identification card numbers
 keywords = ["china", "id", "identification", "card", "validation"]
 repository = "https://github.com/crates-dev/china_identification_card"
 categories = ["authentication", "data-structures", "development-tools"]
-
-[profile.dev]
-incremental = false
-opt-level = 3
-lto = true
-panic = "unwind"
-debug = false
-codegen-units = 1
-strip = "debuginfo"
-
-[profile.release]
-incremental = false
-opt-level = 3
-lto = true
-panic = "unwind"
-debug = false
-codegen-units = 1
-strip = "debuginfo"

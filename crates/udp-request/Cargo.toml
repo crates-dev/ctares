@@ -1,6 +1,6 @@
 [package]
 name = "udp-request"
-version = "0.3.28"
+version = "0.4.0"
 readme = "README.md"
 edition = "2024"
 authors = ["root@ltpp.vip"]
@@ -10,21 +10,3 @@ keywords = ["udp", "net", "response", "request", "tool"]
 repository = "https://github.com/crates-dev/udp-request.git"
 categories = ["network-programming", "web-programming"]
 exclude = ["target", "Cargo.lock", "sh", ".github"]
-
-[profile.dev]
-incremental = false
-opt-level = 3
-lto = true
-panic = "unwind"
-debug = false
-codegen-units = 1
-strip = "debuginfo"
-
-[profile.release]
-incremental = false
-opt-level = 3
-lto = true
-panic = "unwind"
-debug = false
-codegen-units = 1
-strip = "debuginfo"

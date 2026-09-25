@@ -1,6 +1,6 @@
 [package]
 name = "color-output"
-version = "10.0.10"
+version = "10.1.0"
 readme = "README.md"
 edition = "2024"
 authors = ["root@ltpp.vip"]
@@ -12,22 +12,4 @@ categories = ["command-line-interface", "development-tools", "visualization"]
 exclude = ["target", "Cargo.lock", "sh", ".github"]
 
 [dependencies]
-hyperlane-time = "0.7.46"
-
-[profile.dev]
-incremental = false
-opt-level = 3
-lto = true
-panic = "unwind"
-debug = false
-codegen-units = 1
-strip = "debuginfo"
-
-[profile.release]
-incremental = false
-opt-level = 3
-lto = true
-panic = "unwind"
-debug = false
-codegen-units = 1
-strip = "debuginfo"
+hyperlane-time = { workspace = true }

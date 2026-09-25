@@ -1,6 +1,6 @@
 [package]
 name = "jwt-service"
-version = "0.2.11"
+version = "0.3.0"
 readme = "README.md"
 edition = "2024"
 authors = ["root@ltpp.vip"]
@@ -12,24 +12,6 @@ categories = ["network-programming", "web-programming"]
 exclude = ["target", "Cargo.lock", "sh", ".github"]
 
 [dependencies]
-serde_json = "1.0.151"
-serde = { version = "1.0.229", features = ["derive"] }
-jsonwebtoken = { version = "10.4.0", features = ["rust_crypto"] }
-
-[profile.dev]
-incremental = false
-opt-level = 3
-lto = true
-panic = "unwind"
-debug = false
-codegen-units = 1
-strip = "debuginfo"
-
-[profile.release]
-incremental = false
-opt-level = 3
-lto = true
-panic = "unwind"
-debug = false
-codegen-units = 1
-strip = "debuginfo"
+jsonwebtoken = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }

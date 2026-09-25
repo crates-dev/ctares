@@ -7,6 +7,7 @@ members = [
     "crates/clonelicious",
     "crates/color-output",
     "crates/compare-version",
+    "crates/crates-cli",
     "crates/file-operation",
     "crates/future-fn",
     "crates/gtl",
@@ -25,6 +26,54 @@ members = [
 ]
 
 [workspace.package]
-edition = "2021"
+edition = "2024"
+rust-version = "1.85"
 license = "MIT"
-rust-version = "1.75"
+readme = "README.md"
+authors = ["root@ltpp.vip"]
+repository = "https://github.com/crates-dev/ctares"
+exclude = ["target", "Cargo.lock", "sh", ".github"]
+
+[workspace.dependencies]
+color-output = { path = "crates/color-output", version = "10.1.0" }
+file-operation = { path = "crates/file-operation", version = "0.9.0" }
+lombok-macros = { path = "crates/lombok-macros", version = "2.2.0" }
+recoverable-spawn = { path = "crates/recoverable-spawn", version = "3.10.0" }
+
+chrono = "0.4.44"
+dashmap = "6.2.1"
+hyperlane-time = "0.7.46"
+jsonwebtoken = { version = "10.4.0", features = ["rust_crypto"] }
+log = "0.4.34"
+once_cell = "1.21.4"
+proc-macro2 = "1.0.107"
+quote = "1.0.47"
+regex = "1.13.1"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+syn = "2.0.119"
+thiserror = "2.0.21"
+tokio = { version = "1.53.1", features = ["full"] }
+toml = "0.9.8"
+toml_edit = "0.25.15"
+tracing = "0.1.44"
+twox-hash = "2.1.3"
+which = "8.0.6"
+
+[profile.dev]
+incremental = false
+opt-level = 3
+lto = true
+panic = "unwind"
+debug = false
+codegen-units = 1
+strip = "debuginfo"
+
+[profile.release]
+incremental = false
+opt-level = 3
+lto = true
+panic = "unwind"
+debug = false
+codegen-units = 1
+strip = "debuginfo"
