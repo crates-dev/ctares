@@ -28,9 +28,9 @@ pub(crate) fn set_item_string_preserving_decor(slot: &mut Item, new_string: &str
 ///
 /// # Returns
 ///
-/// - `Result<String, SyncError>`: Root version, or an error if neither
-///   field exists.
-fn read_root_version(doc: &DocumentMut) -> Result<String, SyncError> {
+/// - `Option<String>`: Root version, or `None` when the workspace has no
+///   shared version (virtual workspace with per-member versions).
+fn read_root_version(doc: &DocumentMut) -> Option<String> {
     let workspace_version: Option<&str> = doc
         .get("workspace")
         .and_then(|workspace: &Item| workspace.get("package"))
@@ -43,7 +43,38 @@ fn read_root_version(doc: &DocumentMut) -> Result<String, SyncError> {
     workspace_version
         .or(package_version)
         .map(|version: &str| version.to_string())
-        .ok_or_else(|| SyncError::WorkspaceVersionMissing("Cargo.toml".to_string()))
+}
+
+/// Resolve a member's own version: literal `[package].version`, or the
+/// shared workspace version when the member uses `version.workspace = true`.
+///
+/// # Arguments
+///
+/// - `&DocumentMut`: Parsed member manifest.
+/// - `Option<&str>`: Shared workspace version, if any.
+///
+/// # Returns
+///
+/// - `Result<String, SyncError>`: The member's effective version.
+fn read_member_version(
+    member_doc: &DocumentMut,
+    workspace_version: Option<&str>,
+) -> Result<String, SyncError> {
+    let version_item: &Item = member_doc
+        .get("package")
+        .and_then(|package: &Item| package.get("version"))
+        .ok_or_else(|| SyncError::MemberNameMissing("Cargo.toml".to_string()))?;
+    if let Some(version) = version_item.as_str() {
+        return Ok(version.to_string());
+    }
+    let inherits: bool = version_item
+        .get("workspace")
+        .and_then(|workspace_item: &Item| workspace_item.as_bool())
+        .unwrap_or(false);
+    if inherits && let Some(version) = workspace_version {
+        return Ok(version.to_string());
+    }
+    Err(SyncError::WorkspaceVersionMissing("Cargo.toml".to_string()))
 }
 
 /// Read `[workspace.members]` list from a workspace manifest.
@@ -198,12 +229,12 @@ pub async fn execute_sync(manifest_path: &str) -> Result<SyncReport, SyncError> 
     let path: &Path = Path::new(manifest_path);
     let content: String = read_to_string(path).await?;
     let mut doc: DocumentMut = content.parse().map_err(|_| SyncError::ManifestParseError)?;
-    let workspace_version: String = read_root_version(&doc)?;
+    let workspace_version: Option<String> = read_root_version(&doc);
     let members: Vec<String> = read_workspace_members(&doc)?;
     if members.is_empty() {
         log::info!("sync: no workspace members, nothing to do");
         return Ok(SyncReport {
-            workspace_version,
+            workspace_version: workspace_version.unwrap_or_default(),
             renamed_entries: Vec::new(),
             versioned_entries: Vec::new(),
             file_changed: false,
@@ -236,6 +267,13 @@ pub async fn execute_sync(manifest_path: &str) -> Result<SyncReport, SyncError> 
             .parse()
             .map_err(|_| SyncError::ManifestParseError)?;
         let canonical_alias: String = read_member_crate_name(&member_doc)?;
+        // Homogeneous workspaces (root version exists) align every entry to
+        // the root version; heterogeneous virtual workspaces align each
+        // entry to the member's own version.
+        let target_version: String = match &workspace_version {
+            Some(version) => version.clone(),
+            None => read_member_version(&member_doc, None)?,
+        };
         let (current_alias, existing_version): (String, Option<String>) =
             match scan_dep_entry(&doc, member_path) {
                 Some(scanned) => scanned,
@@ -249,7 +287,7 @@ pub async fn execute_sync(manifest_path: &str) -> Result<SyncReport, SyncError> 
             };
         let alias_needs_rename: bool = current_alias != canonical_alias;
         let version_needs_rewrite: bool =
-            existing_version.as_deref() != Some(workspace_version.as_str());
+            existing_version.as_deref() != Some(target_version.as_str());
         if !alias_needs_rename && !version_needs_rewrite {
             continue;
         }
@@ -259,7 +297,7 @@ pub async fn execute_sync(manifest_path: &str) -> Result<SyncReport, SyncError> 
             .and_then(|workspace: &mut Item| workspace.get_mut("dependencies"))
             .and_then(|deps_item: &mut Item| deps_item.as_table_like_mut())
             .ok_or(SyncError::ManifestParseError)?;
-        rewrite_entry_version(deps, &current_alias, &workspace_version);
+        rewrite_entry_version(deps, &current_alias, &target_version);
         if alias_needs_rename {
             if let Some(entry) = deps.remove(&current_alias) {
                 deps.insert(&canonical_alias, entry);
@@ -276,24 +314,25 @@ pub async fn execute_sync(manifest_path: &str) -> Result<SyncReport, SyncError> 
                 "sync: {} -> {} v{}",
                 member_path,
                 canonical_alias,
-                workspace_version
+                target_version
             );
         }
         versioned_entries.push((member_path.clone(), canonical_alias));
     }
     let file_changed: bool = needs_rewrite;
+    let report_version: String = workspace_version.unwrap_or_else(|| "per-member".to_string());
     if file_changed {
         write(path, doc.to_string()).await?;
         log::info!(
             "sync: wrote {} entries to v{}",
             versioned_entries.len(),
-            workspace_version
+            report_version
         );
     } else {
-        log::info!("sync: already in sync: v{}", workspace_version);
+        log::info!("sync: already in sync: v{}", report_version);
     }
     Ok(SyncReport {
-        workspace_version,
+        workspace_version: report_version,
         renamed_entries,
         versioned_entries,
         file_changed,
