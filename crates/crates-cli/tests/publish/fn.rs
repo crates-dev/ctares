@@ -356,3 +356,27 @@ async fn test_resolve_publish_order_reads_publish_flag() {
     assert!(packages[1].publish);
     let _ = fs::remove_dir_all(&temp_dir).await;
 }
+
+#[tokio::test]
+async fn test_resolve_publish_order_ignores_path_only_dev_dependencies() {
+    let temp_dir: PathBuf = temp_dir().join("crates_cli_test_order_dev_dep");
+    let _cleanup = fs::remove_dir_all(&temp_dir).await;
+    fs::create_dir_all(&temp_dir).await.unwrap();
+    fs::write(
+        temp_dir.join("Cargo.toml"),
+        "[package]\nname = \"facade\"\nversion = \"1.0.0\"\nedition = \"2021\"\n\n[dependencies]\ncore = { path = \"core\" }\n\n[workspace]\nmembers = [\"core\", \"macros\"]\n",
+    )
+    .await
+    .unwrap();
+    create_test_package(&temp_dir, "core", "").await;
+    create_test_package(
+        &temp_dir,
+        "macros",
+        "\n[dev-dependencies]\nfacade = { path = \"../\" }\n",
+    )
+    .await;
+    let manifest_path: String = temp_dir.join("Cargo.toml").to_string_lossy().to_string();
+    let packages: Vec<Package> = resolve_publish_order(&manifest_path).await.unwrap();
+    assert_eq!(package_names(&packages), vec!["core", "macros", "facade"]);
+    let _ = fs::remove_dir_all(&temp_dir).await;
+}
