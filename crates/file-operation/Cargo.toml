@@ -1,0 +1,33 @@
+[package]
+name = "file-operation"
+version = "0.8.32"
+readme = "README.md"
+edition = "2024"
+authors = ["root@ltpp.vip"]
+license = "MIT"
+description = """A Rust library providing comprehensive utilities for file operations with both sync/async support. Includes operations for copy, delete, move, read and write files. Simplifies file handling in Rust projects with safe and efficient methods for file manipulation and metadata querying."""
+keywords = ["time", "hyperlane", "day", "format", "lang"]
+repository = "https://github.com/crates-dev/file-operation.git"
+categories = ["network-programming", "web-programming"]
+exclude = ["target", "Cargo.lock", "sh", ".github"]
+
+[dependencies]
+tokio = { version = "1.53.1", features = ["full"] }
+
+[profile.dev]
+incremental = false
+opt-level = 3
+lto = true
+panic = "unwind"
+debug = false
+codegen-units = 1
+strip = "debuginfo"
+
+[profile.release]
+incremental = false
+opt-level = 3
+lto = true
+panic = "unwind"
+debug = false
+codegen-units = 1
+strip = "debuginfo"

@@ -1,0 +1,30 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/bin-encode-decode",
+    "crates/china_identification_card",
+    "crates/chunkify",
+    "crates/clonelicious",
+    "crates/color-output",
+    "crates/compare-version",
+    "crates/file-operation",
+    "crates/future-fn",
+    "crates/gtl",
+    "crates/hot-restart",
+    "crates/instrument-level",
+    "crates/jwt-service",
+    "crates/lombok-macros",
+    "crates/recoverable-spawn",
+    "crates/recoverable-thread-pool",
+    "crates/server-manager",
+    "crates/std-macro-extensions",
+    "crates/tcp-request",
+    "crates/tcplane",
+    "crates/udp",
+    "crates/udp-request",
+]
+
+[workspace.package]
+edition = "2021"
+license = "MIT"
+rust-version = "1.75"

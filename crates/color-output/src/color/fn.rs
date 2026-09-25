@@ -1,0 +1,168 @@
+use super::*;
+
+/// Generates color code for foreground colors in 256 colors.
+///
+/// # Arguments
+///
+/// - `u32` - RGB color code in hexadecimal format (0x000000 to 0xFFFFFF)
+///
+/// # Returns
+///
+/// - `String` - Color code for the foreground color
+pub fn color256_fg_color(code: u32) -> String {
+    if code > 0xFFFFFF {
+        return String::new();
+    }
+    let red: u32 = (code >> 16) & 0xFF;
+    let green: u32 = (code >> 8) & 0xFF;
+    let blue: u32 = code & 0xFF;
+    let color_index: u32 = rgb_to_256_color_index(red as u8, green as u8, blue as u8);
+    format!("38;5;{color_index}")
+}
+
+/// Generates color code for background colors in 256 colors.
+///
+/// # Arguments
+///
+/// - `u32` - RGB color code in hexadecimal format (0x000000 to 0xFFFFFF)
+///
+/// # Returns
+///
+/// - `String` - Color code for the background color
+pub fn color256_bg_color(code: u32) -> String {
+    if code > 0xFFFFFF {
+        return String::new();
+    }
+    let red: u32 = (code >> 16) & 0xFF;
+    let green: u32 = (code >> 8) & 0xFF;
+    let blue: u32 = code & 0xFF;
+    let color_index: u32 = rgb_to_256_color_index(red as u8, green as u8, blue as u8);
+    format!("48;5;{color_index}")
+}
+
+/// Generates color code for true color foreground colors.
+///
+/// # Arguments
+///
+/// - `u8` - Red component (0-255)
+/// - `u8` - Green component (0-255)
+/// - `u8` - Blue component (0-255)
+///
+/// # Returns
+///
+/// - `String` - Color code for the true color foreground
+#[inline(always)]
+pub fn rgb_fg_color(r: u8, g: u8, b: u8) -> String {
+    format!("38;2;{r};{g};{b}")
+}
+
+/// Generates color code for true color background colors.
+///
+/// # Arguments
+///
+/// - `u8` - Red component (0-255)
+/// - `u8` - Green component (0-255)
+/// - `u8` - Blue component (0-255)
+///
+/// # Returns
+///
+/// - `String` - Color code for the true color background
+#[inline(always)]
+pub fn rgb_bg_color(r: u8, g: u8, b: u8) -> String {
+    format!("48;2;{r};{g};{b}")
+}
+
+/// Converts RGB values to 256-color palette index with high precision.
+///
+/// # Arguments
+///
+/// - `u8` - Red component (0-255)
+/// - `u8` - Green component (0-255)
+/// - `u8` - Blue component (0-255)
+///
+/// # Returns
+///
+/// - `u32` - 256-color palette index (16-231 for RGB colors, 0-15 for standard colors, 232-255 for grayscale)
+fn rgb_to_256_color_index(r: u8, g: u8, b: u8) -> u32 {
+    if r == g && g == b {
+        if r < 8 {
+            return 16;
+        } else if r > 248 {
+            return 231;
+        } else {
+            return 232 + ((r as u32 - 8) * 24 / 248);
+        }
+    }
+    let r_index: u32 = if r < 48 {
+        0
+    } else if r < 115 {
+        1
+    } else {
+        (r as u32 - 35) / 40
+    };
+    let g_index: u32 = if g < 48 {
+        0
+    } else if g < 115 {
+        1
+    } else {
+        (g as u32 - 35) / 40
+    };
+    let b_index: u32 = if b < 48 {
+        0
+    } else if b < 115 {
+        1
+    } else {
+        (b as u32 - 35) / 40
+    };
+    16 + 36 * r_index + 6 * g_index + b_index
+}
+
+/// Executes the output operation with the given formatting.
+///
+/// # Arguments
+///
+/// - `ColorOutput` - The output configuration
+pub fn output(output: ColorOutput) {
+    let text: &str = output.text;
+    let color: ColorType = output.color;
+    let bg_color: ColorType = output.bg_color;
+    let bold: bool = output.bold;
+    let endl: bool = output.endl;
+    let mut task_list: Task<'_> = Task::default();
+    task_list.add(Text {
+        text,
+        color,
+        bg_color,
+        bold,
+        endl,
+    });
+    task_list.run_all();
+}
+
+/// Executes a sequence of output operations.
+///
+/// # Arguments
+///
+/// - `Vec<ColorOutput>` - Collection of output configurations to execute
+///
+/// # Returns
+///
+/// - `()` - No return value
+pub fn output_list(output_list: &Vec<ColorOutput>) {
+    let mut task_list: Task<'_> = Task::default();
+    for output in output_list {
+        let text: &str = output.text;
+        let color: ColorType = output.color;
+        let bg_color: ColorType = output.bg_color;
+        let bold: bool = output.bold;
+        let endl: bool = output.endl;
+        task_list.add(Text {
+            text,
+            color,
+            bg_color,
+            bold,
+            endl,
+        });
+    }
+    task_list.run_all();
+}

@@ -1,0 +1,52 @@
+use super::*;
+
+#[tokio::test]
+async fn test_write() {
+    const FILE_DIR: &str = "./log";
+    const NEW_FILE_DIR: &str = "./new_log";
+    const NEW_TEST_DIR: &str = "./test_log";
+    const FILE_PATH: &str = "./log/test.txt";
+    let _: Result<(), Error> = write_to_file(FILE_PATH, "test".as_bytes());
+    let res: Vec<u8> = read_from_file(FILE_PATH).unwrap_or_default();
+    let size: Option<u64> = get_file_size(FILE_PATH);
+    println!("read_from_file => {:?}", String::from_utf8_lossy(&res));
+    println!("get_file_size => {size:?}");
+    std::thread::sleep(std::time::Duration::from_secs(2));
+    let res: Result<(), Error> = copy_dir_files(FILE_DIR, NEW_FILE_DIR);
+    println!("copy_dir_files => {res:?}");
+    std::thread::sleep(std::time::Duration::from_secs(2));
+    let res: Result<(), Error> = delete_file(FILE_PATH);
+    println!("delete_file => {res:?}");
+    std::thread::sleep(std::time::Duration::from_secs(2));
+    let res: Result<(), Error> = move_dir(FILE_DIR, NEW_TEST_DIR);
+    println!("move_dir => {res:?}");
+    std::thread::sleep(std::time::Duration::from_secs(2));
+    let res: Result<(), Error> = delete_dir(NEW_TEST_DIR);
+    println!("delete_dir => {res:?}");
+    std::thread::sleep(std::time::Duration::from_secs(2));
+    let res: Result<(), Error> = delete_dir(NEW_FILE_DIR);
+    println!("delete_dir => {res:?}");
+    std::thread::sleep(std::time::Duration::from_secs(2));
+    let _: Result<(), Error> = async_write_to_file(FILE_PATH, "test".as_bytes()).await;
+    let res: Vec<u8> = async_read_from_file(FILE_PATH).await.unwrap_or_default();
+    let size: Option<u64> = async_get_file_size(FILE_PATH).await;
+    println!("read_from_file => {:?}", String::from_utf8_lossy(&res));
+    println!("get_file_size => {size:?}");
+    std::thread::sleep(std::time::Duration::from_secs(2));
+    let res: Result<(), Error> = async_copy_dir_files(FILE_DIR, NEW_FILE_DIR).await;
+    println!("copy_dir_files => {res:?}");
+    std::thread::sleep(std::time::Duration::from_secs(2));
+    let res: Result<(), Error> = async_delete_file(FILE_PATH).await;
+    std::thread::sleep(std::time::Duration::from_secs(2));
+    println!("delete_file => {res:?}");
+    std::thread::sleep(std::time::Duration::from_secs(2));
+    let res: Result<(), Error> = async_move_dir(FILE_DIR, NEW_TEST_DIR).await;
+    println!("move_dir => {res:?}");
+    std::thread::sleep(std::time::Duration::from_secs(2));
+    let res: Result<(), Error> = async_delete_dir(NEW_TEST_DIR).await;
+    println!("delete_dir => {res:?}");
+    std::thread::sleep(std::time::Duration::from_secs(2));
+    let res: Result<(), Error> = async_delete_dir(NEW_FILE_DIR).await;
+    println!("delete_dir => {res:?}");
+    std::thread::sleep(std::time::Duration::from_secs(2));
+}

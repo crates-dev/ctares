@@ -1,0 +1,29 @@
+[package]
+name = "compare_version"
+version = "2.0.14"
+readme = "README.md"
+edition = "2024"
+authors = ["root@ltpp.vip"]
+license = "MIT"
+description = "A Rust library for comparing semantic versioning strings and checking version compatibility."
+keywords = ["version", "comparison", "semver", "rust"]
+repository = "https://github.com/crates-dev/compare-version"
+categories = ["algorithms", "development-tools", "rust-patterns"]
+
+[profile.dev]
+incremental = false
+opt-level = 3
+lto = true
+panic = "unwind"
+debug = false
+codegen-units = 1
+strip = "debuginfo"
+
+[profile.release]
+incremental = false
+opt-level = 3
+lto = true
+panic = "unwind"
+debug = false
+codegen-units = 1
+strip = "debuginfo"

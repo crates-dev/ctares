@@ -1,0 +1,33 @@
+[package]
+name = "std-macro-extensions"
+version = "1.0.14"
+readme = "README.md"
+edition = "2024"
+authors = ["root@ltpp.vip"]
+license = "MIT"
+description = """A collection of macro extensions for Rust's standard library data structures, simplifying the creation and manipulation of common collections such as HashMap, Vec, and more."""
+keywords = ["standard", "macro", "extensions", "structures", "simplifying"]
+repository = "https://github.com/crates-dev/std-macro-extensions"
+categories = ["data-structures", "development-tools"]
+exclude = ["target", "Cargo.lock", "sh", ".github"]
+
+[dev-dependencies]
+tokio = { version = "1.53.1", features = ["full"] }
+
+[profile.dev]
+incremental = false
+opt-level = 3
+lto = true
+panic = "unwind"
+debug = false
+codegen-units = 1
+strip = "debuginfo"
+
+[profile.release]
+incremental = false
+opt-level = 3
+lto = true
+panic = "unwind"
+debug = false
+codegen-units = 1
+strip = "debuginfo"

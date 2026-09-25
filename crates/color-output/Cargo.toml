@@ -1,0 +1,33 @@
+[package]
+name = "color-output"
+version = "10.0.10"
+readme = "README.md"
+edition = "2024"
+authors = ["root@ltpp.vip"]
+license = "MIT"
+description = """An atomic output library based on Rust that supports output functionalities through functions, builders, and other methods. It allows customization of text and background colors."""
+keywords = ["output", "console", "log", "print", "color"]
+repository = "https://github.com/crates-dev/color-output"
+categories = ["command-line-interface", "development-tools", "visualization"]
+exclude = ["target", "Cargo.lock", "sh", ".github"]
+
+[dependencies]
+hyperlane-time = "0.7.46"
+
+[profile.dev]
+incremental = false
+opt-level = 3
+lto = true
+panic = "unwind"
+debug = false
+codegen-units = 1
+strip = "debuginfo"
+
+[profile.release]
+incremental = false
+opt-level = 3
+lto = true
+panic = "unwind"
+debug = false
+codegen-units = 1
+strip = "debuginfo"
