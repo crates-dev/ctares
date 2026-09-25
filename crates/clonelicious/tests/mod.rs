@@ -1,0 +1,3 @@
+mod clone;
+
+use clonelicious::*;
