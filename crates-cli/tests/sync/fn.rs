@@ -251,13 +251,61 @@ async fn test_execute_sync_errors_on_missing_workspace_version() {
     let tmp_dir: PathBuf = PathBuf::from("./tmp/test_sync_no_version");
     create_dir_all(&tmp_dir).await.unwrap();
     let workspace_manifest: PathBuf = tmp_dir.join("Cargo.toml");
+    let member_dir: PathBuf = tmp_dir.join("inheritor");
+    create_dir_all(&member_dir).await.unwrap();
+    write(
+        &member_dir.join("Cargo.toml"),
+        r#"[package]
+name = "inheritor"
+version.workspace = true
+edition = "2024"
+"#,
+    )
+    .await
+    .unwrap();
     let workspace_content: &str = r#"[workspace]
-members = []
+members = ["inheritor"]
+
+[workspace.dependencies]
+inheritor = { path = "inheritor", version = "0.1.0" }
 "#;
     write(&workspace_manifest, workspace_content).await.unwrap();
     let result: Result<SyncReport, SyncError> =
         execute_sync(workspace_manifest.to_str().unwrap()).await;
     assert!(result.is_err());
+}
+
+#[tokio::test]
+async fn test_execute_sync_heterogeneous_workspace_uses_member_versions() {
+    let tmp_dir: PathBuf = PathBuf::from("./tmp/test_sync_heterogeneous");
+    create_dir_all(&tmp_dir).await.unwrap();
+    let workspace_manifest: PathBuf = tmp_dir.join("Cargo.toml");
+    for (name, version) in [("alpha", "1.2.1"), ("beta", "0.7.1")] {
+        let member_dir: PathBuf = tmp_dir.join(name);
+        create_dir_all(&member_dir).await.unwrap();
+        write(
+            &member_dir.join("Cargo.toml"),
+            format!("[package]\nname = \"{name}\"\nversion = \"{version}\"\nedition = \"2024\"\n"),
+        )
+        .await
+        .unwrap();
+    }
+    let workspace_content: &str = r#"[workspace]
+members = ["alpha", "beta"]
+
+[workspace.dependencies]
+alpha = { path = "alpha", version = "0.0.0" }
+beta = { path = "beta", version = "0.0.0" }
+"#;
+    write(&workspace_manifest, workspace_content).await.unwrap();
+    let report: SyncReport = execute_sync(workspace_manifest.to_str().unwrap())
+        .await
+        .unwrap();
+    assert!(report.file_changed);
+    assert_eq!(report.versioned_entries.len(), 2);
+    let synced: String = read_to_string(&workspace_manifest).await.unwrap();
+    assert!(synced.contains("alpha = { path = \"alpha\", version = \"1.2.1\" }"));
+    assert!(synced.contains("beta = { path = \"beta\", version = \"0.7.1\" }"));
 }
 
 #[tokio::test]
