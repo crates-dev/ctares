@@ -30,21 +30,3 @@ syn = { workspace = true, features = ["full"] }
 
 [dev-dependencies]
 tracing = { workspace = true }
-
-[profile.dev]
-incremental = false
-opt-level = 3
-lto = true
-panic = "unwind"
-debug = false
-codegen-units = 1
-strip = "debuginfo"
-
-[profile.release]
-incremental = false
-opt-level = 3
-lto = true
-panic = "unwind"
-debug = false
-codegen-units = 1
-strip = "debuginfo"
