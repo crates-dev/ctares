@@ -1,0 +1,33 @@
+[package]
+name = "future-fn"
+version = "0.3.26"
+readme = "README.md"
+edition = "2024"
+authors = ["root@ltpp.vip"]
+license = "MIT"
+description = """A Rust library providing macros to simplify the creation of asynchronous closures with external state captured by move. Useful for structuring asynchronous code with ease and clarity."""
+keywords = ["standard", "macro", "extensions", "structures", "simplifying"]
+repository = "https://github.com/crates-dev/future-fn"
+categories = ["data-structures", "development-tools"]
+exclude = ["target", "Cargo.lock", "sh", ".github"]
+
+[dev-dependencies]
+tokio = { version = "1.53.1", features = ["full"] }
+
+[profile.dev]
+incremental = false
+opt-level = 3
+lto = true
+panic = "unwind"
+debug = false
+codegen-units = 1
+strip = "debuginfo"
+
+[profile.release]
+incremental = false
+opt-level = 3
+lto = true
+panic = "unwind"
+debug = false
+codegen-units = 1
+strip = "debuginfo"
