@@ -1,0 +1,486 @@
+use lombok_macros::*;
+use std::{f64::consts::PI, fmt::Debug};
+
+#[derive(Clone, Data, Debug, DisplayDebugFormat)]
+struct LombokTest<'a, T: Clone + Debug> {
+    #[get(pub(crate))]
+    #[set(pub(crate))]
+    list: Vec<String>,
+    #[get(pub(crate))]
+    opt_value: Option<&'a T>,
+    #[get(pub(crate))]
+    result_value: Result<&'a T, &'static str>,
+    #[get_mut(pub(crate))]
+    #[set(private)]
+    name: String,
+    #[get_mut(pub(crate))]
+    #[set(private)]
+    user: User,
+}
+
+#[derive(Clone, CustomDebug, Getter, New, Setter)]
+struct User {
+    #[set(type(AsRef<str>))]
+    name: String,
+    #[debug(skip)]
+    _password: String,
+    #[new(skip)]
+    email: Option<String>,
+}
+
+#[derive(Clone, Data, Debug)]
+struct TupleStruct(
+    #[get(pub)] String,
+    #[set(pub)] i32,
+    #[get(pub)]
+    #[set(pub)]
+    bool,
+);
+
+#[derive(Clone, Data, Debug)]
+struct TraitTestStruct {
+    #[set(pub, type(AsRef<str>))]
+    name: String,
+    #[get(type(clone))]
+    #[set(pub, type(Into<i32>))]
+    value: i32,
+    #[set(pub, type(AsRef<[u8]>))]
+    data: Vec<u8>,
+    #[set(pub, type(Into<Vec<String>>))]
+    items: Vec<String>,
+}
+
+#[derive(Clone, Data, Debug)]
+struct TupleWithResult(
+    #[get(pub, type(clone))] String,
+    #[get(pub)] Result<i32, &'static str>,
+);
+
+#[derive(CustomDebug)]
+enum Response {
+    Success {
+        data: String,
+    },
+    Error {
+        message: String,
+        #[debug(skip)]
+        _internal_code: u32,
+    },
+}
+
+#[derive(New)]
+struct Person {
+    name: String,
+    _age: u32,
+}
+
+#[derive(New)]
+#[new(pub)]
+struct PublicPerson {
+    _name: String,
+    _age: u32,
+}
+
+#[derive(New)]
+#[new(pub(crate))]
+struct CratePerson {
+    _name: String,
+    _age: u32,
+}
+
+#[derive(New)]
+#[new(private)]
+struct PrivatePerson {
+    _name: String,
+    _age: u32,
+}
+
+#[derive(Data, New)]
+#[new(private)]
+struct Product {
+    id: u64,
+    name: String,
+    _price: f64,
+    #[new(skip)]
+    _description: String,
+}
+
+#[derive(New)]
+struct TuplePoint(f64, #[new(skip)] f64, f64);
+
+#[derive(Clone, Data, Debug)]
+struct NestedStruct {
+    #[get(pub)]
+    name: String,
+    #[set(pub)]
+    _value: i32,
+}
+
+#[derive(Clone, Data, Debug)]
+struct ComplexNestedStruct {
+    #[get(pub)]
+    nested: NestedStruct,
+    #[get(pub)]
+    nested_list: Vec<NestedStruct>,
+    #[set(pub)]
+    metadata: std::collections::HashMap<String, String>,
+}
+
+#[derive(CustomDebug)]
+enum ComplexEnum {
+    Simple,
+    Tuple(String, i32),
+    Struct {
+        field1: String,
+        #[debug(skip)]
+        _secret: String,
+        value: f64,
+    },
+}
+
+#[derive(New)]
+struct GenericStruct<T: Default + Clone> {
+    #[new(skip)]
+    data: T,
+    value: i32,
+}
+
+#[derive(Clone, Data, Debug)]
+struct LifetimesTest<'a, 'b> {
+    #[get(pub)]
+    name: &'a str,
+    #[get(pub)]
+    description: &'b str,
+}
+
+#[derive(Clone, Data, Debug)]
+struct EdgeCaseTest {
+    #[get(pub)]
+    empty_string: String,
+    #[get(pub, type(clone))]
+    empty_vec: Vec<i32>,
+    #[get(pub, type(clone))]
+    zero_value: i32,
+    #[get(pub, type(clone))]
+    bool_false: bool,
+    #[get(pub)]
+    option_none: Option<String>,
+}
+
+#[derive(Clone, Data, Debug)]
+struct CopyTest {
+    #[get(skip)]
+    _value: i32,
+    #[get(pub(crate), type(copy))]
+    flag: bool,
+    #[get(private, type(copy))]
+    count: u64,
+}
+
+#[derive(Data)]
+struct UnitGetSet {
+    #[get(pub)]
+    flag: bool,
+}
+
+#[derive(New)]
+struct AllSkipped {
+    #[new(skip)]
+    skipped1: String,
+    #[new(skip)]
+    skipped2: i32,
+}
+
+#[derive(Clone, Data, Debug)]
+struct MultiAttributes {
+    #[get(pub, type(clone))]
+    #[set(pub(crate), type(Into<Vec<String>>))]
+    complex_field: Vec<String>,
+}
+
+fn main() {
+    let mut data: LombokTest<usize> = LombokTest {
+        list: Vec::new(),
+        opt_value: None,
+        result_value: Err("error"),
+        name: "test".to_string(),
+        user: User {
+            name: "Alice".to_string(),
+            _password: "secret123".to_string(),
+            email: Some("alice@ltpp.vip".to_string()),
+        },
+    };
+    let user: &mut User = data.get_mut_user();
+    user.set_name("Bob");
+    assert_eq!(data.get_user().get_name(), "Bob");
+    let list: Vec<String> = vec!["hello".to_string(), "world".to_string()];
+    data.set_list(list.clone());
+    assert_eq!(*data.get_list(), list);
+    let opt_value: &Option<&usize> = data.try_get_opt_value();
+    assert_eq!(*opt_value, None);
+    data.set_opt_value(Some(&42));
+    let try_opt_value: &Option<&usize> = data.try_get_opt_value();
+    assert_eq!(try_opt_value, &Some(&42));
+    let unwrap_value: &usize = data.get_opt_value();
+    assert_eq!(unwrap_value, &42);
+    let result_value: &Result<&usize, &str> = data.try_get_result_value();
+    assert_eq!(*result_value, Err("error"));
+    data.set_result_value(Ok(&100));
+    let try_result_value: &Result<&usize, &str> = data.try_get_result_value();
+    assert_eq!(try_result_value, &Ok(&100));
+    let unwrap_result: &usize = data.get_result_value();
+    assert_eq!(unwrap_result, &100);
+    let name_mut: &mut String = data.get_mut_name();
+    *name_mut = "updated".to_string();
+    assert!(!data.to_string().is_empty());
+    let mut tuple_data: TupleStruct = TupleStruct("hello".to_string(), 42, true);
+    let field0: &String = tuple_data.get_0();
+    assert_eq!(field0, "hello");
+    tuple_data.set_1(100);
+    let field2: &bool = tuple_data.get_2();
+    assert!(*field2);
+    tuple_data.set_2(false);
+    let mut tuple_result: TupleWithResult = TupleWithResult("test".to_string(), Err("error"));
+    let try_result: String = tuple_result.get_0();
+    assert_eq!(try_result, String::from("test"));
+    let try_result: &Result<i32, &str> = tuple_result.try_get_1();
+    assert_eq!(*try_result, Err("error"));
+    tuple_result.1 = Ok(42);
+    let unwrap_result: i32 = tuple_result.get_1();
+    assert_eq!(unwrap_result, 42);
+    let user: User = User {
+        name: "Alice".to_string(),
+        _password: "secret123".to_string(),
+        email: Some("alice@ltpp.vip".to_string()),
+    };
+    assert_eq!(user.get_name(), "Alice");
+    assert_eq!(user.get_email(), "alice@ltpp.vip".to_string());
+    let user_debug: String = format!("{user:?}");
+    assert!(user_debug.contains("Alice"));
+    assert!(user_debug.contains("alice@ltpp.vip"));
+    assert!(!user_debug.contains("secret123"));
+    let success: Response = Response::Success {
+        data: "Operation completed".to_string(),
+    };
+    let success_debug: String = format!("{success:?}");
+    assert!(success_debug.contains("Operation completed"));
+    let error: Response = Response::Error {
+        message: "Something went wrong".to_string(),
+        _internal_code: 500,
+    };
+    let error_debug: String = format!("{error:?}");
+    assert!(error_debug.contains("Something went wrong"));
+    assert!(!error_debug.contains("500"));
+    let person: Person = Person::new("Alice".to_string(), 30);
+    assert_eq!(person.name, "Alice");
+    let user: User = User::new("alice".to_string(), "alice".to_string());
+    assert_eq!(user.email, None);
+    let product: Product = Product::new(1, "Laptop".to_string(), 999.99);
+    assert_eq!(*product.get_id(), 1);
+    assert_eq!(product.get_name(), "Laptop");
+    let tuple_point: TuplePoint = TuplePoint::new(10.5, 30.5);
+    assert_eq!(tuple_point.0, 10.5);
+    assert_eq!(tuple_point.1, 0.0);
+    assert_eq!(tuple_point.2, 30.5);
+    let public_person: PublicPerson = PublicPerson::new("Alice".to_string(), 25);
+    assert_eq!(public_person._name, "Alice");
+    assert_eq!(public_person._age, 25);
+    let crate_person: CratePerson = CratePerson::new("Bob".to_string(), 35);
+    assert_eq!(crate_person._name, "Bob");
+    assert_eq!(crate_person._age, 35);
+    let private_person: PrivatePerson = PrivatePerson::new("Charlie".to_string(), 45);
+    assert_eq!(private_person._name, "Charlie");
+    assert_eq!(private_person._age, 45);
+    let mut trait_test: TraitTestStruct = TraitTestStruct {
+        name: "test".to_string(),
+        value: 42,
+        data: vec![1, 2, 3],
+        items: vec!["item1".to_string(), "item2".to_string()],
+    };
+    trait_test.set_name("new name");
+    trait_test.set_value(100);
+    trait_test.set_data([4, 5, 6, 7]);
+    let new_items: Vec<String> = vec!["new1".to_string(), "new2".to_string()];
+    trait_test.set_items(new_items);
+    assert_eq!(*trait_test.get_name(), "new name");
+    assert_eq!(trait_test.get_value(), 100);
+    assert_eq!(*trait_test.get_data(), vec![4, 5, 6, 7]);
+    assert_eq!(
+        *trait_test.get_items(),
+        vec!["new1".to_string(), "new2".to_string()]
+    );
+    let nested: NestedStruct = NestedStruct {
+        name: "inner".to_string(),
+        _value: 42,
+    };
+    let mut complex: ComplexNestedStruct = ComplexNestedStruct {
+        nested: nested.clone(),
+        nested_list: vec![nested],
+        metadata: std::collections::HashMap::new(),
+    };
+    complex.set_metadata({
+        let mut map: std::collections::HashMap<String, String> = std::collections::HashMap::new();
+        map.insert("key".to_string(), "value".to_string());
+        map
+    });
+    assert_eq!(complex.get_nested().get_name(), "inner");
+    assert_eq!(complex.get_nested_list().len(), 1);
+    assert_eq!(complex.get_metadata().get("key").unwrap(), "value");
+    let simple: ComplexEnum = ComplexEnum::Simple;
+    let tuple: ComplexEnum = ComplexEnum::Tuple("test".to_string(), 123);
+    let struct_variant: ComplexEnum = ComplexEnum::Struct {
+        field1: "visible".to_string(),
+        _secret: "hidden".to_string(),
+        value: PI,
+    };
+    let simple_debug: String = format!("{simple:?}");
+    let tuple_debug: String = format!("{tuple:?}");
+    let struct_debug: String = format!("{struct_variant:?}");
+    assert!(simple_debug.contains("Simple"));
+    assert!(tuple_debug.contains("test"));
+    assert!(tuple_debug.contains("123"));
+    assert!(struct_debug.contains("visible"));
+    assert!(!struct_debug.contains("hidden"));
+    assert!(struct_debug.contains("3.14"));
+    let generic_i32: GenericStruct<i32> = GenericStruct::<i32> {
+        data: 0,
+        value: 100,
+    };
+    let generic_string: GenericStruct<String> = GenericStruct::<String>::new(200);
+    assert_eq!(generic_i32.value, 100);
+    assert_eq!(generic_i32.data, 0);
+    assert_eq!(generic_string.value, 200);
+    assert_eq!(generic_string.data, "");
+    let name: &str = "rust";
+    let description: &str = "language";
+    let lifetimes_test: LifetimesTest<'_, '_> = LifetimesTest { name, description };
+    assert_eq!(*lifetimes_test.get_name(), "rust");
+    assert_eq!(*lifetimes_test.get_description(), "language");
+    let edge_case: EdgeCaseTest = EdgeCaseTest {
+        empty_string: String::new(),
+        empty_vec: Vec::new(),
+        zero_value: 0,
+        bool_false: false,
+        option_none: None,
+    };
+    assert_eq!(edge_case.get_empty_string(), "");
+    assert!(edge_case.get_empty_vec().is_empty());
+    assert_eq!(edge_case.get_zero_value(), 0);
+    assert!(!edge_case.get_bool_false());
+    assert!(edge_case.try_get_option_none().is_none());
+    let unit_get: UnitGetSet = UnitGetSet { flag: true };
+    let flag_ref: &bool = unit_get.get_flag();
+    assert!(*flag_ref);
+    let constructed: AllSkipped = AllSkipped::new();
+    assert_eq!(constructed.skipped1, "");
+    assert_eq!(constructed.skipped2, 0);
+    let multi: MultiAttributes = MultiAttributes {
+        complex_field: vec!["test".to_string()],
+    };
+    let cloned_field: Vec<String> = multi.get_complex_field();
+    assert_eq!(cloned_field, vec!["test".to_string()]);
+    let mut mutated: MultiAttributes = multi;
+    let new_vec: Vec<String> = vec!["new".to_string(), "values".to_string()];
+    mutated.set_complex_field(new_vec.clone());
+    let updated: Vec<String> = mutated.get_complex_field();
+    assert_eq!(updated, new_vec);
+    let copy_test = CopyTest {
+        _value: 42,
+        flag: true,
+        count: 1000,
+    };
+    let copied_flag: bool = copy_test.get_flag();
+    let copied_count: u64 = copy_test.get_count();
+    assert!(copied_flag);
+    assert_eq!(copied_count, 1000);
+    let mut value: u8 = 7;
+    let mut generic_ptr: GenericPtr<u8> = GenericPtr {
+        ptr: &mut value as *mut u8,
+    };
+    assert_eq!(unsafe { **generic_ptr.get_ptr() }, 7);
+    generic_ptr.set_ptr(std::ptr::null_mut());
+    assert!(generic_ptr.get_ptr().is_null());
+    let mut callback: Box<dyn FnMut()> = Box::new(|| {});
+    let callback_ptr: *mut dyn FnMut() = &mut *callback;
+    let mut dst_ptr: DstPtr = DstPtr { ptr: callback_ptr };
+    assert!(!dst_ptr.get_ptr().is_null());
+    assert!(!dst_ptr.get_mut_ptr().is_null());
+    let mut callback_two: Box<dyn FnMut()> = Box::new(|| {});
+    dst_ptr.set_ptr(&mut *callback_two as *mut dyn FnMut());
+    assert!(!dst_ptr.get_ptr().is_null());
+    let mut const_callback: Box<dyn FnMut()> = Box::new(|| {});
+    let mut const_ptr: ConstPtr = ConstPtr {
+        cptr: &mut *const_callback as *mut dyn FnMut(),
+    };
+    assert!(!const_ptr.get_cptr().is_null());
+    let const_debug: String = format!("{const_ptr:?}");
+    assert!(const_debug.contains("cptr"));
+    const_ptr.set_cptr(&*callback as *const dyn FnMut());
+    assert!(!const_ptr.get_cptr().is_null());
+    let mut opt_ptr: OptPtr = OptPtr { opt: None };
+    assert!(opt_ptr.try_get_opt().is_none());
+    opt_ptr.set_opt(Some(&mut value as *mut u8));
+    assert_eq!(unsafe { *opt_ptr.get_opt() }, 7);
+    assert!(opt_ptr.try_get_opt().is_some());
+    let mut opt_dst_ptr: OptDstPtr = OptDstPtr { opt: None };
+    assert!(opt_dst_ptr.try_get_opt().is_none());
+    opt_dst_ptr.set_opt(Some(&mut *callback as *mut dyn FnMut()));
+    assert!(!opt_dst_ptr.get_opt().is_null());
+    let copy_ptr: CopyPtr = CopyPtr {
+        ptr: &mut value as *mut u8,
+    };
+    let copied_ptr: *mut u8 = copy_ptr.get_ptr();
+    assert_eq!(unsafe { *copied_ptr }, 7);
+    let mut tuple_ptr: TuplePtr = TuplePtr(&mut *callback_two as *mut dyn FnMut(), 3);
+    assert!(!tuple_ptr.get_0().is_null());
+    assert_eq!(*tuple_ptr.get_1(), 3);
+    let mut callback_three: Box<dyn FnMut()> = Box::new(|| {});
+    tuple_ptr.set_0(&mut *callback_three as *mut dyn FnMut());
+    assert!(!tuple_ptr.get_0().is_null());
+    let dst_debug: String = format!("{dst_ptr:?}");
+    assert!(dst_debug.contains("ptr"));
+}
+
+#[derive(Clone, Data, Debug)]
+struct GenericPtr<T> {
+    #[get(pub)]
+    #[set(pub)]
+    ptr: *mut T,
+}
+
+#[derive(Clone, Data, Debug)]
+struct DstPtr {
+    #[get(pub)]
+    #[get_mut(pub)]
+    #[set(pub)]
+    ptr: *mut dyn FnMut(),
+}
+
+#[derive(Clone, Data, Debug)]
+struct ConstPtr {
+    #[get(pub)]
+    #[set(pub)]
+    cptr: *const dyn FnMut(),
+}
+
+#[derive(Clone, Data, Debug)]
+struct OptPtr {
+    #[get(pub)]
+    opt: Option<*mut u8>,
+}
+
+#[derive(Clone, Data, Debug)]
+struct OptDstPtr {
+    #[get(pub)]
+    opt: Option<*mut dyn FnMut()>,
+}
+
+#[derive(Clone, Data, Debug)]
+struct CopyPtr {
+    #[get(pub, type(copy))]
+    #[set(pub)]
+    ptr: *mut u8,
+}
+
+#[derive(Clone, Data, Debug)]
+struct TuplePtr(#[get(pub)] #[set(pub)] *mut dyn FnMut(), #[get(pub)] i32);
