@@ -3,7 +3,9 @@ pub fn print_help() {
     log::info!("cc [COMMAND] [OPTIONS]");
     log::info!("");
     log::info!("Commands:");
-    log::info!("  bump      Bump version in Cargo.toml");
+    log::info!(
+        "  bump      Bump version (single crate, workspace root version, or all workspace members)"
+    );
     log::info!("  fmt       Format Rust code using cargo fmt");
     log::info!("  publish   Publish packages in [workspace.members] order");
     log::info!(
