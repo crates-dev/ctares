@@ -159,7 +159,13 @@ async fn read_package_manifest(
     })
 }
 
-/// Extract local workspace dependencies from manifest
+/// Extract local workspace dependencies that constrain publish order
+///
+/// `[dependencies]` and `[build-dependencies]` entries with `path` or
+/// `workspace = true` always constrain. `[dev-dependencies]` are stripped
+/// from the published manifest, so they constrain only when they carry a
+/// `version` field (cargo publish registry-checks versioned dev-deps);
+/// path-only dev-deps skip the registry and impose no order constraint.
 ///
 /// # Arguments
 ///
@@ -174,7 +180,7 @@ fn extract_local_dependencies(
     _manifest_path: &Path,
 ) -> Result<Vec<String>, PublishError> {
     let mut deps: Vec<String> = Vec::new();
-    let dep_sections: [&str; 3] = ["dependencies", "dev-dependencies", "build-dependencies"];
+    let dep_sections: [&str; 3] = ["dependencies", "build-dependencies", "dev-dependencies"];
     for section in &dep_sections {
         if let Some(table) = doc
             .get(section)
@@ -183,10 +189,12 @@ fn extract_local_dependencies(
             for (dep_name, dep_value) in table {
                 let is_local: bool = match dep_value {
                     Value::Table(t) => {
-                        t.get("path").is_some()
+                        let has_path_or_workspace: bool = t.get("path").is_some()
                             || t.get("workspace")
                                 .and_then(|workspace_value: &Value| workspace_value.as_bool())
-                                .unwrap_or(false)
+                                .unwrap_or(false);
+                        let versioned: bool = t.get("version").is_some();
+                        has_path_or_workspace && (*section != "dev-dependencies" || versioned)
                     }
                     _ => false,
                 };
