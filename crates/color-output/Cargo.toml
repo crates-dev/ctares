@@ -12,7 +12,7 @@ categories = ["command-line-interface", "development-tools", "visualization"]
 exclude = ["target", "Cargo.lock", "sh", ".github"]
 
 [dependencies]
-hyperlane-time = "0.7.46"
+hyperlane-time = { workspace = true }
 
 [profile.dev]
 incremental = false

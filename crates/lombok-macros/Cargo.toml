@@ -12,9 +12,9 @@ categories = ["development-tools"]
 exclude = ["target", "Cargo.lock", "sh", ".github", "debug"]
 
 [dependencies]
-syn = "2.0.119"
-quote = "1.0.47"
-proc-macro2 = "1.0.107"
+proc-macro2 = { workspace = true }
+quote = { workspace = true }
+syn = { workspace = true }
 
 [lib]
 proc-macro = true
