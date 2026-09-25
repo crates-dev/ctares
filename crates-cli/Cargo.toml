@@ -10,6 +10,9 @@ exclude.workspace = true
 description = """A command-line tool for managing Cargo package lifecycles: version bump, workspace dependency sync, members-ordered publish and code formatting."""
 keywords = ["cargo", "workspace", "publish", "semver", "cli"]
 categories = ["command-line-interface", "development-tools"]
+# crates.io normalizes `crates-cli` to `crates_cli`, which is taken by an
+# unrelated crate; this package can only ever be installed from git.
+publish = false
 
 [[bin]]
 name = "cc"
