@@ -1,6 +1,6 @@
 [package]
 name = "udp-request"
-version = "0.3.28"
+version = "0.4.0"
 readme = "README.md"
 edition = "2024"
 authors = ["root@ltpp.vip"]
