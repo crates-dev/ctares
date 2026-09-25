@@ -1,4 +1,4 @@
-# crates-monorepo
+# ctares
 
 A unified Cargo workspace that consolidates all 21 Rust crates from the
 [crates-dev](https://github.com/crates-dev) GitHub organization into a single
@@ -7,7 +7,7 @@ repository, preserving full commit history for each crate.
 ## Layout
 
 ```
-crates-monorepo/
+ctares/
 ├── Cargo.toml                 # workspace manifest
 ├── LICENSE                    # MIT
 ├── README.md                  # this file
