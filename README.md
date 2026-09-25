@@ -11,7 +11,7 @@ ctares/
 ├── Cargo.toml                 # workspace manifest
 ├── LICENSE                    # MIT
 ├── README.md                  # this file
-└── crates/
+├── <crate>/ ...
     ├── bin-encode-decode/         # ← git subtree from crates-dev/bin-encode-decode
     ├── china_identification_card/
     ├── chunkify/
@@ -35,7 +35,7 @@ ctares/
     └── udp-request/
 ```
 
-Each subdirectory under `crates/` is a self-contained crate with its own
+Each subdirectory in the repository root is a self-contained crate with its own
 `Cargo.toml`, `src/`, tests, and examples. They are stitched together into a
 single workspace via the root `Cargo.toml`.
 
@@ -85,14 +85,14 @@ cargo fmt --all
 
 ## Merge provenance
 
-Every import was added with `git subtree add --prefix=crates/<name>`. Each crate's
+Every import was added with `git subtree add --prefix=<name>`. Each crate's
 original history is intact and reachable; the merge commit at the top of each
 crate's tree has the message `merge: import <name> from crates-dev/<name>@master`.
 
 To pull new commits from upstream into a single crate:
 
 ```bash
-git subtree pull --prefix=crates/jwt-service \
+git subtree pull --prefix=jwt-service \
     https://github.com/crates-dev/jwt-service.git master \
     -m "merge: pull jwt-service from crates-dev"
 ```
