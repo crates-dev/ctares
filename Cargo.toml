@@ -7,6 +7,7 @@ members = [
     "crates/clonelicious",
     "crates/color-output",
     "crates/compare-version",
+    "crates/crates-cli",
     "crates/file-operation",
     "crates/future-fn",
     "crates/gtl",
@@ -25,6 +26,10 @@ members = [
 ]
 
 [workspace.package]
-edition = "2021"
+edition = "2024"
+rust-version = "1.85"
 license = "MIT"
-rust-version = "1.75"
+readme = "README.md"
+authors = ["root@ltpp.vip"]
+repository = "https://github.com/crates-dev/ctares"
+exclude = ["target", "Cargo.lock", "sh", ".github"]
