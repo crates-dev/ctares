@@ -1,0 +1,33 @@
+[package]
+name = "udp"
+version = "3.1.11"
+readme = "README.md"
+edition = "2024"
+authors = ["root@ltpp.vip"]
+license = "MIT"
+description = "A lightweight and efficient Rust library for building UDP servers with request-response handling."
+keywords = ["udp", "request", "response", "server", "network"]
+repository = "https://github.com/crates-dev/udp.git"
+categories = ["network-programming", "web-programming"]
+exclude = ["target", "Cargo.lock", "sh", ".github", "logs", "**/*.log"]
+
+[dependencies]
+tokio = { version = "1.53.1", features = ["full"] }
+
+[profile.dev]
+incremental = false
+opt-level = 3
+lto = true
+panic = "unwind"
+debug = false
+codegen-units = 1
+strip = "debuginfo"
+
+[profile.release]
+incremental = false
+opt-level = 3
+lto = true
+panic = "unwind"
+debug = false
+codegen-units = 1
+strip = "debuginfo"
