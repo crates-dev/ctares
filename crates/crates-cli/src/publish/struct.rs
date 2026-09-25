@@ -11,6 +11,8 @@ pub struct Package {
     pub path: PathBuf,
     /// Dependencies within the monorepo
     pub local_dependencies: Vec<String>,
+    /// Whether the package should be published (false skips publishing)
+    pub publish: bool,
 }
 
 /// Publish result for a single package

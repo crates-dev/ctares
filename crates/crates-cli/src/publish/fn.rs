@@ -10,10 +10,19 @@ use super::*;
 ///
 /// # Returns
 ///
-/// - `Result<Vec<Package>, PublishError>`: List of packages or error
-async fn discover_packages(workspace_manifest: &Path) -> Result<Vec<Package>, PublishError> {
+/// - `Result<(Vec<Package>, bool), PublishError>`: Packages and whether a
+///   root package was appended
+async fn discover_packages(
+    workspace_manifest: &Path,
+) -> Result<(Vec<Package>, bool), PublishError> {
     let content: String = read_to_string(workspace_manifest).await?;
     let doc: Value = toml::from_str(&content).map_err(|_| PublishError::ManifestParseError)?;
+    let workspace_version: Option<String> = doc
+        .get("workspace")
+        .and_then(|workspace: &Value| workspace.get("package"))
+        .and_then(|package: &Value| package.get("version"))
+        .and_then(|version: &Value| version.as_str())
+        .map(|version: &str| version.to_string());
     let mut packages: Vec<Package> = Vec::new();
     if let Some(workspace) = doc.get("workspace")
         && let Some(members) = workspace
@@ -23,15 +32,23 @@ async fn discover_packages(workspace_manifest: &Path) -> Result<Vec<Package>, Pu
         for member in members {
             if let Some(pattern) = member.as_str() {
                 let base_path: &Path = workspace_manifest.parent().unwrap_or(workspace_manifest);
-                expand_pattern(base_path, pattern, &mut packages).await?;
+                expand_pattern(
+                    base_path,
+                    pattern,
+                    &mut packages,
+                    workspace_version.as_deref(),
+                )
+                .await?;
             }
         }
     }
-    if doc.get("package").is_some() {
-        let root_package: Package = read_package_manifest(workspace_manifest).await?;
+    let has_root_package: bool = doc.get("package").is_some();
+    if has_root_package {
+        let root_package: Package =
+            read_package_manifest(workspace_manifest, workspace_version.as_deref()).await?;
         packages.push(root_package);
     }
-    Ok(packages)
+    Ok((packages, has_root_package))
 }
 
 /// Expand glob pattern to find package directories
@@ -41,6 +58,7 @@ async fn discover_packages(workspace_manifest: &Path) -> Result<Vec<Package>, Pu
 /// - `&Path`: Base path for expansion
 /// - `&str`: Glob pattern
 /// - `&mut Vec<Package>`: Output vector for found packages
+/// - `Option<&str>`: Workspace root version for `version.workspace = true`
 ///
 /// # Returns
 ///
@@ -49,6 +67,7 @@ async fn expand_pattern(
     base_path: &Path,
     pattern: &str,
     packages: &mut Vec<Package>,
+    workspace_version: Option<&str>,
 ) -> Result<(), PublishError> {
     if pattern.contains('*') {
         let parent: &Path = Path::new(pattern).parent().unwrap_or(Path::new("."));
@@ -60,7 +79,8 @@ async fn expand_pattern(
                 if path.is_dir() {
                     let cargo_toml: PathBuf = path.join("Cargo.toml");
                     if cargo_toml.exists() {
-                        let package: Package = read_package_manifest(&cargo_toml).await?;
+                        let package: Package =
+                            read_package_manifest(&cargo_toml, workspace_version).await?;
                         packages.push(package);
                     }
                 }
@@ -69,7 +89,7 @@ async fn expand_pattern(
     } else {
         let cargo_toml: PathBuf = base_path.join(pattern).join("Cargo.toml");
         if cargo_toml.exists() {
-            let package: Package = read_package_manifest(&cargo_toml).await?;
+            let package: Package = read_package_manifest(&cargo_toml, workspace_version).await?;
             packages.push(package);
         }
     }
@@ -78,14 +98,21 @@ async fn expand_pattern(
 
 /// Read package manifest and extract information
 ///
+/// `version.workspace = true` resolves to the workspace root version
+/// passed in `workspace_version`.
+///
 /// # Arguments
 ///
 /// - `&Path`: Path to package Cargo.toml
+/// - `Option<&str>`: Workspace root `[workspace.package].version`, if any
 ///
 /// # Returns
 ///
 /// - `Result<Package, PublishError>`: Package info or error
-async fn read_package_manifest(manifest_path: &Path) -> Result<Package, PublishError> {
+async fn read_package_manifest(
+    manifest_path: &Path,
+    workspace_version: Option<&str>,
+) -> Result<Package, PublishError> {
     let content: String = read_to_string(manifest_path).await?;
     let doc: Value = toml::from_str(&content).map_err(|_| PublishError::ManifestParseError)?;
     let package_table: &Value = doc.get("package").ok_or(PublishError::ManifestParseError)?;
@@ -94,11 +121,30 @@ async fn read_package_manifest(manifest_path: &Path) -> Result<Package, PublishE
         .and_then(|n: &Value| n.as_str())
         .ok_or(PublishError::ManifestParseError)?
         .to_string();
-    let version: String = package_table
-        .get("version")
-        .and_then(|v: &Value| v.as_str())
-        .ok_or(PublishError::ManifestParseError)?
-        .to_string();
+    let version: String = match package_table.get("version") {
+        Some(version_value) => {
+            if let Some(version_str) = version_value.as_str() {
+                version_str.to_string()
+            } else if version_value
+                .get("workspace")
+                .and_then(|workspace_value: &Value| workspace_value.as_bool())
+                .unwrap_or(false)
+            {
+                workspace_version
+                    .ok_or(PublishError::ManifestParseError)?
+                    .to_string()
+            } else {
+                return Err(PublishError::ManifestParseError);
+            }
+        }
+        None => workspace_version
+            .ok_or(PublishError::ManifestParseError)?
+            .to_string(),
+    };
+    let publish: bool = package_table
+        .get("publish")
+        .and_then(|publish_value: &Value| publish_value.as_bool())
+        .unwrap_or(true);
     let path: PathBuf = manifest_path
         .parent()
         .filter(|p: &&Path| !p.as_os_str().is_empty())
@@ -109,6 +155,7 @@ async fn read_package_manifest(manifest_path: &Path) -> Result<Package, PublishE
         version,
         path,
         local_dependencies,
+        publish,
     })
 }
 
@@ -188,9 +235,62 @@ fn validate_publish_order(packages: &[Package]) -> Result<(), PublishError> {
     Ok(())
 }
 
+/// Move the root package (appended last by `discover_packages`) to its
+/// topological position when workspace members depend on it
+///
+/// When no member depends on the root package the root stays last (the
+/// conventional facade-last layout). When members do depend on the root
+/// (e.g. `ui` / `engine` crates depending on a root facade crate), the
+/// root is inserted right before the earliest such member, provided all
+/// of the root's own local dependencies appear earlier in the members
+/// order; otherwise the members order cannot satisfy both constraints
+/// and `InvalidPublishOrder` is returned.
+///
+/// # Arguments
+///
+/// - `&mut Vec<Package>`: Packages with the root package as last element
+///
+/// # Returns
+///
+/// - `Result<(), PublishError>`: Success or `InvalidPublishOrder`
+fn position_root_package(packages: &mut Vec<Package>) -> Result<(), PublishError> {
+    let Some(root) = packages.pop() else {
+        return Ok(());
+    };
+    let earliest_dependent: Option<usize> = packages
+        .iter()
+        .enumerate()
+        .filter(|(_, package)| package.local_dependencies.contains(&root.name))
+        .map(|(index, _)| index)
+        .min();
+    let Some(earliest) = earliest_dependent else {
+        packages.push(root);
+        return Ok(());
+    };
+    let member_positions: HashMap<&str, usize> = packages
+        .iter()
+        .enumerate()
+        .map(|(index, package)| (package.name.as_str(), index))
+        .collect();
+    if let Some(max_dep) = root
+        .local_dependencies
+        .iter()
+        .filter_map(|dep| member_positions.get(dep.as_str()))
+        .max()
+        && max_dep >= &earliest
+    {
+        return Err(PublishError::InvalidPublishOrder(format!(
+            "{} must publish after its dependency at members position {} but before dependent at position {}; reorder [workspace.members]",
+            root.name, max_dep, earliest
+        )));
+    }
+    packages.insert(earliest, root);
+    Ok(())
+}
+
 /// Resolve the publish order for a workspace: `[workspace.members]`
-/// declaration order with the root package (if any) appended last,
-/// validated against local dependency constraints.
+/// declaration order, with the root package (if any) placed at its
+/// topological position, validated against local dependency constraints.
 ///
 /// # Arguments
 ///
@@ -202,7 +302,10 @@ fn validate_publish_order(packages: &[Package]) -> Result<(), PublishError> {
 ///   error when the members order violates a local dependency.
 pub async fn resolve_publish_order(manifest_path: &str) -> Result<Vec<Package>, PublishError> {
     let workspace_manifest: &Path = Path::new(manifest_path);
-    let packages: Vec<Package> = discover_packages(workspace_manifest).await?;
+    let (mut packages, has_root_package) = discover_packages(workspace_manifest).await?;
+    if has_root_package {
+        position_root_package(&mut packages)?;
+    }
     validate_publish_order(&packages)?;
     Ok(packages)
 }
@@ -336,6 +439,10 @@ pub async fn execute_publish(
     }
     let mut results: Vec<PublishResult> = Vec::new();
     for package in ordered_packages {
+        if !package.publish {
+            log::info!("Skipping {} (publish = false)", package.name);
+            continue;
+        }
         log::info!("Publishing {} v{}...", package.name, package.version);
         let result: PublishResult = publish_package_with_retry(&package, max_retries).await;
         if result.success {
