@@ -67,7 +67,7 @@ cargo fmt --all
 | `clonelicious` | [![crates.io](https://img.shields.io/crates/v/clonelicious.svg)](https://crates.io/crates/clonelicious) | [![docs.rs](https://docs.rs/clonelicious/badge.svg)](https://docs.rs/clonelicious) |
 | `color-output` | [![crates.io](https://img.shields.io/crates/v/color-output.svg)](https://crates.io/crates/color-output) | [![docs.rs](https://docs.rs/color-output/badge.svg)](https://docs.rs/color-output) |
 | `compare-version` | [![crates.io](https://img.shields.io/crates/v/compare-version.svg)](https://crates.io/crates/compare-version) | [![docs.rs](https://docs.rs/compare-version/badge.svg)](https://docs.rs/compare-version) |
-| `crates-cli` | [![git-only](https://img.shields.io/badge/crates.io-git--only-lightgrey)](https://github.com/crates-dev/ctares) | - |
+| `crate-cli` | [![crates.io](https://img.shields.io/crates/v/crate-cli.svg)](https://crates.io/crates/crate-cli) | [![docs.rs](https://docs.rs/crate-cli/badge.svg)](https://docs.rs/crate-cli) |
 | `file-operation` | [![crates.io](https://img.shields.io/crates/v/file-operation.svg)](https://crates.io/crates/file-operation) | [![docs.rs](https://docs.rs/file-operation/badge.svg)](https://docs.rs/file-operation) |
 | `future-fn` | [![crates.io](https://img.shields.io/crates/v/future-fn.svg)](https://crates.io/crates/future-fn) | [![docs.rs](https://docs.rs/future-fn/badge.svg)](https://docs.rs/future-fn) |
 | `gtl` | [![crates.io](https://img.shields.io/crates/v/gtl.svg)](https://crates.io/crates/gtl) | [![docs.rs](https://docs.rs/gtl/badge.svg)](https://docs.rs/gtl) |
@@ -94,7 +94,7 @@ cargo fmt --all
 | `clonelicious`                 | https://github.com/crates-dev/clonelicious            |
 | `color-output`                 | https://github.com/crates-dev/color-output            |
 | `compare-version`              | https://github.com/crates-dev/compare-version         |
-| `crates-cli`                   | native to this repository (not a subtree import)      |
+| `crate-cli`                   | native to this repository (not a subtree import)      |
 | `file-operation`               | https://github.com/crates-dev/file-operation          |
 | `future-fn`                    | https://github.com/crates-dev/future-fn               |
 | `gtl`                          | https://github.com/crates-dev/gtl                     |
