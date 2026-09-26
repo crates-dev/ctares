@@ -1,6 +1,6 @@
 [package]
 name = "crate-cli"
-version = "0.2.3"
+version = "0.2.4"
 readme.workspace = true
 edition.workspace = true
 authors.workspace = true

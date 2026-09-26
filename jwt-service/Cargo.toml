@@ -1,6 +1,6 @@
 [package]
 name = "jwt-service"
-version = "0.3.3"
+version = "0.3.4"
 readme = "README.md"
 edition = "2024"
 authors = ["root@ltpp.vip"]
