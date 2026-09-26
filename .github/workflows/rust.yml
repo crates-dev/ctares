@@ -158,10 +158,6 @@ jobs:
         if: steps.check_branch.outputs.skip == 'false'
         run: |
           set -e
-          # CI never bumps Cargo.toml versions: humans decide versions in
-          # PRs, and this step only realigns [workspace.dependencies]
-          # entries (and per-member sibling refs) so the workspace stays
-          # internally consistent. No `cc bump` runs here.
           ./target/release/crate sync
           if git diff --quiet Cargo.toml; then
             echo "sync_changed=false" >> $GITHUB_OUTPUT
@@ -170,25 +166,17 @@ jobs:
             echo "sync_changed=true" >> $GITHUB_OUTPUT
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            # heterogeneous workspaces rewrite entries in every sibling
-            # manifest that points at a path member; include everything.
             git add -A
             git commit -m "chore: sync workspace member dependency refs"
-            # master may have advanced since checkout (concurrent merges);
-            # merge it in so the push is accepted.
             git pull --no-rebase origin master
             git push origin HEAD:master
             echo "Committed and pushed Cargo.toml sync"
           fi
-          # `cc sync` does not change any `version =` line, so the version
-          # present here is whatever the human set in their PR. We expose
-          # it as `synced_version` so the publish/release jobs downstream
-          # still know which version to ship.
           SYNCED_VERSION="$(grep -E '^version[[:space:]]*=[[:space:]]*"' crate-cli/Cargo.toml | head -1 | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')"
           SYNCED_TAG="v${SYNCED_VERSION}"
           echo "synced_version=$SYNCED_VERSION" >> $GITHUB_OUTPUT
           echo "synced_tag=$SYNCED_TAG" >> $GITHUB_OUTPUT
-          echo "Workspace version (untouched by sync): $SYNCED_VERSION"
+          echo "Bumped version: $SYNCED_VERSION"
       - name: Publish to crates.io
         id: publish
         if: steps.check_branch.outputs.skip == 'false'
@@ -264,9 +252,6 @@ jobs:
           TAG="${{ needs.publish.outputs.synced_tag }}"
           ARCHIVE="${{ steps.build_archive.outputs.archive_path }}"
 
-          # ctares only publishes crate-cli — the workspace contains
-          # all sibling crates which live in their own repos (color-output,
-          # lombok-macros, file-operation, recoverable-spawn).
           PACKAGES=(
             "crate-cli"
           )
