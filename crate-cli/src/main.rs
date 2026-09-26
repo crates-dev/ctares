@@ -1,10 +1,10 @@
-//! crates-cli
+//! crate-cli
 //!
 //! A command-line tool for managing Cargo package lifecycles:
 //! version bump, workspace dependency sync, ordered publish and
 //! code formatting.
 
-use crates_cli::*;
+use crate_cli::*;
 
 use std::process::exit;
 

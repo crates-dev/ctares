@@ -1,8 +1,8 @@
-# crates-cli
+# crate-cli
 
 A command-line tool for managing Cargo package lifecycles in workspaces and monorepos.
 
-The package is named `crates-cli`; the installed command is `cc`.
+The package is named `crate-cli`; the installed command is `cc`.
 
 ## Features
 
@@ -14,7 +14,7 @@ The package is named `crates-cli`; the installed command is `cc`.
 ## Install
 
 ```sh
-cargo install crates-cli
+cargo install crate-cli
 ```
 
 ## Usage

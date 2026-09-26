@@ -250,7 +250,7 @@ fn test_is_already_published() {
 
 #[tokio::test]
 async fn test_resolve_publish_order_positions_root_before_dependents() {
-    let temp_dir: PathBuf = temp_dir().join("crates_cli_test_order_root_middle");
+    let temp_dir: PathBuf = temp_dir().join("crate_cli_test_order_root_middle");
     let _cleanup = fs::remove_dir_all(&temp_dir).await;
     fs::create_dir_all(&temp_dir).await.unwrap();
     fs::write(
@@ -274,7 +274,7 @@ async fn test_resolve_publish_order_positions_root_before_dependents() {
 
 #[tokio::test]
 async fn test_resolve_publish_order_root_position_conflict_errors() {
-    let temp_dir: PathBuf = temp_dir().join("crates_cli_test_order_root_conflict");
+    let temp_dir: PathBuf = temp_dir().join("crate_cli_test_order_root_conflict");
     let _cleanup = fs::remove_dir_all(&temp_dir).await;
     fs::create_dir_all(&temp_dir).await.unwrap();
     fs::write(
@@ -304,7 +304,7 @@ async fn test_resolve_publish_order_root_position_conflict_errors() {
 
 #[tokio::test]
 async fn test_resolve_publish_order_resolves_workspace_inherited_version() {
-    let temp_dir: PathBuf = temp_dir().join("crates_cli_test_order_inherited_version");
+    let temp_dir: PathBuf = temp_dir().join("crate_cli_test_order_inherited_version");
     let _cleanup = fs::remove_dir_all(&temp_dir).await;
     fs::create_dir_all(&temp_dir).await.unwrap();
     fs::write(
@@ -330,7 +330,7 @@ async fn test_resolve_publish_order_resolves_workspace_inherited_version() {
 
 #[tokio::test]
 async fn test_resolve_publish_order_reads_publish_flag() {
-    let temp_dir: PathBuf = temp_dir().join("crates_cli_test_order_publish_flag");
+    let temp_dir: PathBuf = temp_dir().join("crate_cli_test_order_publish_flag");
     let _cleanup = fs::remove_dir_all(&temp_dir).await;
     fs::create_dir_all(&temp_dir).await.unwrap();
     fs::write(
@@ -359,7 +359,7 @@ async fn test_resolve_publish_order_reads_publish_flag() {
 
 #[tokio::test]
 async fn test_resolve_publish_order_ignores_path_only_dev_dependencies() {
-    let temp_dir: PathBuf = temp_dir().join("crates_cli_test_order_dev_dep");
+    let temp_dir: PathBuf = temp_dir().join("crate_cli_test_order_dev_dep");
     let _cleanup = fs::remove_dir_all(&temp_dir).await;
     fs::create_dir_all(&temp_dir).await.unwrap();
     fs::write(

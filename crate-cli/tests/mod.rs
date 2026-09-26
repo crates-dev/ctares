@@ -5,7 +5,7 @@ mod publish;
 mod sync;
 mod version;
 
-use crates_cli::*;
+use crate_cli::*;
 
 use std::{
     env::temp_dir,

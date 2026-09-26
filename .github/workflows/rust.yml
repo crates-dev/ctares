@@ -37,16 +37,16 @@ jobs:
         id: read
         run: |
           # ctares is a monorepo workspace container whose sole publishable
-          # member is `crates-cli` (the `cc` tool). Read its version as the
+          # member is `crate-cli` (the `cc` tool). Read its version as the
           # workspace's canonical version. If we ever add a root
           # `[workspace.package].version`, switch this back to
           # `grep -E '^version = ' Cargo.toml | head -1`.
-          VERSION=$(grep -E '^version = ' crates-cli/Cargo.toml | head -1 | sed -E 's/^version = "([^"]+)".*/\1/')
+          VERSION=$(grep -E '^version = ' crate-cli/Cargo.toml | head -1 | sed -E 's/^version = "([^"]+)".*/\1/')
           BRANCH_NAME="${{ github.ref_name }}"
-          echo "Detected workspace version (from crates-cli): $VERSION"
+          echo "Detected workspace version (from crate-cli): $VERSION"
           echo "Branch: $BRANCH_NAME"
           if [ -z "$VERSION" ]; then
-            echo "Failed to read version from crates-cli/Cargo.toml"
+            echo "Failed to read version from crate-cli/Cargo.toml"
             exit 1
           fi
           if [ "$BRANCH_NAME" = "master" ]; then
@@ -150,9 +150,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
-      - name: Build cc (crates-cli)
+      - name: Build cc (crate-cli)
         if: steps.check_branch.outputs.skip == 'false'
-        run: cargo build --release -p crates-cli
+        run: cargo build --release -p crate-cli
       - name: Bump and sync workspace versions
         id: bump_sync
         if: steps.check_branch.outputs.skip == 'false'
@@ -169,7 +169,7 @@ jobs:
             git config user.email "github-actions[bot]@users.noreply.github.com"
             # heterogeneous workspaces bump every member manifest, not just root
             git add -A
-            BUMPED_VERSION="$(grep -E '^version[[:space:]]*=[[:space:]]*"' crates-cli/Cargo.toml | head -1 | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')"
+            BUMPED_VERSION="$(grep -E '^version[[:space:]]*=[[:space:]]*"' crate-cli/Cargo.toml | head -1 | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')"
             git commit -m "chore: bump version to v${BUMPED_VERSION} and sync workspace member deps"
             # master may have advanced since checkout (concurrent merges);
             # merge it in so the push is accepted.
@@ -177,7 +177,7 @@ jobs:
             git push origin HEAD:master
             echo "Committed and pushed Cargo.toml bump + sync"
           fi
-          BUMPED_VERSION="$(grep -E '^version[[:space:]]*=[[:space:]]*"' crates-cli/Cargo.toml | head -1 | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')"
+          BUMPED_VERSION="$(grep -E '^version[[:space:]]*=[[:space:]]*"' crate-cli/Cargo.toml | head -1 | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')"
           BUMPED_TAG="v${BUMPED_VERSION}"
           echo "bumped_version=$BUMPED_VERSION" >> $GITHUB_OUTPUT
           echo "bumped_tag=$BUMPED_TAG" >> $GITHUB_OUTPUT
@@ -257,11 +257,11 @@ jobs:
           TAG="${{ needs.publish.outputs.bumped_tag }}"
           ARCHIVE="${{ steps.build_archive.outputs.archive_path }}"
 
-          # ctares only publishes crates-cli — the workspace contains
+          # ctares only publishes crate-cli — the workspace contains
           # all sibling crates which live in their own repos (color-output,
           # lombok-macros, file-operation, recoverable-spawn).
           PACKAGES=(
-            "crates-cli"
+            "crate-cli"
           )
 
           NOTES_FILE="$(mktemp)"

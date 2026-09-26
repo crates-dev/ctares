@@ -21,7 +21,7 @@ members = [
     "udp",
     "udp-request",
     "chunkify",
-    "crates-cli",
+    "crate-cli",
     "recoverable-thread-pool",
 ]
 
