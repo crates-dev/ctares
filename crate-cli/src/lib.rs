@@ -1,3 +1,9 @@
+//! crate-cli
+//!
+//! A command-line tool for managing Cargo package lifecycles:
+//! version bump, workspace dependency sync,
+//! members-ordered publish and code formatting.
+
 mod bump;
 mod command;
 mod config;
@@ -17,11 +23,14 @@ pub(crate) use std::{
     env::args,
     io,
     path::{Path, PathBuf},
-    process::Stdio,
+    process::{Stdio, exit},
     sync::{Arc, LazyLock},
 };
 
 pub(crate) use {
+    color_output::*,
+    log::{self, SetLoggerError},
+    lombok_macros::*,
     regex::{Captures, Regex},
     std::ffi::OsStr,
     tokio::{

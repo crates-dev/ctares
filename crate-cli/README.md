@@ -1,15 +1,6 @@
 # crate-cli
 
-A command-line tool for managing Cargo package lifecycles in workspaces and monorepos.
-
-The package is named `crate-cli`; the installed command is `cc`.
-
-## Features
-
-- **bump**: Semantic version bump in `Cargo.toml` (patch / minor / major / alpha / beta / rc / release), preserving manifest formatting byte-for-byte outside the version literal.
-- **sync**: Align every local path entry under `[workspace.dependencies]` with the workspace root version, and the dep alias with each member crate's actual `[package].name`.
-- **publish**: Publish workspace packages to crates.io in `[workspace.members]` declaration order (root package last), validated against workspace-local dependencies, with per-package retries and idempotent handling of already-published versions.
-- **fmt**: Sort `#[derive(...)]` traits, run `cargo fmt` and `cargo clippy --fix` across the workspace.
+A command-line tool for managing Cargo package lifecycles: version bump, workspace dependency sync, members-ordered publish and code formatting.
 
 ## Install
 
@@ -20,9 +11,21 @@ cargo install crate-cli
 ## Usage
 
 ```sh
-cc bump --minor
-cc sync
-cc publish
-cc fmt
-cc --help
+crate bump --minor
+crate sync
+crate publish
+crate fmt
+crate --help
 ```
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+## Contact
+
+For any inquiries, please reach out to the author at [root@ltpp.vip](mailto:root@ltpp.vip).

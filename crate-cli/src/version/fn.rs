@@ -1,4 +1,4 @@
 /// Print version
 pub fn print_version() {
-    log::info!("cc {}", env!("CARGO_PKG_VERSION"));
+    log::info!("crate {}", env!("CARGO_PKG_VERSION"));
 }

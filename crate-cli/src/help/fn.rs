@@ -1,6 +1,6 @@
 /// Print help message
 pub fn print_help() {
-    log::info!("cc [COMMAND] [OPTIONS]");
+    log::info!("crate [COMMAND] [OPTIONS]");
     log::info!("");
     log::info!("Commands:");
     log::info!(

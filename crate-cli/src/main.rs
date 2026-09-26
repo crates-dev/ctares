@@ -1,12 +1,4 @@
-//! crate-cli
-//!
-//! A command-line tool for managing Cargo package lifecycles:
-//! version bump, workspace dependency sync, ordered publish and
-//! code formatting.
-
-use crate_cli::*;
-
-use std::process::exit;
+use crate::*;
 
 #[tokio::main]
 async fn main() {
