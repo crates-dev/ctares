@@ -3,11 +3,9 @@ resolver = "2"
 members = [
     "bin-encode-decode",
     "china_identification_card",
-    "chunkify",
     "clonelicious",
     "color-output",
     "compare-version",
-    "crates-cli",
     "file-operation",
     "future-fn",
     "gtl",
@@ -16,13 +14,15 @@ members = [
     "jwt-service",
     "lombok-macros",
     "recoverable-spawn",
-    "recoverable-thread-pool",
     "server-manager",
     "std-macro-extensions",
     "tcp-request",
     "tcplane",
     "udp",
     "udp-request",
+    "chunkify",
+    "crates-cli",
+    "recoverable-thread-pool",
 ]
 
 [workspace.package]
