@@ -1,4 +1,4 @@
-use crate::*;
+use crate_cli::*;
 
 #[tokio::main]
 async fn main() {
