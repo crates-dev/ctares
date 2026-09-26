@@ -28,7 +28,6 @@ members = [
     "compare-version",
     "file-operation",
     "future-fn",
-    "gtl",
     "hot-restart",
     "instrument-level",
     "jwt-service",

@@ -20,7 +20,6 @@ ctares/
     ├── compare-version/
     ├── file-operation/
     ├── future-fn/
-    ├── gtl/
     ├── hot-restart/
     ├── instrument-level/
     ├── jwt-service/
@@ -50,7 +49,6 @@ cargo test --workspace
 
 # Build / test one crate
 cargo build -p jwt-service
-cargo test -p gtl
 
 # Lint / format all
 cargo clippy --workspace --all-targets
@@ -70,7 +68,6 @@ cargo fmt --all
 | `crate-cli` | [![crates.io](https://img.shields.io/crates/v/crate-cli.svg)](https://crates.io/crates/crate-cli) | [![docs.rs](https://docs.rs/crate-cli/badge.svg)](https://docs.rs/crate-cli) |
 | `file-operation` | [![crates.io](https://img.shields.io/crates/v/file-operation.svg)](https://crates.io/crates/file-operation) | [![docs.rs](https://docs.rs/file-operation/badge.svg)](https://docs.rs/file-operation) |
 | `future-fn` | [![crates.io](https://img.shields.io/crates/v/future-fn.svg)](https://crates.io/crates/future-fn) | [![docs.rs](https://docs.rs/future-fn/badge.svg)](https://docs.rs/future-fn) |
-| `gtl` | [![crates.io](https://img.shields.io/crates/v/gtl.svg)](https://crates.io/crates/gtl) | [![docs.rs](https://docs.rs/gtl/badge.svg)](https://docs.rs/gtl) |
 | `hot-restart` | [![crates.io](https://img.shields.io/crates/v/hot-restart.svg)](https://crates.io/crates/hot-restart) | [![docs.rs](https://docs.rs/hot-restart/badge.svg)](https://docs.rs/hot-restart) |
 | `instrument-level` | [![crates.io](https://img.shields.io/crates/v/instrument-level.svg)](https://crates.io/crates/instrument-level) | [![docs.rs](https://docs.rs/instrument-level/badge.svg)](https://docs.rs/instrument-level) |
 | `jwt-service` | [![crates.io](https://img.shields.io/crates/v/jwt-service.svg)](https://crates.io/crates/jwt-service) | [![docs.rs](https://docs.rs/jwt-service/badge.svg)](https://docs.rs/jwt-service) |
@@ -97,7 +94,6 @@ cargo fmt --all
 | `crate-cli`                   | native to this repository (not a subtree import)      |
 | `file-operation`               | https://github.com/crates-dev/file-operation          |
 | `future-fn`                    | https://github.com/crates-dev/future-fn               |
-| `gtl`                          | https://github.com/crates-dev/gtl                     |
 | `hot-restart`                  | https://github.com/crates-dev/hot-restart             |
 | `instrument-level`             | https://github.com/crates-dev/instrument-level        |
 | `jwt-service`                  | https://github.com/crates-dev/jwt-service             |
