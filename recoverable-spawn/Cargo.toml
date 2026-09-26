@@ -12,5 +12,5 @@ categories = ["network-programming", "web-programming"]
 exclude = ["target", "Cargo.lock", "sh", ".github"]
 
 [dependencies]
-once_cell = { workspace = true }
 tokio = { workspace = true }
+once_cell = { workspace = true }
