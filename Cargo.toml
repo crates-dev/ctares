@@ -48,12 +48,12 @@ members = [
 ]
 
 [workspace.dependencies]
-color-output = { path = "color-output", version = "10.1.7" }
-lombok-macros = { path = "lombok-macros", version = "10.1.7" }
-file-operation = { path = "file-operation", version = "10.1.7" }
-recoverable-spawn = { path = "recoverable-spawn", version = "10.1.7" }
-system-time = { path = "system-time", version = "10.1.7" }
-tokio-broadcast = { path = "tokio-broadcast", version = "10.1.7" }
+color-output = { path = "color-output", version = "10.1.8" }
+lombok-macros = { path = "lombok-macros", version = "10.1.8" }
+file-operation = { path = "file-operation", version = "10.1.8" }
+recoverable-spawn = { path = "recoverable-spawn", version = "10.1.8" }
+system-time = { path = "system-time", version = "10.1.8" }
+tokio-broadcast = { path = "tokio-broadcast", version = "10.1.8" }
 
 log = "0.4.34"
 toml = "0.9.8"
