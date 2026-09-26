@@ -1,5 +1,7 @@
 use crate_cli::*;
 
+use std::process::exit;
+
 #[tokio::main]
 async fn main() {
     Logger::init(log::LevelFilter::Info);

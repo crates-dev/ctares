@@ -23,7 +23,7 @@ pub(crate) use std::{
     env::args,
     io,
     path::{Path, PathBuf},
-    process::{Stdio, exit},
+    process::Stdio,
     sync::{Arc, LazyLock},
 };
 
