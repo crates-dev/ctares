@@ -242,6 +242,9 @@ fn test_is_already_published() {
     assert!(is_already_published(
         "error: the remote server responded with an error (status 403 Forbidden): this crate version has already been uploaded"
     ));
+    assert!(is_already_published(
+        "error: crate euv-core@0.26.3 already exists on crates.io index"
+    ));
     assert!(!is_already_published(
         "error: failed to verify project tarball"
     ));
