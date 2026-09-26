@@ -12,4 +12,4 @@ categories = ["command-line-interface", "development-tools", "visualization"]
 exclude.workspace = true
 
 [dependencies]
-hyperlane-time = { workspace = true }
+system-time = { workspace = true }

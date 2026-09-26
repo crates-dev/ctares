@@ -1,0 +1,12 @@
+[package]
+name = "system-time"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = """A library for fetching the current time based on the system's locale settings."""
+keywords = ["time", "hyperlane", "day", "format", "lang"]
+repository.workspace = true
+categories = ["network-programming", "web-programming"]
+exclude.workspace = true

@@ -11,7 +11,7 @@ mod utils;
 
 pub use {color::*, task::*, text::*, utils::*};
 
-pub use hyperlane_time::*;
+pub use system_time::*;
 
 use std::{
     borrow::Cow,

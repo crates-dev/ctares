@@ -42,6 +42,9 @@ members = [
     "chunkify",
     "crate-cli",
     "recoverable-thread-pool",
+    "color-log",
+    "system-time",
+    "tokio-broadcast",
 ]
 
 [workspace.dependencies]
@@ -49,6 +52,8 @@ color-output = { path = "color-output", version = "10.1.7" }
 lombok-macros = { path = "lombok-macros", version = "10.1.7" }
 file-operation = { path = "file-operation", version = "10.1.7" }
 recoverable-spawn = { path = "recoverable-spawn", version = "10.1.7" }
+system-time = { path = "system-time", version = "10.1.7" }
+tokio-broadcast = { path = "tokio-broadcast", version = "10.1.7" }
 
 log = "0.4.34"
 toml = "0.9.8"
@@ -65,7 +70,6 @@ thiserror = "2.0.21"
 toml_edit = "0.25.15"
 serde_json = "1.0.151"
 proc-macro2 = "1.0.107"
-hyperlane-time = "0.7.46"
 tokio = { version = "1.53.1", features = ["full"] }
 serde = { version = "1.0.229", features = ["derive"] }
 jsonwebtoken = { version = "10.4.0", features = ["rust_crypto"] }

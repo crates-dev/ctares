@@ -1,0 +1,19 @@
+[package]
+name = "color-log"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = """A Rust logging library that supports both asynchronous and synchronous logging. It provides multiple log levels, such as error, info, and debug. Users can define custom log handling methods and configure log file paths. The library supports log rotation, automatically creating a new log file when the current file reaches the specified size limit. It allows flexible logging configurations, making it suitable for both high-performance asynchronous applications and traditional synchronous logging scenarios. The asynchronous mode utilizes Tokio's async channels for efficient log buffering, while the synchronous mode writes logs directly to the file system."""
+keywords = ["http", "request", "response", "tcp", "redirect"]
+repository.workspace = true
+categories = ["network-programming", "web-programming", "development-tools"]
+exclude.workspace = true
+
+[dependencies]
+file-operation = { workspace = true }
+system-time = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }
