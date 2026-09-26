@@ -330,7 +330,9 @@ pub async fn resolve_publish_order(manifest_path: &str) -> Result<Vec<Package>, 
 ///
 /// - `bool`: True when the output means "already published"
 pub fn is_already_published(stderr: &str) -> bool {
-    stderr.contains("already been uploaded") || stderr.contains("is already published")
+    stderr.contains("already been uploaded")
+        || stderr.contains("is already published")
+        || stderr.contains("already exists on crates.io index")
 }
 
 /// Publish a single package with retry logic
