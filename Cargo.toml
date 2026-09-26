@@ -35,10 +35,10 @@ repository = "https://github.com/crates-dev/ctares"
 exclude = ["target", "Cargo.lock", "sh", ".github"]
 
 [workspace.dependencies]
-color-output = { path = "color-output", version = "10.1.4" }
-file-operation = { path = "file-operation", version = "0.9.4" }
-lombok-macros = { path = "lombok-macros", version = "2.2.4" }
-recoverable-spawn = { path = "recoverable-spawn", version = "3.10.4" }
+color-output = { path = "color-output", version = "10.1.5" }
+file-operation = { path = "file-operation", version = "0.9.5" }
+lombok-macros = { path = "lombok-macros", version = "2.2.5" }
+recoverable-spawn = { path = "recoverable-spawn", version = "3.10.5" }
 
 chrono = "0.4.44"
 dashmap = "6.2.1"
