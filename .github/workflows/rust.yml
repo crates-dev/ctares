@@ -36,12 +36,12 @@ jobs:
       - name: Read workspace metadata
         id: read
         run: |
-          VERSION=$(grep -E '^version = ' crate-cli/Cargo.toml | head -1 | sed -E 's/^version = "([^"]+)".*/\1/')
+          VERSION=$(grep -E '^version = ' Cargo.toml | head -1 | sed -E 's/^version = "([^"]+)".*/\1/')
           BRANCH_NAME="${{ github.ref_name }}"
-          echo "Detected workspace version (from crate-cli): $VERSION"
+          echo "Detected workspace version (from root [workspace.package]): $VERSION"
           echo "Branch: $BRANCH_NAME"
           if [ -z "$VERSION" ]; then
-            echo "Failed to read version from crate-cli/Cargo.toml"
+            echo "Failed to read version from Cargo.toml [workspace.package]"
             exit 1
           fi
           if [ "$BRANCH_NAME" = "master" ]; then
@@ -168,7 +168,7 @@ jobs:
             git push origin HEAD:master
             echo "Committed and pushed sync + fmt"
           fi
-          SYNCED_VERSION="$(grep -E '^version[[:space:]]*=[[:space:]]*"' crate-cli/Cargo.toml | head -1 | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')"
+          SYNCED_VERSION="$(grep -E '^version[[:space:]]*=[[:space:]]*"' Cargo.toml | head -1 | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')"
           SYNCED_TAG="v${SYNCED_VERSION}"
           echo "synced_version=$SYNCED_VERSION" >> $GITHUB_OUTPUT
           echo "synced_tag=$SYNCED_TAG" >> $GITHUB_OUTPUT
