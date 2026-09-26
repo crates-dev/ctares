@@ -12,6 +12,6 @@ categories = ["network-programming", "web-programming"]
 exclude.workspace = true
 
 [dependencies]
+tokio = { workspace = true }
 dashmap = { workspace = true }
 twox-hash = { workspace = true }
-tokio = { workspace = true }

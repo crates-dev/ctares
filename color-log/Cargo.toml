@@ -12,8 +12,8 @@ categories = ["network-programming", "web-programming", "development-tools"]
 exclude.workspace = true
 
 [dependencies]
-file-operation = { workspace = true }
 system-time = { workspace = true }
+file-operation = { workspace = true }
 
 [dev-dependencies]
 tokio = { workspace = true }
