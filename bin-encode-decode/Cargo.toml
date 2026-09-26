@@ -1,10 +1,10 @@
 [package]
 name = "bin-encode-decode"
-version = "1.2.6"
-readme = "README.md"
-edition = "2024"
-authors = ["root@ltpp.vip"]
-license = "MIT"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
 description = "A high-performance binary encode and decode library that supports customizable character sets beyond Base64."
 keywords = [
     "binaryencode",
@@ -13,5 +13,5 @@ keywords = [
     "highperformance",
     "base64alternative",
 ]
-repository = "https://github.com/crates-dev/bin-encode-decode"
+repository.workspace = true
 categories = ["encoding"]

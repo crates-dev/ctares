@@ -1,15 +1,15 @@
 [package]
 name = "future-fn"
-version = "0.4.6"
-readme = "README.md"
-edition = "2024"
-authors = ["root@ltpp.vip"]
-license = "MIT"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
 description = """A Rust library providing macros to simplify the creation of asynchronous closures with external state captured by move. Useful for structuring asynchronous code with ease and clarity."""
 keywords = ["standard", "macro", "extensions", "structures", "simplifying"]
-repository = "https://github.com/crates-dev/future-fn"
+repository.workspace = true
 categories = ["data-structures", "development-tools"]
-exclude = ["target", "Cargo.lock", "sh", ".github"]
+exclude.workspace = true
 
 [dev-dependencies]
 tokio = { workspace = true }

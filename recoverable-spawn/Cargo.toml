@@ -1,15 +1,15 @@
 [package]
 name = "recoverable-spawn"
-version = "3.10.6"
-readme = "README.md"
-edition = "2024"
-authors = ["root@ltpp.vip"]
-license = "MIT"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
 description = """A thread that supports automatic recovery from panics, allowing threads to restart after a panic. Useful for resilient and fault-tolerant concurrency in network and web programming."""
 keywords = ["time", "hyperlane", "day", "format", "lang"]
-repository = "https://github.com/crates-dev/recoverable-spawn.git"
+repository.workspace = true
 categories = ["network-programming", "web-programming"]
-exclude = ["target", "Cargo.lock", "sh", ".github"]
+exclude.workspace = true
 
 [dependencies]
 tokio = { workspace = true }

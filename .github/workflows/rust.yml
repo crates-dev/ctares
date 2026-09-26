@@ -36,11 +36,6 @@ jobs:
       - name: Read workspace metadata
         id: read
         run: |
-          # ctares is a monorepo workspace container whose sole publishable
-          # member is `crate-cli` (the `cc` tool). Read its version as the
-          # workspace's canonical version. If we ever add a root
-          # `[workspace.package].version`, switch this back to
-          # `grep -E '^version = ' Cargo.toml | head -1`.
           VERSION=$(grep -E '^version = ' crate-cli/Cargo.toml | head -1 | sed -E 's/^version = "([^"]+)".*/\1/')
           BRANCH_NAME="${{ github.ref_name }}"
           echo "Detected workspace version (from crate-cli): $VERSION"

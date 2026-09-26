@@ -1,24 +1,15 @@
 [package]
 name = "instrument-level"
-version = "1.1.6"
-readme = "README.md"
-edition = "2024"
-authors = ["root@ltpp.vip"]
-license = "MIT"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
 description = "A Rust procedural macro collection providing convenient tracing instrumentation macros for different log levels (trace, debug, info, warn, error). This crate simplifies the process of adding tracing spans to functions with pre-configured log levels."
 keywords = ["http", "request", "response", "tcp", "cross-platform"]
-repository = "https://github.com/crates-dev/instrument-level.git"
+repository.workspace = true
 categories = ["network-programming", "web-programming"]
-exclude = [
-    "target",
-    "Cargo.lock",
-    "sh",
-    ".github",
-    "logs",
-    "img",
-    "**/*.log",
-    "debug",
-]
+exclude.workspace = true
 
 [lib]
 proc-macro = true

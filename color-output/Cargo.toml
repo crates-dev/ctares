@@ -1,15 +1,15 @@
 [package]
 name = "color-output"
-version = "10.1.6"
-readme = "README.md"
-edition = "2024"
-authors = ["root@ltpp.vip"]
-license = "MIT"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
 description = """An atomic output library based on Rust that supports output functionalities through functions, builders, and other methods. It allows customization of text and background colors."""
 keywords = ["output", "console", "log", "print", "color"]
-repository = "https://github.com/crates-dev/color-output"
+repository.workspace = true
 categories = ["command-line-interface", "development-tools", "visualization"]
-exclude = ["target", "Cargo.lock", "sh", ".github"]
+exclude.workspace = true
 
 [dependencies]
 hyperlane-time = { workspace = true }

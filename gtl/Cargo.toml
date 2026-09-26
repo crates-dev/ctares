@@ -1,15 +1,15 @@
 [package]
 name = "gtl"
-version = "0.6.6"
-readme = "README.md"
-edition = "2024"
-authors = ["root@ltpp.vip"]
-license = "MIT"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
 description = """gtl is a Git-based tool designed to simplify the management of multiple remote repositories. It extends Git's functionality by providing one-click initialization and pushing to multiple remote repositories, making it especially useful for developers who need to maintain multiple remote repositories simultaneously."""
 keywords = ["git", "helper", "remote", "tool", "repositories"]
-repository = "https://github.com/crates-dev/gtl.git"
+repository.workspace = true
 categories = ["data-structures", "development-tools"]
-exclude = ["target", "Cargo.lock", "sh", ".github"]
+exclude.workspace = true
 
 [dependencies]
 toml = { workspace = true }

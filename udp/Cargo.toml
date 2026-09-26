@@ -1,15 +1,15 @@
 [package]
 name = "udp"
-version = "3.2.6"
-readme = "README.md"
-edition = "2024"
-authors = ["root@ltpp.vip"]
-license = "MIT"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
 description = "A lightweight and efficient Rust library for building UDP servers with request-response handling."
 keywords = ["udp", "request", "response", "server", "network"]
-repository = "https://github.com/crates-dev/udp.git"
+repository.workspace = true
 categories = ["network-programming", "web-programming"]
-exclude = ["target", "Cargo.lock", "sh", ".github", "logs", "**/*.log"]
+exclude.workspace = true
 
 [dependencies]
 tokio = { workspace = true }

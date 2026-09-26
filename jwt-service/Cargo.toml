@@ -1,15 +1,15 @@
 [package]
 name = "jwt-service"
-version = "0.3.6"
-readme = "README.md"
-edition = "2024"
-authors = ["root@ltpp.vip"]
-license = "MIT"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
 description = """A high-performance async library for JWT (JSON Web Token) authentication and authorization. Supports token generation, validation, and custom claims with optimized memory usage, ideal for HTTP clients/servers and web applications."""
 keywords = ["jwt", "authentication", "token", "authorization", "json-web-token"]
-repository = "https://github.com/crates-dev/jwt-service.git"
+repository.workspace = true
 categories = ["network-programming", "web-programming"]
-exclude = ["target", "Cargo.lock", "sh", ".github"]
+exclude.workspace = true
 
 [dependencies]
 serde = { workspace = true }

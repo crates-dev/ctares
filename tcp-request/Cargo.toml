@@ -1,12 +1,12 @@
 [package]
 name = "tcp-request"
-version = "2.4.6"
-readme = "README.md"
-edition = "2024"
-authors = ["root@ltpp.vip"]
-license = "MIT"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
 description = """A Rust library for sending raw TCP requests, with features for handling responses, managing redirects, and working with compressed data over TCP connections."""
 keywords = ["http", "request", "response", "tcp", "redirect"]
-repository = "https://github.com/crates-dev/tcp-request.git"
+repository.workspace = true
 categories = ["network-programming", "web-programming"]
-exclude = ["target", "Cargo.lock", "sh", ".github"]
+exclude.workspace = true

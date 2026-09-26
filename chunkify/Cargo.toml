@@ -1,23 +1,15 @@
 [package]
 name = "chunkify"
-version = "0.7.6"
-readme = "README.md"
-edition = "2024"
-authors = ["root@ltpp.vip"]
-license = "MIT"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
 description = """A simple and efficient chunking library for Rust."""
 keywords = ["http", "file", "chunk", "upload", "web"]
-repository = "https://github.com/crates-dev/chunkify.git"
+repository.workspace = true
 categories = ["network-programming", "web-programming"]
-exclude = [
-    "target",
-    "Cargo.lock",
-    "sh",
-    ".github",
-    "logs",
-    "uploads",
-    "**/*.log",
-]
+exclude.workspace = true
 
 [dependencies]
 file-operation = { workspace = true }

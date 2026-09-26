@@ -1,10 +1,10 @@
 [package]
 name = "crate-cli"
-version = "0.2.8"
+version.workspace = true
 readme.workspace = true
 edition.workspace = true
 authors.workspace = true
-license = "MIT"
+license.workspace = true
 repository.workspace = true
 exclude.workspace = true
 description = """A command-line tool for managing Cargo package lifecycles: version bump, workspace dependency sync, members-ordered publish and code formatting."""

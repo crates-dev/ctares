@@ -1,11 +1,11 @@
 [package]
 name = "china_identification_card"
-version = "1.2.6"
-readme = "README.md"
-edition = "2024"
-authors = ["root@ltpp.vip"]
-license = "MIT"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
 description = "A Rust library for validating Chinese identification card numbers based on official rules and checksums."
 keywords = ["china", "id", "identification", "card", "validation"]
-repository = "https://github.com/crates-dev/china_identification_card"
+repository.workspace = true
 categories = ["authentication", "data-structures", "development-tools"]

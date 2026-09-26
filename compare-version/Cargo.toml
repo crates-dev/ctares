@@ -1,11 +1,11 @@
 [package]
 name = "compare_version"
-version = "2.1.6"
-readme = "README.md"
-edition = "2024"
-authors = ["root@ltpp.vip"]
-license = "MIT"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
 description = "A Rust library for comparing semantic versioning strings and checking version compatibility."
 keywords = ["version", "comparison", "semver", "rust"]
-repository = "https://github.com/crates-dev/compare-version"
+repository.workspace = true
 categories = ["algorithms", "development-tools", "rust-patterns"]

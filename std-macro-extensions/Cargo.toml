@@ -1,15 +1,15 @@
 [package]
 name = "std-macro-extensions"
-version = "1.1.6"
-readme = "README.md"
-edition = "2024"
-authors = ["root@ltpp.vip"]
-license = "MIT"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
 description = """A collection of macro extensions for Rust's standard library data structures, simplifying the creation and manipulation of common collections such as HashMap, Vec, and more."""
 keywords = ["standard", "macro", "extensions", "structures", "simplifying"]
-repository = "https://github.com/crates-dev/std-macro-extensions"
+repository.workspace = true
 categories = ["data-structures", "development-tools"]
-exclude = ["target", "Cargo.lock", "sh", ".github"]
+exclude.workspace = true
 
 [dev-dependencies]
 tokio = { workspace = true }

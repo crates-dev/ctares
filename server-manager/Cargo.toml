@@ -1,15 +1,15 @@
 [package]
 name = "server-manager"
-version = "5.1.6"
-readme = "README.md"
-edition = "2024"
-authors = ["root@ltpp.vip"]
-license = "MIT"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
 description = """server-manager is a rust library for managing server processes. It encapsulates service startup, shutdown, and background daemon mode. Users can specify the PID file, log file paths, and other configurations through custom settings, while also passing in their own asynchronous server function for execution. The library supports both synchronous and asynchronous operations. On Unix and Windows platforms, it enables background daemon processes."""
 keywords = ["manager", "processes", "libc", "linux", "unix"]
-repository = "https://github.com/crates-dev/server-manager.git"
+repository.workspace = true
 categories = ["development-tools"]
-exclude = ["target", "Cargo.lock", "sh", ".github", "**/*.pid", "**/*.log"]
+exclude.workspace = true
 
 [dependencies]
 tokio = { workspace = true }
