@@ -172,8 +172,8 @@ jobs:
             BUMPED_VERSION="$(grep -E '^version[[:space:]]*=[[:space:]]*"' crates-cli/Cargo.toml | head -1 | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')"
             git commit -m "chore: bump version to v${BUMPED_VERSION} and sync workspace member deps"
             # master may have advanced since checkout (concurrent merges);
-            # rebase onto it so the push is accepted.
-            git pull --rebase origin master
+            # merge it in so the push is accepted.
+            git pull --no-rebase origin master
             git push origin HEAD:master
             echo "Committed and pushed Cargo.toml bump + sync"
           fi
