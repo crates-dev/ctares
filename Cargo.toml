@@ -1,5 +1,5 @@
 [workspace.package]
-version = "10.1.9"
+version = "10.1.10"
 edition = "2024"
 license = "MIT"
 readme = "README.md"
@@ -55,9 +55,9 @@ file-operation = { path = "file-operation", version = "10.1.9" }
 tokio-broadcast = { path = "tokio-broadcast", version = "10.1.9" }
 recoverable-spawn = { path = "recoverable-spawn", version = "10.1.9" }
 
+syn = "3.0.6"
 log = "0.4.34"
 toml = "0.9.8"
-syn = "2.0.119"
 which = "8.0.6"
 quote = "1.0.47"
 regex = "1.13.1"
@@ -72,7 +72,7 @@ serde_json = "1.0.151"
 proc-macro2 = "1.0.107"
 tokio = { version = "1.53.1", features = ["full"] }
 serde = { version = "1.0.229", features = ["derive"] }
-jsonwebtoken = { version = "10.4.0", features = ["rust_crypto"] }
+jsonwebtoken = { version = "11.1.0", features = ["rust_crypto"] }
 
 [profile.dev]
 incremental = false

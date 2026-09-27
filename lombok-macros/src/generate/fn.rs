@@ -381,6 +381,7 @@ fn normalize_type_inner(ty: &Type, behind_reference: bool) -> Type {
                 // positions, so the normalized form is parenthesized —
                 // always legal and semantics-preserving.
                 Type::Paren(TypeParen {
+                    attrs: Vec::new(),
                     paren_token: Default::default(),
                     elem: Box::new(Type::TraitObject(trait_object)),
                 })
