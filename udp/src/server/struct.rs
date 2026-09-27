@@ -13,16 +13,28 @@ use super::*;
 pub(crate) struct ServerData {
     /// Stores the server's configuration settings, such as address, port, and buffer size.
     #[set(skip)]
+    #[get(pub(crate))]
+    #[get_mut(pub(crate))]
+    #[set(pub(crate))]
     pub(super) server_config: ServerConfigData,
     /// A collection of request hooks that are invoked for each incoming request.
     #[set(skip)]
+    #[get(pub(crate))]
+    #[get_mut(pub(crate))]
+    #[set(pub(crate))]
     pub(super) hook: ServerHookList,
     /// A collection of task panic hooks that are invoked when a panic occurs during request processing.
     #[set(skip)]
+    #[get(pub(crate))]
+    #[get_mut(pub(crate))]
+    #[set(pub(crate))]
     pub(super) task_panic: ServerHookList,
     /// The read error hooks for server operations.
     #[get_mut(skip)]
     #[set(skip)]
+    #[get(pub(crate))]
+    #[get_mut(pub(crate))]
+    #[set(pub(crate))]
     pub(super) read_error: ServerHookList,
 }
 

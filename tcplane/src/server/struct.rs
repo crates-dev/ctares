@@ -11,12 +11,20 @@ use super::*;
 #[derive(Clone, Data)]
 pub struct ServerData {
     /// Stores the server's configuration settings, such as address, port, and buffer size.
+    #[get_mut(pub(crate))]
+    #[set(pub(crate))]
     pub(crate) server_config: ServerConfigData,
     /// A collection of request hooks that are invoked for each incoming connection.
+    #[get_mut(pub(crate))]
+    #[set(pub(crate))]
     pub(crate) hook: ServerHookList,
     /// A collection of task panic handlers that are invoked when a panic occurs during connection processing.
+    #[get_mut(pub(crate))]
+    #[set(pub(crate))]
     pub(crate) task_panic: ServerHookList,
     /// The error handlers for server operations.
+    #[get_mut(pub(crate))]
+    #[set(pub(crate))]
     pub(crate) read_error: ServerHookList,
 }
 
@@ -36,10 +44,16 @@ pub struct Server(pub(super) ArcRwLock<ServerData>);
 pub struct ServerControlHook {
     /// A hook that returns a future, which completes when the server's main task finishes.
     #[get(pub, type(clone))]
+    #[get(pub(crate))]
+    #[get_mut(pub(crate))]
+    #[set(pub(crate))]
     pub(crate) wait_hook:
         Arc<dyn Fn() -> Pin<Box<dyn Future<Output = ()> + Send + 'static>> + Send + Sync>,
     /// A hook that, when called, initiates a graceful shutdown of the server.
     #[get(pub, type(clone))]
+    #[get(pub(crate))]
+    #[get_mut(pub(crate))]
+    #[set(pub(crate))]
     pub(crate) shutdown_hook:
         Arc<dyn Fn() -> Pin<Box<dyn Future<Output = ()> + Send + 'static>> + Send + Sync>,
 }

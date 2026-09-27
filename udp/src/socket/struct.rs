@@ -6,5 +6,8 @@ use super::*;
 #[derive(Clone, Data, Debug)]
 pub struct ArcRwLockUdpSocket {
     /// Underlying UDP socket with read-write lock.
+    #[get(pub(crate))]
+    #[get_mut(pub(crate))]
+    #[set(pub(crate))]
     pub(super) socket: ArcRwLock<UdpSocket>,
 }

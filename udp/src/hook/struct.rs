@@ -14,11 +14,15 @@ pub struct ServerControlHook {
     /// This is typically used to wait for the server to stop accepting connections before
     /// the application exits.
     #[get(pub, type(clone))]
+    #[get_mut(pub(crate))]
+    #[set(pub(crate))]
     pub(crate) wait_hook: Arc<dyn Fn() -> SendableAsyncTask<()> + Send + Sync>,
     /// A hook that, when called, initiates a graceful shutdown of the server.
     /// This will stop the server from accepting new connections and allow existing ones
     /// to complete.
     #[get(pub, type(clone))]
+    #[get_mut(pub(crate))]
+    #[set(pub(crate))]
     pub(crate) shutdown_hook: Arc<dyn Fn() -> SendableAsyncTask<()> + Send + Sync>,
 }
 

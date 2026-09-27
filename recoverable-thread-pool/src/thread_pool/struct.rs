@@ -21,5 +21,8 @@ pub struct ThreadPool {
     /// # Returns
     ///
     /// - `Sender<ThreadPoolJob>` - The sender channel for submitting jobs to workers.
+    #[get(pub(crate))]
+    #[get_mut(pub(crate))]
+    #[set(pub(crate))]
     pub(crate) sender: Sender<ThreadPoolJob>,
 }
