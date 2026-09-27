@@ -45,10 +45,10 @@ impl PartialEq for ServerData {
     ///
     /// - `bool` - `true` if the instances are equal, `false` otherwise.
     fn eq(&self, other: &Self) -> bool {
-        self.server_config == other.server_config
-            && self.hook.len() == other.hook.len()
-            && self.task_panic.len() == other.task_panic.len()
-            && self.read_error.len() == other.read_error.len()
+        self.get_server_config() == other.get_server_config()
+            && self.get_hook().len() == other.get_hook().len()
+            && self.get_task_panic().len() == other.get_task_panic().len()
+            && self.get_read_error().len() == other.get_read_error().len()
     }
 }
 
@@ -95,6 +95,15 @@ impl ServerData {
         &mut self.hook
     }
 
+    /// Gets the task panic hook list.
+    ///
+    /// # Returns
+    ///
+    /// - `&ServerHookList` - Reference to the task panic hook list.
+    pub(crate) fn get_task_panic(&self) -> &ServerHookList {
+        &self.task_panic
+    }
+
     /// Gets a mutable reference to the task panic list.
     ///
     /// # Returns
@@ -102,6 +111,15 @@ impl ServerData {
     /// - `&mut ServerHookList` - Mutable reference to the task panic list.
     pub(crate) fn get_mut_task_panic(&mut self) -> &mut ServerHookList {
         &mut self.task_panic
+    }
+
+    /// Gets the read error hook list.
+    ///
+    /// # Returns
+    ///
+    /// - `&ServerHookList` - Reference to the read error hook list.
+    pub(crate) fn get_read_error(&self) -> &ServerHookList {
+        &self.read_error
     }
 }
 

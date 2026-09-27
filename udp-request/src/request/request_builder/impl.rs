@@ -18,6 +18,52 @@ impl Default for RequestBuilder {
 
 /// Implementation of `RequestBuilder`.
 impl RequestBuilder {
+    /// Gets a reference to the `UdpRequest` being configured.
+    ///
+    /// # Returns
+    ///
+    /// - `&UdpRequest` - Reference to the `UdpRequest`.
+    pub(crate) fn get_udp_request(&self) -> &UdpRequest {
+        &self.udp_request
+    }
+
+    /// Gets a reference to the built `UdpRequest`.
+    ///
+    /// # Returns
+    ///
+    /// - `&UdpRequest` - Reference to the built `UdpRequest`.
+    pub(crate) fn get_builder(&self) -> &UdpRequest {
+        &self.builder
+    }
+
+    /// Sets the `UdpRequest` being configured.
+    ///
+    /// # Arguments
+    ///
+    /// - `UdpRequest` - The `UdpRequest` to configure.
+    ///
+    /// # Returns
+    ///
+    /// - `&mut Self` - Mutable reference to self for method chaining.
+    pub(crate) fn set_udp_request(&mut self, udp_request: UdpRequest) -> &mut Self {
+        self.udp_request = udp_request;
+        self
+    }
+
+    /// Sets the built `UdpRequest`.
+    ///
+    /// # Arguments
+    ///
+    /// - `UdpRequest` - The built `UdpRequest`.
+    ///
+    /// # Returns
+    ///
+    /// - `&mut Self` - Mutable reference to self for method chaining.
+    pub(crate) fn set_builder(&mut self, builder: UdpRequest) -> &mut Self {
+        self.builder = builder;
+        self
+    }
+
     /// Creates a new `RequestBuilder`.
     ///
     /// # Returns
@@ -42,7 +88,7 @@ impl RequestBuilder {
         T: Into<String>,
     {
         let _: Result<(), PoisonError<RwLockWriteGuard<'_, Config>>> =
-            self.udp_request.config.write().map(|mut data| {
+            self.get_udp_request().get_config().write().map(|mut data| {
                 data.host = host.into();
             });
         self
@@ -59,7 +105,7 @@ impl RequestBuilder {
     /// - `&mut Self` - A mutable reference to the `RequestBuilder` for method chaining.
     pub fn port(&mut self, port: usize) -> &mut Self {
         let _: Result<(), PoisonError<RwLockWriteGuard<'_, Config>>> =
-            self.udp_request.config.write().map(|mut data| {
+            self.get_udp_request().get_config().write().map(|mut data| {
                 data.port = port;
             });
         self
@@ -76,7 +122,7 @@ impl RequestBuilder {
     /// - `&mut Self` - A mutable reference to the `RequestBuilder` for method chaining.
     pub fn buffer(&mut self, buffer_size: usize) -> &mut Self {
         let _: Result<(), PoisonError<RwLockWriteGuard<'_, Config>>> =
-            self.udp_request.config.write().map(|mut data| {
+            self.get_udp_request().get_config().write().map(|mut data| {
                 data.buffer_size = buffer_size;
             });
         self
@@ -93,7 +139,7 @@ impl RequestBuilder {
     /// - `&mut Self` - A mutable reference to the `RequestBuilder` for method chaining.
     pub fn timeout(&mut self, timeout: u64) -> &mut Self {
         let _: Result<(), PoisonError<RwLockWriteGuard<'_, Config>>> =
-            self.udp_request.config.write().map(|mut data| {
+            self.get_udp_request().get_config().write().map(|mut data| {
                 data.timeout = timeout;
             });
         self
@@ -105,8 +151,9 @@ impl RequestBuilder {
     ///
     /// - `BoxRequestTrait` - A boxed `RequestTrait` object that can be used to send the request.
     pub fn build(&mut self) -> BoxRequestTrait {
-        self.builder = self.udp_request.clone();
-        self.udp_request = UdpRequest::default();
-        Box::new(self.builder.clone())
+        let udp_request: UdpRequest = self.get_udp_request().clone();
+        self.set_builder(udp_request);
+        self.set_udp_request(UdpRequest::default());
+        Box::new(self.get_builder().clone())
     }
 }

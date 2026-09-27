@@ -93,7 +93,7 @@ fn read_workspace_members(doc: &DocumentMut) -> Result<Vec<String>, SyncError> {
         .and_then(|members_item: &Item| members_item.as_array())
         .ok_or_else(|| SyncError::WorkspaceMembersMissing("Cargo.toml".to_string()))?
         .iter()
-        .filter_map(|member: &TomlEditValue| member.as_str().map(|s: &str| s.to_string()))
+        .filter_map(|member: &toml_edit::Value| member.as_str().map(|s: &str| s.to_string()))
         .collect();
     Ok(members)
 }

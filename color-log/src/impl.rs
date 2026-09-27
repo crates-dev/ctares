@@ -237,7 +237,7 @@ impl FileLogger {
     /// - `bool` - True if logging is enabled.
     #[inline(always)]
     pub fn is_enable(&self) -> bool {
-        self.limit_file_size != DISABLE_LOG_FILE_SIZE
+        *self.get_limit_file_size() != DISABLE_LOG_FILE_SIZE
     }
 
     /// Checks if logging is disabled.
@@ -270,7 +270,7 @@ impl FileLogger {
             return self;
         }
         let out: String = func(data);
-        let path: String = get_log_path(dir, &self.path, &self.limit_file_size);
+        let path: String = get_log_path(dir, self.get_path(), self.get_limit_file_size());
         let _: Result<(), Error> = append_to_file(&path, out.as_bytes());
         self
     }
@@ -295,7 +295,7 @@ impl FileLogger {
             return self;
         }
         let out: String = func(data);
-        let path: String = get_log_path(dir, &self.path, &self.limit_file_size);
+        let path: String = get_log_path(dir, self.get_path(), self.get_limit_file_size());
         let _: Result<(), Error> = async_append_to_file(&path, out.as_bytes()).await;
         self
     }
@@ -315,7 +315,7 @@ impl FileLogger {
         T: AsRef<str>,
         L: FileLoggerFuncTrait<T>,
     {
-        self.write_sync(data, func, &self.trace_dir)
+        self.write_sync(data, func, self.get_trace_dir())
     }
 
     /// Logs trace message asynchronously.
@@ -333,7 +333,7 @@ impl FileLogger {
         T: AsRef<str>,
         L: FileLoggerFuncTrait<T>,
     {
-        self.write_async(data, func, &self.trace_dir).await
+        self.write_async(data, func, self.get_trace_dir()).await
     }
 
     /// Logs debug message synchronously.
@@ -351,7 +351,7 @@ impl FileLogger {
         T: AsRef<str>,
         L: FileLoggerFuncTrait<T>,
     {
-        self.write_sync(data, func, &self.debug_dir)
+        self.write_sync(data, func, self.get_debug_dir())
     }
 
     /// Logs debug message asynchronously.
@@ -369,7 +369,7 @@ impl FileLogger {
         T: AsRef<str>,
         L: FileLoggerFuncTrait<T>,
     {
-        self.write_async(data, func, &self.debug_dir).await
+        self.write_async(data, func, self.get_debug_dir()).await
     }
 
     /// Logs info message synchronously.
@@ -387,7 +387,7 @@ impl FileLogger {
         T: AsRef<str>,
         L: FileLoggerFuncTrait<T>,
     {
-        self.write_sync(data, func, &self.info_dir)
+        self.write_sync(data, func, self.get_info_dir())
     }
 
     /// Logs info message asynchronously.
@@ -405,7 +405,7 @@ impl FileLogger {
         T: AsRef<str>,
         L: FileLoggerFuncTrait<T>,
     {
-        self.write_async(data, func, &self.info_dir).await
+        self.write_async(data, func, self.get_info_dir()).await
     }
 
     /// Logs warn message synchronously.
@@ -423,7 +423,7 @@ impl FileLogger {
         T: AsRef<str>,
         L: FileLoggerFuncTrait<T>,
     {
-        self.write_sync(data, func, &self.warn_dir)
+        self.write_sync(data, func, self.get_warn_dir())
     }
 
     /// Logs warn message asynchronously.
@@ -441,7 +441,7 @@ impl FileLogger {
         T: AsRef<str>,
         L: FileLoggerFuncTrait<T>,
     {
-        self.write_async(data, func, &self.warn_dir).await
+        self.write_async(data, func, self.get_warn_dir()).await
     }
 
     /// Logs error message synchronously.
@@ -459,7 +459,7 @@ impl FileLogger {
         T: AsRef<str>,
         L: FileLoggerFuncTrait<T>,
     {
-        self.write_sync(data, func, &self.error_dir)
+        self.write_sync(data, func, self.get_error_dir())
     }
 
     /// Logs error message asynchronously.
@@ -477,6 +477,6 @@ impl FileLogger {
         T: AsRef<str>,
         L: FileLoggerFuncTrait<T>,
     {
-        self.write_async(data, func, &self.error_dir).await
+        self.write_async(data, func, self.get_error_dir()).await
     }
 }

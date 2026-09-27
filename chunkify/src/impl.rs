@@ -51,6 +51,51 @@ impl<'a, F> ChunkNaming<'a> for F where F: Fn(&'a str, usize) -> String + Send +
 
 /// Implementation of chunk strategy methods.
 impl<'a> ChunkStrategy<'a> {
+    /// Gets the starting chunk index.
+    ///
+    /// # Returns
+    ///
+    /// - `usize` - The starting chunk index (0-based).
+    pub(crate) fn get_start_chunk_index(&self) -> usize {
+        self.start_chunk_index
+    }
+
+    /// Gets the upload directory path.
+    ///
+    /// # Returns
+    ///
+    /// - `&'a str` - The upload directory path.
+    pub(crate) fn get_upload_dir(&self) -> &'a str {
+        self.upload_dir
+    }
+
+    /// Gets the unique file identifier.
+    ///
+    /// # Returns
+    ///
+    /// - `&'a str` - The unique file identifier.
+    pub(crate) fn get_file_id(&self) -> &'a str {
+        self.file_id
+    }
+
+    /// Gets the original file name.
+    ///
+    /// # Returns
+    ///
+    /// - `&'a str` - The original file name.
+    pub(crate) fn get_file_name(&self) -> &'a str {
+        self.file_name
+    }
+
+    /// Gets the total number of chunks.
+    ///
+    /// # Returns
+    ///
+    /// - `usize` - The total number of chunks.
+    pub(crate) fn get_total_chunks(&self) -> usize {
+        self.total_chunks
+    }
+
     /// Creates a new chunk strategy instance.
     ///
     /// # Arguments
@@ -119,7 +164,7 @@ impl<'a> ChunkStrategy<'a> {
     /// - `String` - Absolute path to chunk file
     #[inline(always)]
     fn get_chunk_path(&self, file_id: &'a str, chunk_index: usize) -> String {
-        Path::new(&self.upload_dir)
+        Path::new(self.get_upload_dir())
             .join(self.get_chunk_json_path(file_id, chunk_index))
             .to_string_lossy()
             .into_owned()
@@ -160,23 +205,23 @@ impl<'a> HandleStrategy<'a> for ChunkStrategy<'a> {
     ///
     /// - `ChunkStrategyResult` - Result of save operation.
     async fn save_chunk(&self, chunk_data: &'a [u8], chunk_index: usize) -> ChunkStrategyResult {
-        if !Path::new(&self.upload_dir).exists() {
-            fs::create_dir_all(self.upload_dir)
+        if !Path::new(self.get_upload_dir()).exists() {
+            fs::create_dir_all(self.get_upload_dir())
                 .map_err(|error: Error| ChunkStrategyError::CreateDirectory(error.to_string()))?;
         }
-        let chunk_path: String = self.get_chunk_path(self.file_id, chunk_index);
+        let chunk_path: String = self.get_chunk_path(self.get_file_id(), chunk_index);
         self.save_chunk(&chunk_path, chunk_data).await?;
         let chunks_status: RefMut<'_, String, RwLock<Vec<bool>>> = UPLOADING_FILES
-            .entry(self.file_id.to_owned())
-            .or_insert_with(|| RwLock::new(vec![false; self.total_chunks]));
+            .entry(self.get_file_id().to_owned())
+            .or_insert_with(|| RwLock::new(vec![false; self.get_total_chunks()]));
         let mut chunks_status: RwLockWriteGuard<'_, Vec<bool>> = chunks_status.write().await;
-        if chunks_status.len() != self.total_chunks {
-            *chunks_status = vec![false; self.total_chunks];
+        if chunks_status.len() != self.get_total_chunks() {
+            *chunks_status = vec![false; self.get_total_chunks()];
         }
         if chunk_index >= chunks_status.len() {
             return Err(ChunkStrategyError::IndexOutOfBounds(
                 chunk_index,
-                self.total_chunks,
+                self.get_total_chunks(),
             ));
         }
         chunks_status[chunk_index] = true;
@@ -190,8 +235,8 @@ impl<'a> HandleStrategy<'a> for ChunkStrategy<'a> {
     /// - `ChunkStrategyResult` - Result of merge operation.
     async fn merge_chunks(&self) -> ChunkStrategyResult {
         let chunks_status: RefMut<'_, String, RwLock<Vec<bool>>> = UPLOADING_FILES
-            .entry(self.file_id.to_owned())
-            .or_insert_with(|| RwLock::new(vec![false; self.total_chunks]));
+            .entry(self.get_file_id().to_owned())
+            .or_insert_with(|| RwLock::new(vec![false; self.get_total_chunks()]));
         let mut chunks_status: RwLockWriteGuard<'_, Vec<bool>> = chunks_status.write().await;
         let all_chunks_uploaded: bool = chunks_status.iter().all(|&status| status);
         if !all_chunks_uploaded {
@@ -199,8 +244,8 @@ impl<'a> HandleStrategy<'a> for ChunkStrategy<'a> {
         }
         chunks_status.clear();
         drop(chunks_status);
-        let final_path: String = Path::new(&self.upload_dir)
-            .join(self.file_name)
+        let final_path: String = Path::new(self.get_upload_dir())
+            .join(self.get_file_name())
             .to_string_lossy()
             .into_owned();
         let output_file: File = OpenOptions::new()
@@ -210,8 +255,8 @@ impl<'a> HandleStrategy<'a> for ChunkStrategy<'a> {
             .open(&final_path)
             .map_err(|error: Error| ChunkStrategyError::CreateOutputFile(error.to_string()))?;
         let mut writer: BufWriter<File> = BufWriter::new(output_file);
-        for i in self.start_chunk_index..self.total_chunks {
-            let chunk_path: String = self.get_chunk_path(self.file_id, i);
+        for i in self.get_start_chunk_index()..self.get_total_chunks() {
+            let chunk_path: String = self.get_chunk_path(self.get_file_id(), i);
             let chunk_data: Vec<u8> = async_read_from_file(&chunk_path).await.map_err(
                 |error: Box<dyn std::error::Error>| {
                     ChunkStrategyError::ReadChunk(format!(

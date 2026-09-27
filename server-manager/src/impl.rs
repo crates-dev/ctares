@@ -111,12 +111,12 @@ impl ServerManager {
     ///
     /// Writes the current process ID to the PID file and executes the server function.
     pub async fn start(&self) {
-        (self.start_hook)().await;
+        (self.get_start_hook())().await;
         if let Err(e) = self.write_pid_file() {
             eprintln!("Failed to write pid file: {e}");
             return;
         }
-        (self.server_hook)().await;
+        (self.get_server_hook())().await;
     }
 
     /// Stops the running server process.
@@ -127,7 +127,7 @@ impl ServerManager {
     ///
     /// - `ServerManagerResult` - Operation result.
     pub async fn stop(&self) -> ServerManagerResult {
-        (self.stop_hook)().await;
+        (self.get_stop_hook())().await;
         let pid: i32 = self.read_pid_file()?;
         self.kill_process(pid)
     }
@@ -135,12 +135,12 @@ impl ServerManager {
     /// Starts the server in daemon (background) mode on Unix platforms.
     #[cfg(not(windows))]
     pub async fn start_daemon(&self) -> ServerManagerResult {
-        (self.start_hook)().await;
+        (self.get_start_hook())().await;
         if std::env::var(RUNNING_AS_DAEMON).is_ok() {
             self.write_pid_file()?;
             let rt: Runtime = Runtime::new()?;
             rt.block_on(async {
-                (self.server_hook)().await;
+                (self.get_server_hook())().await;
             });
             return Ok(());
         }
@@ -158,13 +158,13 @@ impl ServerManager {
     /// Starts the server in daemon (background) mode on Windows platforms.
     #[cfg(windows)]
     pub async fn start_daemon(&self) -> ServerManagerResult {
-        (self.start_hook)().await;
+        (self.get_start_hook())().await;
         use std::os::windows::process::CommandExt;
         if std::env::var(RUNNING_AS_DAEMON).is_ok() {
             self.write_pid_file()?;
             let rt: Runtime = Runtime::new()?;
             rt.block_on(async {
-                (self.server_hook)().await;
+                (self.get_server_hook())().await;
             });
             return Ok(());
         }
@@ -186,7 +186,7 @@ impl ServerManager {
     ///
     /// - `Result<i32, Box<dyn std::error::Error>>` - Process ID if successful.
     fn read_pid_file(&self) -> Result<i32, Box<dyn std::error::Error>> {
-        let pid_str: String = fs::read_to_string(&self.pid_file)?;
+        let pid_str: String = fs::read_to_string(self.get_pid_file())?;
         let pid: i32 = pid_str.trim().parse::<i32>()?;
         Ok(pid)
     }
@@ -197,11 +197,11 @@ impl ServerManager {
     ///
     /// - `ServerManagerResult` - Operation result.
     fn write_pid_file(&self) -> ServerManagerResult {
-        if let Some(parent) = Path::new(&self.pid_file).parent() {
+        if let Some(parent) = Path::new(self.get_pid_file()).parent() {
             fs::create_dir_all(parent)?;
         }
         let pid: u32 = id();
-        fs::write(&self.pid_file, pid.to_string())?;
+        fs::write(self.get_pid_file(), pid.to_string())?;
         Ok(())
     }
 
@@ -293,7 +293,7 @@ impl ServerManager {
     ///
     /// - `ServerManagerResult` - Operation result.
     async fn run_with_cargo_watch(&self, run_args: &[&str], wait: bool) -> ServerManagerResult {
-        (self.start_hook)().await;
+        (self.get_start_hook())().await;
         let cargo_watch_installed: Output = Command::new("cargo")
             .arg("install")
             .arg("--list")

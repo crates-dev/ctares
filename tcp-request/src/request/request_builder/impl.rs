@@ -18,6 +18,52 @@ impl Default for RequestBuilder {
 
 /// Implementation for RequestBuilder methods.
 impl RequestBuilder {
+    /// Gets a reference to the TCP request being configured.
+    ///
+    /// # Returns
+    ///
+    /// - `&TcpRequest` - Reference to the TCP request.
+    pub(crate) fn get_tcp_request(&self) -> &TcpRequest {
+        &self.tcp_request
+    }
+
+    /// Gets a reference to the built TCP request.
+    ///
+    /// # Returns
+    ///
+    /// - `&TcpRequest` - Reference to the built TCP request.
+    pub(crate) fn get_builder(&self) -> &TcpRequest {
+        &self.builder
+    }
+
+    /// Sets the TCP request being configured.
+    ///
+    /// # Arguments
+    ///
+    /// - `TcpRequest` - The TCP request to configure.
+    ///
+    /// # Returns
+    ///
+    /// - `&mut Self` - Mutable reference to self for method chaining.
+    pub(crate) fn set_tcp_request(&mut self, tcp_request: TcpRequest) -> &mut Self {
+        self.tcp_request = tcp_request;
+        self
+    }
+
+    /// Sets the built TCP request.
+    ///
+    /// # Arguments
+    ///
+    /// - `TcpRequest` - The built TCP request.
+    ///
+    /// # Returns
+    ///
+    /// - `&mut Self` - Mutable reference to self for method chaining.
+    pub(crate) fn set_builder(&mut self, builder: TcpRequest) -> &mut Self {
+        self.builder = builder;
+        self
+    }
+
     /// Creates a new RequestBuilder instance.
     ///
     /// # Returns
@@ -41,7 +87,7 @@ impl RequestBuilder {
     where
         T: Into<String>,
     {
-        let _ = self.tcp_request.config.write().map(|mut data| {
+        let _ = self.get_tcp_request().get_config().write().map(|mut data| {
             data.host = host.into();
         });
         self
@@ -57,7 +103,7 @@ impl RequestBuilder {
     ///
     /// - `&mut Self` - The builder for method chaining.
     pub fn port(&mut self, port: usize) -> &mut Self {
-        let _ = self.tcp_request.config.write().map(|mut data| {
+        let _ = self.get_tcp_request().get_config().write().map(|mut data| {
             data.port = port;
         });
         self
@@ -73,7 +119,7 @@ impl RequestBuilder {
     ///
     /// - `&mut Self` - The builder for method chaining.
     pub fn buffer(&mut self, buffer_size: usize) -> &mut Self {
-        let _ = self.tcp_request.config.write().map(|mut data| {
+        let _ = self.get_tcp_request().get_config().write().map(|mut data| {
             data.buffer_size = buffer_size;
         });
         self
@@ -89,7 +135,7 @@ impl RequestBuilder {
     ///
     /// - `&mut Self` - The builder for method chaining.
     pub fn timeout(&mut self, timeout: u64) -> &mut Self {
-        let _ = self.tcp_request.config.write().map(|mut data| {
+        let _ = self.get_tcp_request().get_config().write().map(|mut data| {
             data.timeout = timeout;
         });
         self
@@ -101,8 +147,9 @@ impl RequestBuilder {
     ///
     /// - `BoxRequestTrait` - A boxed request trait object ready for use.
     pub fn build(&mut self) -> BoxRequestTrait {
-        self.builder = self.tcp_request.clone();
-        self.tcp_request = TcpRequest::default();
-        Box::new(self.builder.clone())
+        let tcp_request: TcpRequest = self.get_tcp_request().clone();
+        self.set_builder(tcp_request);
+        self.set_tcp_request(TcpRequest::default());
+        Box::new(self.get_builder().clone())
     }
 }

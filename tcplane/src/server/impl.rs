@@ -426,13 +426,35 @@ impl Server {
 
 /// Implementation of methods for the ServerControlHook structure.
 impl ServerControlHook {
+    /// Gets the wait hook.
+    ///
+    /// # Returns
+    ///
+    /// - `Arc<dyn Fn() -> Pin<Box<dyn Future<Output = ()> + Send + 'static>> + Send + Sync>` - The wait hook.
+    pub fn get_wait_hook(
+        &self,
+    ) -> Arc<dyn Fn() -> Pin<Box<dyn Future<Output = ()> + Send + 'static>> + Send + Sync> {
+        self.wait_hook.clone()
+    }
+
+    /// Gets the shutdown hook.
+    ///
+    /// # Returns
+    ///
+    /// - `Arc<dyn Fn() -> Pin<Box<dyn Future<Output = ()> + Send + 'static>> + Send + Sync>` - The shutdown hook.
+    pub fn get_shutdown_hook(
+        &self,
+    ) -> Arc<dyn Fn() -> Pin<Box<dyn Future<Output = ()> + Send + 'static>> + Send + Sync> {
+        self.shutdown_hook.clone()
+    }
+
     /// Waits for the server to finish.
     pub async fn wait(&self) {
-        (self.wait_hook)().await;
+        (self.get_wait_hook())().await;
     }
 
     /// Initiates a graceful shutdown of the server.
     pub async fn shutdown(&self) {
-        (self.shutdown_hook)().await;
+        (self.get_shutdown_hook())().await;
     }
 }
