@@ -1,5 +1,5 @@
 [workspace.package]
-version = "10.1.10"
+version = "10.1.11"
 edition = "2024"
 license = "MIT"
 readme = "README.md"
@@ -48,12 +48,12 @@ members = [
 ]
 
 [workspace.dependencies]
-system-time = { path = "system-time", version = "10.1.10" }
-color-output = { path = "color-output", version = "10.1.10" }
-lombok-macros = { path = "lombok-macros", version = "10.1.10" }
-file-operation = { path = "file-operation", version = "10.1.10" }
-tokio-broadcast = { path = "tokio-broadcast", version = "10.1.10" }
-recoverable-spawn = { path = "recoverable-spawn", version = "10.1.10" }
+system-time = { path = "system-time", version = "10.1.11" }
+color-output = { path = "color-output", version = "10.1.11" }
+lombok-macros = { path = "lombok-macros", version = "10.1.11" }
+file-operation = { path = "file-operation", version = "10.1.11" }
+tokio-broadcast = { path = "tokio-broadcast", version = "10.1.11" }
+recoverable-spawn = { path = "recoverable-spawn", version = "10.1.11" }
 
 syn = "3.0.6"
 log = "0.4.34"
