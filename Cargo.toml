@@ -73,6 +73,7 @@ proc-macro2 = "1.0.107"
 tokio = { version = "1.53.1", features = ["full"] }
 serde = { version = "1.0.229", features = ["derive"] }
 jsonwebtoken = { version = "10.4.0", features = ["rust_crypto"] }
+
 [profile.dev]
 incremental = false
 opt-level = 3
