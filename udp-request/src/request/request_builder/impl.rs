@@ -42,7 +42,7 @@ impl RequestBuilder {
         T: Into<String>,
     {
         let _: Result<(), PoisonError<RwLockWriteGuard<'_, Config>>> =
-            self.udp_request.config.write().map(|mut data| {
+            self.get_udp_request().get_config().write().map(|mut data| {
                 data.host = host.into();
             });
         self
@@ -59,7 +59,7 @@ impl RequestBuilder {
     /// - `&mut Self` - A mutable reference to the `RequestBuilder` for method chaining.
     pub fn port(&mut self, port: usize) -> &mut Self {
         let _: Result<(), PoisonError<RwLockWriteGuard<'_, Config>>> =
-            self.udp_request.config.write().map(|mut data| {
+            self.get_udp_request().get_config().write().map(|mut data| {
                 data.port = port;
             });
         self
@@ -76,7 +76,7 @@ impl RequestBuilder {
     /// - `&mut Self` - A mutable reference to the `RequestBuilder` for method chaining.
     pub fn buffer(&mut self, buffer_size: usize) -> &mut Self {
         let _: Result<(), PoisonError<RwLockWriteGuard<'_, Config>>> =
-            self.udp_request.config.write().map(|mut data| {
+            self.get_udp_request().get_config().write().map(|mut data| {
                 data.buffer_size = buffer_size;
             });
         self
@@ -93,7 +93,7 @@ impl RequestBuilder {
     /// - `&mut Self` - A mutable reference to the `RequestBuilder` for method chaining.
     pub fn timeout(&mut self, timeout: u64) -> &mut Self {
         let _: Result<(), PoisonError<RwLockWriteGuard<'_, Config>>> =
-            self.udp_request.config.write().map(|mut data| {
+            self.get_udp_request().get_config().write().map(|mut data| {
                 data.timeout = timeout;
             });
         self
@@ -105,8 +105,9 @@ impl RequestBuilder {
     ///
     /// - `BoxRequestTrait` - A boxed `RequestTrait` object that can be used to send the request.
     pub fn build(&mut self) -> BoxRequestTrait {
-        self.builder = self.udp_request.clone();
-        self.udp_request = UdpRequest::default();
-        Box::new(self.builder.clone())
+        let udp_request: UdpRequest = self.get_udp_request().clone();
+        self.set_builder(udp_request);
+        self.set_udp_request(UdpRequest::default());
+        Box::new(self.get_builder().clone())
     }
 }

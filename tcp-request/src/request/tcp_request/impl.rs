@@ -53,7 +53,7 @@ impl TcpRequest {
     /// - `Result<BoxResponseTrait, RequestError>` - The response or error.
     fn read_response(&mut self, stream: &mut TcpStream) -> Result<BoxResponseTrait, RequestError> {
         let cfg_buffer_size: usize = self
-            .config
+            .get_config()
             .read()
             .map_or(DEFAULT_BUFFER_SIZE, |data| data.buffer_size);
         let mut tmp_buf: Vec<u8> = vec![0u8; cfg_buffer_size];
@@ -64,11 +64,13 @@ impl TcpRequest {
             }
             response_bytes.extend_from_slice(&tmp_buf[..n]);
         }
-        self.response = Arc::new(RwLock::new(<TcpResponseBinary as ResponseTrait>::from(
-            &response_bytes,
+        self.set_response(Arc::new(RwLock::new(
+            <TcpResponseBinary as ResponseTrait>::from(&response_bytes),
         )));
         Ok(Box::new(
-            self.response.read().map_or(Vec::new(), |data| data.clone()),
+            self.get_response()
+                .read()
+                .map_or(Vec::new(), |data| data.clone()),
         ))
     }
 
@@ -85,7 +87,7 @@ impl TcpRequest {
     fn get_connection_stream(&self, host: String, port: usize) -> Result<TcpStream, RequestError> {
         let host_port: (String, u16) = (host.clone(), port as u16);
         let cfg_timeout: u64 = self
-            .config
+            .get_config()
             .read()
             .map_or(DEFAULT_TIMEOUT, |data: RwLockReadGuard<'_, Config>| {
                 data.timeout
@@ -119,7 +121,7 @@ impl RequestTrait for TcpRequest {
     /// - `RequestResult` - The result of the send operation.
     fn send(&mut self, data: &[u8]) -> Self::RequestResult {
         let cfg_timeout: Config = self
-            .config
+            .get_config()
             .read()
             .map_or(Config::default(), |data| data.clone());
         let host: String = cfg_timeout.host.clone();

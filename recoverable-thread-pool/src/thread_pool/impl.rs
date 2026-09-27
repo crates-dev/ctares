@@ -45,7 +45,7 @@ impl ThreadPool {
         let job_with_handler: ThreadPoolJob = Box::new(move || {
             let _: std::thread::Result<()> = run_function(job);
         });
-        self.sender.send(job_with_handler)
+        self.get_sender().send(job_with_handler)
     }
 
     /// Executes a synchronous job with error handling in the thread pool.
@@ -70,7 +70,7 @@ impl ThreadPool {
                     run_error_handle_function(handle_error, &err_string);
             }
         });
-        self.sender.send(job_with_handler)
+        self.get_sender().send(job_with_handler)
     }
 
     /// Executes a synchronous job with error handling and finalization in the thread pool.
@@ -103,7 +103,7 @@ impl ThreadPool {
             }
             let _: std::thread::Result<()> = run_function(finally);
         });
-        self.sender.send(job_with_handler)
+        self.get_sender().send(job_with_handler)
     }
 
     /// Executes an async job in the thread pool.
@@ -131,7 +131,7 @@ impl ThreadPool {
                     .await;
                 });
         });
-        self.sender.send(job_with_handler)
+        self.get_sender().send(job_with_handler)
     }
 
     /// Executes an async job with error handling in the thread pool.
@@ -171,7 +171,7 @@ impl ThreadPool {
                     }
                 });
         });
-        self.sender.send(job_with_handler)
+        self.get_sender().send(job_with_handler)
     }
 
     /// Executes an async job with error handling and finalization in the thread pool.
@@ -222,6 +222,6 @@ impl ThreadPool {
                     .await;
                 });
         });
-        self.sender.send(job_with_handler)
+        self.get_sender().send(job_with_handler)
     }
 }

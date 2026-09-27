@@ -38,21 +38,22 @@ impl<'a> Text<'a> {
     /// # Returns
     /// - `Cow<'a, str>`: An owned copy of the formatted string.
     pub fn get_display_str_cow(&self) -> Cow<'a, str> {
-        let text: &str = self.text;
-        let bold: bool = self.bold;
-        let adjusted_color: ColorType = if matches!(self.color, ColorType::Use(Color::Default)) {
-            ColorContrast::ensure_sufficient_contrast(&self.color, &self.bg_color)
-        } else {
-            self.color
-        };
+        let text: &str = self.get_text();
+        let bold: bool = *self.get_bold();
+        let adjusted_color: ColorType =
+            if matches!(*self.get_color(), ColorType::Use(Color::Default)) {
+                ColorContrast::ensure_sufficient_contrast(self.get_color(), self.get_bg_color())
+            } else {
+                *self.get_color()
+            };
         let color: String = adjusted_color.to_string();
-        let bg_color: String = self.bg_color.get_str(DisplayType::Background);
+        let bg_color: String = self.get_bg_color().get_str(DisplayType::Background);
         let mut colored_text: String = if bold {
             format!("{CSI}{SGR_BOLD}{SEMICOLON}{bg_color}{SEMICOLON}{color}{SGR}{text}{SGR_RESET}")
         } else {
             format!("{CSI}{bg_color}{SEMICOLON}{color}{SGR}{text}{SGR_RESET}")
         };
-        if self.endl {
+        if *self.get_endl() {
             colored_text.push(LINE_FEED);
         }
         Cow::Owned(colored_text)

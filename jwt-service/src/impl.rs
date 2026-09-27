@@ -22,81 +22,6 @@ impl JwtConfig {
             issuer: issuer.as_ref().to_string(),
         }
     }
-
-    /// Returns a reference to the secret key.
-    ///
-    /// # Returns
-    ///
-    /// - `&String` - The secret key.
-    pub fn get_secret(&self) -> &String {
-        &self.secret
-    }
-
-    /// Sets the secret key.
-    ///
-    /// # Arguments
-    ///
-    /// - `AsRef<str>` - The secret key to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_secret<S>(&mut self, secret: S) -> &mut Self
-    where
-        S: AsRef<str>,
-    {
-        self.secret = secret.as_ref().to_string();
-        self
-    }
-
-    /// Returns the expiration time in seconds.
-    ///
-    /// # Returns
-    ///
-    /// - `u64` - The expiration time.
-    pub fn get_expiration_seconds(&self) -> u64 {
-        self.expiration_seconds
-    }
-
-    /// Sets the expiration time in seconds.
-    ///
-    /// # Arguments
-    ///
-    /// - `u64` - The expiration time to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_expiration_seconds(&mut self, expiration_seconds: u64) -> &mut Self {
-        self.expiration_seconds = expiration_seconds;
-        self
-    }
-
-    /// Returns a reference to the issuer.
-    ///
-    /// # Returns
-    ///
-    /// - `&String` - The issuer.
-    pub fn get_issuer(&self) -> &String {
-        &self.issuer
-    }
-
-    /// Sets the issuer.
-    ///
-    /// # Arguments
-    ///
-    /// - `AsRef<str>` - The issuer to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_issuer<S>(&mut self, issuer: S) -> &mut Self
-    where
-        S: AsRef<str>,
-    {
-        self.issuer = issuer.as_ref().to_string();
-        self
-    }
 }
 
 impl JwtExtraJwtClaims {
@@ -125,204 +50,6 @@ impl JwtExtraJwtClaims {
             nbf,
         }
     }
-
-    /// Returns a reference to the subject.
-    ///
-    /// # Returns
-    ///
-    /// - `&String` - The subject.
-    pub fn get_sub(&self) -> &String {
-        &self.sub
-    }
-
-    /// Sets the subject.
-    ///
-    /// # Arguments
-    ///
-    /// - `AsRef<str>` - The subject to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_sub<S>(&mut self, sub: S) -> &mut Self
-    where
-        S: AsRef<str>,
-    {
-        self.sub = sub.as_ref().to_string();
-        self
-    }
-
-    /// Returns a reference to the issuer.
-    ///
-    /// # Returns
-    ///
-    /// - `&String` - The issuer.
-    pub fn get_iss(&self) -> &String {
-        &self.iss
-    }
-
-    /// Sets the issuer.
-    ///
-    /// # Arguments
-    ///
-    /// - `AsRef<str>` - The issuer to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_iss<S>(&mut self, iss: S) -> &mut Self
-    where
-        S: AsRef<str>,
-    {
-        self.iss = iss.as_ref().to_string();
-        self
-    }
-
-    /// Returns the expiration time.
-    ///
-    /// # Returns
-    ///
-    /// - `usize` - The expiration timestamp.
-    pub fn get_exp(&self) -> usize {
-        self.exp
-    }
-
-    /// Sets the expiration time.
-    ///
-    /// # Arguments
-    ///
-    /// - `exp` - The expiration timestamp to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_exp(&mut self, exp: usize) -> &mut Self {
-        self.exp = exp;
-        self
-    }
-
-    /// Returns the issued at time.
-    ///
-    /// # Returns
-    ///
-    /// - `usize` - The issued at timestamp.
-    pub fn get_iat(&self) -> usize {
-        self.iat
-    }
-
-    /// Sets the issued at time.
-    ///
-    /// # Arguments
-    ///
-    /// - `usize` - The issued at timestamp to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_iat(&mut self, iat: usize) -> &mut Self {
-        self.iat = iat;
-        self
-    }
-
-    /// Returns the not before time.
-    ///
-    /// # Returns
-    ///
-    /// - `usize` - The not before timestamp.
-    pub fn get_nbf(&self) -> usize {
-        self.nbf
-    }
-
-    /// Sets the not before time.
-    ///
-    /// # Arguments
-    ///
-    /// - `usize` - The not before timestamp to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_nbf(&mut self, nbf: usize) -> &mut Self {
-        self.nbf = nbf;
-        self
-    }
-}
-
-impl JwtToken {
-    /// Returns a reference to the token.
-    ///
-    /// # Returns
-    ///
-    /// - `&String` - The token.
-    pub fn get_token(&self) -> &String {
-        &self.token
-    }
-
-    /// Sets the token.
-    ///
-    /// # Arguments
-    ///
-    /// - `AsRef<str>` - The token to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_token<S>(&mut self, token: S) -> &mut Self
-    where
-        S: AsRef<str>,
-    {
-        self.token = token.as_ref().to_string();
-        self
-    }
-
-    /// Returns a reference to the token type.
-    ///
-    /// # Returns
-    ///
-    /// - `&String` - The token type.
-    pub fn get_token_type(&self) -> &String {
-        &self.token_type
-    }
-
-    /// Sets the token type.
-    ///
-    /// # Arguments
-    ///
-    /// - `token_type` - The token type to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_token_type<S>(&mut self, token_type: S) -> &mut Self
-    where
-        S: AsRef<str>,
-    {
-        self.token_type = token_type.as_ref().to_string();
-        self
-    }
-
-    /// Returns the expires in value.
-    ///
-    /// # Returns
-    ///
-    /// - `u64` - The expires in value.
-    pub fn get_expires_in(&self) -> u64 {
-        self.expires_in
-    }
-
-    /// Sets the expires in value.
-    ///
-    /// # Arguments
-    ///
-    /// - `u64` - The expires in value to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_expires_in(&mut self, expires_in: u64) -> &mut Self {
-        self.expires_in = expires_in;
-        self
-    }
 }
 
 impl JwtService {
@@ -350,165 +77,6 @@ impl JwtService {
             decoding_key,
             validation,
         }
-    }
-
-    /// Returns a reference to the JWT configuration.
-    ///
-    /// # Returns
-    ///
-    /// - `&JwtConfig` - The configuration.
-    pub fn get_config(&self) -> &JwtConfig {
-        &self.config
-    }
-
-    /// Returns a reference to the encoding key.
-    ///
-    /// # Returns
-    ///
-    /// - `&EncodingKey` - The encoding key.
-    pub fn get_encoding_key(&self) -> &EncodingKey {
-        &self.encoding_key
-    }
-
-    /// Returns a reference to the decoding key.
-    ///
-    /// # Returns
-    ///
-    /// - `&DecodingKey` - The decoding key.
-    pub fn get_decoding_key(&self) -> &DecodingKey {
-        &self.decoding_key
-    }
-
-    /// Returns a reference to the validation settings.
-    ///
-    /// # Returns
-    ///
-    /// - `&Validation` - The validation settings.
-    pub fn get_validation(&self) -> &Validation {
-        &self.validation
-    }
-}
-
-impl<T: Default> CustomExtraJwtClaims<T> {
-    /// Returns a reference to the custom payload data.
-    ///
-    /// # Returns
-    ///
-    /// - `&T` - The custom payload data.
-    pub fn get_custom(&self) -> &T {
-        &self.custom
-    }
-
-    /// Sets the custom payload data.
-    ///
-    /// # Arguments
-    ///
-    /// - `T` - The custom payload data to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_custom(&mut self, custom: T) -> &mut Self {
-        self.custom = custom;
-        self
-    }
-
-    /// Returns a reference to the subject.
-    ///
-    /// # Returns
-    ///
-    /// - `&String` - The subject.
-    pub fn get_sub(&self) -> &String {
-        &self.sub
-    }
-
-    /// Sets the subject.
-    ///
-    /// # Arguments
-    ///
-    /// - `AsRef<str>` - The subject to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_sub<S>(&mut self, sub: S) -> &mut Self
-    where
-        S: AsRef<str>,
-    {
-        self.sub = sub.as_ref().to_string();
-        self
-    }
-
-    /// Returns a reference to the issuer.
-    ///
-    /// # Returns
-    ///
-    /// - `&String` - The issuer.
-    pub fn get_iss(&self) -> &String {
-        &self.iss
-    }
-
-    /// Sets the issuer.
-    ///
-    /// # Arguments
-    ///
-    /// - `AsRef<str>` - The issuer to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_iss<S>(&mut self, iss: S) -> &mut Self
-    where
-        S: AsRef<str>,
-    {
-        self.iss = iss.as_ref().to_string();
-        self
-    }
-
-    /// Returns the expiration time.
-    ///
-    /// # Returns
-    ///
-    /// - `usize` - The expiration timestamp.
-    pub fn get_exp(&self) -> usize {
-        self.exp
-    }
-
-    /// Sets the expiration time.
-    ///
-    /// # Arguments
-    ///
-    /// - `exp` - The expiration timestamp to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_exp(&mut self, exp: usize) -> &mut Self {
-        self.exp = exp;
-        self
-    }
-
-    /// Returns the issued at time.
-    ///
-    /// # Returns
-    ///
-    /// - `usize` - The issued at timestamp.
-    pub fn get_iat(&self) -> usize {
-        self.iat
-    }
-
-    /// Sets the issued at time.
-    ///
-    /// # Arguments
-    ///
-    /// - `usize` - The issued at timestamp to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_iat(&mut self, iat: usize) -> &mut Self {
-        self.iat = iat;
-        self
     }
 }
 
@@ -539,136 +107,6 @@ impl ExtraJwtClaims {
             iat: now,
             extra: HashMap::new(),
         }
-    }
-
-    /// Returns a reference to the subject.
-    ///
-    /// # Returns
-    ///
-    /// - `&String` - The subject.
-    pub fn get_sub(&self) -> &String {
-        &self.sub
-    }
-
-    /// Sets the subject.
-    ///
-    /// # Arguments
-    ///
-    /// - `AsRef<str>` - The subject to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_sub<S>(&mut self, sub: S) -> &mut Self
-    where
-        S: AsRef<str>,
-    {
-        self.sub = sub.as_ref().to_string();
-        self
-    }
-
-    /// Returns a reference to the issuer.
-    ///
-    /// # Returns
-    ///
-    /// - `&String` - The issuer.
-    pub fn get_iss(&self) -> &String {
-        &self.iss
-    }
-
-    /// Sets the issuer.
-    ///
-    /// # Arguments
-    ///
-    /// - `AsRef<str>` - The issuer to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_iss<S>(&mut self, iss: S) -> &mut Self
-    where
-        S: AsRef<str>,
-    {
-        self.iss = iss.as_ref().to_string();
-        self
-    }
-
-    /// Returns the expiration time.
-    ///
-    /// # Returns
-    ///
-    /// - `usize` - The expiration timestamp.
-    pub fn get_exp(&self) -> usize {
-        self.exp
-    }
-
-    /// Sets the expiration time.
-    ///
-    /// # Arguments
-    ///
-    /// - `exp` - The expiration timestamp to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_exp(&mut self, exp: usize) -> &mut Self {
-        self.exp = exp;
-        self
-    }
-
-    /// Returns the issued at time.
-    ///
-    /// # Returns
-    ///
-    /// - `usize` - The issued at timestamp.
-    pub fn get_iat(&self) -> usize {
-        self.iat
-    }
-
-    /// Sets the issued at time.
-    ///
-    /// # Arguments
-    ///
-    /// - `usize` - The issued at timestamp to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_iat(&mut self, iat: usize) -> &mut Self {
-        self.iat = iat;
-        self
-    }
-
-    /// Returns a reference to the extra claims.
-    ///
-    /// # Returns
-    ///
-    /// - `&HashMap<String, Value>` - The extra claims.
-    pub fn get_extra(&self) -> &HashMap<String, Value> {
-        &self.extra
-    }
-
-    /// Returns a mutable reference to the extra claims.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut HashMap<String, Value>` - The mutable extra claims.
-    pub fn get_mut_extra(&mut self) -> &mut HashMap<String, Value> {
-        &mut self.extra
-    }
-
-    /// Sets the extra claims.
-    ///
-    /// # Arguments
-    ///
-    /// - `HashMap<String, Value>` - The extra claims to set.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - The modified instance for chaining.
-    pub fn set_extra(&mut self, extra: HashMap<String, Value>) -> &mut Self {
-        self.extra = extra;
-        self
     }
 }
 
@@ -773,7 +211,7 @@ impl JwtService {
             .duration_since(UNIX_EPOCH)
             .unwrap_or_default()
             .as_secs() as usize;
-        let exp: usize = now + self.get_config().get_expiration_seconds() as usize;
+        let exp: usize = now + *self.get_config().get_expiration_seconds() as usize;
         let claims: JwtExtraJwtClaims = JwtExtraJwtClaims::new(
             subject.as_ref().to_string(),
             self.get_config().get_issuer().clone(),
@@ -790,8 +228,8 @@ impl JwtService {
         let mut jwt_token: JwtToken = JwtToken::default();
         jwt_token
             .set_token(token)
-            .set_token_type(BEARER)
-            .set_expires_in(self.get_config().get_expiration_seconds());
+            .set_token_type(BEARER.to_string())
+            .set_expires_in(*self.get_config().get_expiration_seconds());
         Ok(jwt_token)
     }
 
@@ -856,7 +294,7 @@ impl JwtService {
                     .duration_since(UNIX_EPOCH)
                     .unwrap_or_default()
                     .as_secs() as usize;
-                Ok(token_data.claims.get_exp() < now)
+                Ok(*token_data.claims.get_exp() < now)
             }
             Err(error) => Err(error.to_string()),
         }
@@ -891,9 +329,9 @@ impl JwtService {
         let mut res_claims: CustomExtraJwtClaims<U> = CustomExtraJwtClaims::default();
         res_claims
             .set_custom(claims)
-            .set_sub(subject.as_ref())
+            .set_sub(subject.as_ref().to_string())
             .set_iss(self.get_config().get_issuer().clone())
-            .set_exp(now + self.get_config().get_expiration_seconds() as usize)
+            .set_exp(now + *self.get_config().get_expiration_seconds() as usize)
             .set_iat(now);
         let token: String = encode(
             &Header::new(Algorithm::HS256),
@@ -903,8 +341,8 @@ impl JwtService {
         .map_err(|error| error.to_string())?;
         let mut jwt_token: JwtToken = JwtToken::default();
         jwt_token.set_token(token);
-        jwt_token.set_token_type(BEARER);
-        jwt_token.set_expires_in(self.get_config().get_expiration_seconds());
+        jwt_token.set_token_type(BEARER.to_string());
+        jwt_token.set_expires_in(*self.get_config().get_expiration_seconds());
         Ok(jwt_token)
     }
 
@@ -958,7 +396,7 @@ impl JwtService {
         let mut claims: ExtraJwtClaims = ExtraJwtClaims::new(
             subject.as_ref().to_string(),
             self.get_config().get_issuer().clone(),
-            now + self.get_config().get_expiration_seconds() as usize,
+            now + *self.get_config().get_expiration_seconds() as usize,
         );
         claims.set_extra(extra);
         let token: String = encode(
@@ -969,8 +407,8 @@ impl JwtService {
         .map_err(|error| error.to_string())?;
         let mut jwt_token: JwtToken = JwtToken::default();
         jwt_token.set_token(token);
-        jwt_token.set_token_type(BEARER);
-        jwt_token.set_expires_in(self.get_config().get_expiration_seconds());
+        jwt_token.set_token_type(BEARER.to_string());
+        jwt_token.set_expires_in(*self.get_config().get_expiration_seconds());
         Ok(jwt_token)
     }
 

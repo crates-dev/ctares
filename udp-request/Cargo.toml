@@ -10,3 +10,6 @@ keywords = ["udp", "net", "response", "request", "tool"]
 repository.workspace = true
 categories = ["network-programming", "web-programming"]
 exclude.workspace = true
+
+[dependencies]
+lombok-macros = { workspace = true }

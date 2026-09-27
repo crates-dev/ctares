@@ -56,87 +56,6 @@ impl ContextData {
             attributes: HashMap::new(),
         }
     }
-
-    /// Gets the aborted flag.
-    ///
-    /// # Returns
-    ///
-    /// - `bool` - The aborted flag.
-    pub fn get_aborted(&self) -> bool {
-        self.aborted
-    }
-
-    /// Sets the aborted flag.
-    ///
-    /// # Arguments
-    ///
-    /// - `bool` - The new value for the aborted flag.
-    pub fn set_aborted(&mut self, aborted: bool) {
-        self.aborted = aborted;
-    }
-
-    /// Gets the socket.
-    ///
-    /// # Returns
-    ///
-    /// - `Option<ArcRwLockUdpSocket>` - The socket if present.
-    pub fn get_socket(&self) -> Option<ArcRwLockUdpSocket> {
-        self.socket.clone()
-    }
-
-    /// Gets the request.
-    ///
-    /// # Returns
-    ///
-    /// - `&Request` - Reference to the request.
-    pub fn get_request(&self) -> &Request {
-        &self.request
-    }
-
-    /// Gets the response.
-    ///
-    /// # Returns
-    ///
-    /// - `&Response` - Reference to the response.
-    pub fn get_response(&self) -> &Response {
-        &self.response
-    }
-
-    /// Gets the response mutably.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Response` - Mutable reference to the response.
-    pub fn get_response_mut(&mut self) -> &mut Response {
-        &mut self.response
-    }
-
-    /// Gets the client address.
-    ///
-    /// # Returns
-    ///
-    /// - `Option<SocketAddr>` - The client address if present.
-    pub fn get_client_addr(&self) -> Option<SocketAddr> {
-        self.client_addr
-    }
-
-    /// Gets the attributes.
-    ///
-    /// # Returns
-    ///
-    /// - `&ThreadSafeAttributeStore` - Reference to the attributes.
-    pub fn get_attributes(&self) -> &ThreadSafeAttributeStore {
-        &self.attributes
-    }
-
-    /// Gets the attributes mutably.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut ThreadSafeAttributeStore` - Mutable reference to the attributes.
-    pub fn get_attributes_mut(&mut self) -> &mut ThreadSafeAttributeStore {
-        &mut self.attributes
-    }
 }
 
 /// Implementation of methods for Context.
@@ -314,7 +233,7 @@ impl Context {
     {
         self.write()
             .await
-            .get_attributes_mut()
+            .get_mut_attributes()
             .insert(key.as_ref().to_owned(), Arc::new(value));
         self
     }
@@ -375,7 +294,7 @@ impl Context {
     where
         K: AsRef<str>,
     {
-        self.write().await.get_attributes_mut().remove(key.as_ref());
+        self.write().await.get_mut_attributes().remove(key.as_ref());
         self
     }
 
@@ -385,7 +304,7 @@ impl Context {
     ///
     /// - `&Self` - A reference to the modified context.
     pub async fn clear_attributes(&self) -> &Self {
-        self.write().await.get_attributes_mut().clear();
+        self.write().await.get_mut_attributes().clear();
         self
     }
 

@@ -17,4 +17,4 @@ use std::{
     thread::spawn,
 };
 
-use {recoverable_spawn::*, tokio::runtime::Builder};
+use {lombok_macros::*, recoverable_spawn::*, tokio::runtime::Builder};

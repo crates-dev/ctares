@@ -9,14 +9,18 @@ async fn test_start_executes_server_fn() {
     };
     let mut manager: ServerManager = ServerManager::new();
     manager
-        .set_pid_file(&pid_file)
-        .set_start_hook(|| async {
-            println!("Before start daemon hook executed");
-        })
-        .set_server_hook(server)
-        .set_stop_hook(|| async {
-            println!("Before stop hook executed");
-        });
+        .set_pid_file(pid_file.clone())
+        .set_start_hook(Arc::new(|| {
+            Box::pin(async {
+                println!("Before start daemon hook executed");
+            })
+        }))
+        .set_server_hook(Arc::new(move || Box::pin(server())))
+        .set_stop_hook(Arc::new(|| {
+            Box::pin(async {
+                println!("Before stop hook executed");
+            })
+        }));
     let res: ServerManagerResult = manager.start_daemon().await;
     println!("start_daemon {res:?}");
     let res: ServerManagerResult = manager.stop().await;

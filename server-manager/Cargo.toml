@@ -12,4 +12,6 @@ categories = ["development-tools"]
 exclude.workspace = true
 
 [dependencies]
+lombok-macros = { workspace = true }
+
 tokio = { workspace = true }

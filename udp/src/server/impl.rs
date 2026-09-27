@@ -45,10 +45,10 @@ impl PartialEq for ServerData {
     ///
     /// - `bool` - `true` if the instances are equal, `false` otherwise.
     fn eq(&self, other: &Self) -> bool {
-        self.server_config == other.server_config
-            && self.hook.len() == other.hook.len()
-            && self.task_panic.len() == other.task_panic.len()
-            && self.read_error.len() == other.read_error.len()
+        self.get_server_config() == other.get_server_config()
+            && self.get_hook().len() == other.get_hook().len()
+            && self.get_task_panic().len() == other.get_task_panic().len()
+            && self.get_read_error().len() == other.get_read_error().len()
     }
 }
 
@@ -56,54 +56,6 @@ impl PartialEq for ServerData {
 ///
 /// This indicates that `ServerData` has a total equality relation.
 impl Eq for ServerData {}
-
-/// Implementation of methods for `ServerData`.
-impl ServerData {
-    /// Gets the server configuration.
-    ///
-    /// # Returns
-    ///
-    /// - `&ServerConfigData` - Reference to the server configuration.
-    pub(crate) fn get_server_config(&self) -> &ServerConfigData {
-        &self.server_config
-    }
-
-    /// Gets a mutable reference to the server configuration.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut ServerConfigData` - Mutable reference to the server configuration.
-    pub(crate) fn get_mut_server_config(&mut self) -> &mut ServerConfigData {
-        &mut self.server_config
-    }
-
-    /// Gets the hook list.
-    ///
-    /// # Returns
-    ///
-    /// - `&ServerHookList` - Reference to the hook list.
-    pub(crate) fn get_hook(&self) -> &ServerHookList {
-        &self.hook
-    }
-
-    /// Gets a mutable reference to the hook list.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut ServerHookList` - Mutable reference to the hook list.
-    pub(crate) fn get_mut_hook(&mut self) -> &mut ServerHookList {
-        &mut self.hook
-    }
-
-    /// Gets a mutable reference to the task panic list.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut ServerHookList` - Mutable reference to the task panic list.
-    pub(crate) fn get_mut_task_panic(&mut self) -> &mut ServerHookList {
-        &mut self.task_panic
-    }
-}
 
 /// Implements the `PartialEq` trait for `Server`.
 ///

@@ -21,7 +21,7 @@ impl<'a> Task<'a> {
     /// - `&mut Self` - The task for method chaining
     #[inline(always)]
     pub fn add(&mut self, new_text: Text<'a>) -> &mut Self {
-        self.text_list.push(new_text);
+        self.get_mut_text_list().push(new_text);
         self
     }
 
@@ -32,7 +32,7 @@ impl<'a> Task<'a> {
     /// - `&mut Self` - The cleared task for method chaining
     #[inline(always)]
     pub(crate) fn clear(&mut self) -> &mut Self {
-        self.text_list.clear();
+        self.get_mut_text_list().clear();
         self
     }
 
@@ -46,7 +46,7 @@ impl<'a> Task<'a> {
     ///
     /// - `&mut Self` - The task instance after execution.
     pub fn run_all(&mut self) -> &mut Self {
-        let text_list: Vec<Text<'_>> = self.text_list.clone();
+        let text_list: Vec<Text<'_>> = self.get_text_list().clone();
         self.clear();
         let mut output_str: String = String::with_capacity(text_list.len());
         for text in text_list.iter() {

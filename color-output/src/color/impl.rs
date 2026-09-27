@@ -317,7 +317,7 @@ impl<'a> ColorOutputBuilder<'a> {
     /// - `&mut Self` - The builder for method chaining
     #[inline(always)]
     pub fn text(&mut self, text: &'a str) -> &mut Self {
-        self.output.text = text;
+        self.get_mut_output().text = text;
         self
     }
 
@@ -332,7 +332,7 @@ impl<'a> ColorOutputBuilder<'a> {
     /// - `&mut Self` - The builder for method chaining
     #[inline(always)]
     pub fn color(&mut self, color: ColorType) -> &mut Self {
-        self.output.color = color;
+        self.get_mut_output().color = color;
         self
     }
 
@@ -347,7 +347,7 @@ impl<'a> ColorOutputBuilder<'a> {
     /// - `&mut Self` - The builder for chaining.
     #[inline(always)]
     pub fn bg_color(&mut self, bg_color: ColorType) -> &mut Self {
-        self.output.bg_color = bg_color;
+        self.get_mut_output().bg_color = bg_color;
         self
     }
 
@@ -362,7 +362,7 @@ impl<'a> ColorOutputBuilder<'a> {
     /// - `&mut Self` - The builder for chaining.
     #[inline(always)]
     pub fn bold(&mut self, bold: bool) -> &mut Self {
-        self.output.bold = bold;
+        self.get_mut_output().bold = bold;
         self
     }
 
@@ -377,7 +377,7 @@ impl<'a> ColorOutputBuilder<'a> {
     /// - `&mut Self` - The builder for chaining.
     #[inline(always)]
     pub fn endl(&mut self, endl: bool) -> &mut Self {
-        self.output.endl = endl;
+        self.get_mut_output().endl = endl;
         self
     }
 
@@ -388,7 +388,7 @@ impl<'a> ColorOutputBuilder<'a> {
     /// - `ColorOutput<'a>` - The constructed output.
     #[inline(always)]
     pub fn build(&'_ self) -> ColorOutput<'_> {
-        self.output
+        *self.get_output()
     }
 
     /// ColorOutputs the current state.
@@ -398,7 +398,7 @@ impl<'a> ColorOutputBuilder<'a> {
     /// - `()` - No return value.
     #[inline(always)]
     pub fn output(&self) {
-        output(self.output);
+        output(*self.get_output());
     }
 }
 
@@ -509,7 +509,7 @@ impl<'a> ColorOutputListBuilder<'a> {
     /// - `&mut Self` - The builder for method chaining
     #[inline(always)]
     pub fn add(&mut self, output: ColorOutput<'a>) -> &mut Self {
-        self.output_list.push(output);
+        self.get_mut_output_list().push(output);
         self
     }
 
@@ -524,10 +524,10 @@ impl<'a> ColorOutputListBuilder<'a> {
     ///
     /// If the index is out of bounds, the list remains unchanged.
     pub fn remove(&mut self, idx: usize) -> &mut Self {
-        if idx >= self.output_list.len() {
+        if idx >= self.get_output_list().len() {
             return self;
         }
-        self.output_list.remove(idx);
+        self.get_mut_output_list().remove(idx);
         self
     }
 
@@ -537,7 +537,7 @@ impl<'a> ColorOutputListBuilder<'a> {
     /// - `&mut self`: A mutable reference to the current instance of `ColorOutputListBuilder`.
     #[inline(always)]
     pub fn clear(&mut self) {
-        self.output_list.clear();
+        self.get_mut_output_list().clear();
     }
 
     /// Runs all output items in the list, executing their output logic.
@@ -551,7 +551,7 @@ impl<'a> ColorOutputListBuilder<'a> {
     /// The method clones the current output list, clears the original list, and executes
     /// the output for each cloned item.
     pub fn run(&mut self) -> &mut Self {
-        let outputs: Vec<ColorOutput<'_>> = self.output_list.to_vec();
+        let outputs: Vec<ColorOutput<'_>> = self.get_output_list().to_vec();
         self.clear();
         output_list(&outputs);
         self
@@ -566,10 +566,10 @@ impl<'a> ColorOutputListBuilder<'a> {
     /// # Returns
     /// - `ColorOutput`: The output item at the specified index, or a default output if the index is out of bounds.
     pub fn query_idx(&'_ self, idx: usize) -> ColorOutput<'_> {
-        if idx >= self.output_list.len() {
+        if idx >= self.get_output_list().len() {
             return ColorOutput::default();
         }
-        self.output_list[idx]
+        self.get_output_list()[idx]
     }
 
     /// Runs the output item at the specified index.
@@ -583,7 +583,7 @@ impl<'a> ColorOutputListBuilder<'a> {
     ///
     /// If the index is out of bounds, the list remains unchanged.
     pub fn run_idx(&mut self, idx: usize) -> &mut Self {
-        if idx >= self.output_list.len() {
+        if idx >= self.get_output_list().len() {
             return self;
         }
         let output: ColorOutput<'_> = self.query_idx(idx);

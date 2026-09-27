@@ -13,5 +13,6 @@ exclude.workspace = true
 
 [dependencies]
 recoverable-spawn = { workspace = true }
+lombok-macros = { workspace = true }
 
 tokio = { workspace = true }

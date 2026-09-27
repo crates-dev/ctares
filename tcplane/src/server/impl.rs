@@ -22,80 +22,6 @@ impl Default for ServerControlHook {
     }
 }
 
-impl ServerData {
-    /// Gets a reference to the configuration.
-    ///
-    /// # Returns
-    ///
-    /// - `&ServerConfig` - Reference to the configuration.
-    pub fn get_config(&self) -> &ServerConfigData {
-        &self.server_config
-    }
-
-    /// Gets a mutable reference to the server configuration.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut ServerConfigData` - Mutable reference to the server configuration.
-    pub(crate) fn get_mut_server_config(&mut self) -> &mut ServerConfigData {
-        &mut self.server_config
-    }
-
-    /// Gets a reference to the hook list.
-    ///
-    /// # Returns
-    ///
-    /// - `&ServerHookList` - Reference to the hook list.
-    pub fn get_hook(&self) -> &ServerHookList {
-        &self.hook
-    }
-
-    /// Gets a mutable reference to the hook list.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut ServerHookList` - Mutable reference to the hook list.
-    pub(crate) fn get_mut_hook(&mut self) -> &mut ServerHookList {
-        &mut self.hook
-    }
-
-    /// Gets a reference to the task panic handler list.
-    ///
-    /// # Returns
-    ///
-    /// - `&ServerHookList` - Reference to the task panic handler list.
-    pub fn get_task_panic(&self) -> &ServerHookList {
-        &self.task_panic
-    }
-
-    /// Gets a mutable reference to the task panic handler list.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut ServerHookList` - Mutable reference to the task panic handler list.
-    pub(crate) fn get_mut_task_panic(&mut self) -> &mut ServerHookList {
-        &mut self.task_panic
-    }
-
-    /// Gets a reference to the read error handler list.
-    ///
-    /// # Returns
-    ///
-    /// - `&ServerHookList` - Reference to the read error handler list.
-    pub fn get_read_error(&self) -> &ServerHookList {
-        &self.read_error
-    }
-
-    /// Gets a mutable reference to the read error handler list.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut ServerHookList` - Mutable reference to the read error handler list.
-    pub(crate) fn get_mut_read_error(&mut self) -> &mut ServerHookList {
-        &mut self.read_error
-    }
-}
-
 /// Provides a default implementation for Server.
 impl Default for Server {
     fn default() -> Self {
@@ -230,7 +156,7 @@ impl Server {
     ///
     /// - `Result<TcpListener, ServerError>` - The listener on success, or an error on failure.
     async fn create_tcp_listener(&self) -> Result<TcpListener, ServerError> {
-        let config: ServerConfigData = self.read().await.get_config().clone();
+        let config: ServerConfigData = self.read().await.get_server_config().clone();
         let host: String = config.host;
         let port: u16 = config.port;
         let addr: String = Self::get_bind_addr(&host, port);
@@ -248,7 +174,7 @@ impl Server {
         let server: Server = self.clone();
         let hook: ServerHookList = self.read().await.get_hook().clone();
         let task_panic: ServerHookList = self.read().await.get_task_panic().clone();
-        let buffer_size: usize = self.read().await.get_config().buffer_size;
+        let buffer_size: usize = self.read().await.get_server_config().buffer_size;
         spawn(async move {
             server
                 .handle_connection(stream, hook, task_panic, buffer_size)
@@ -428,11 +354,11 @@ impl Server {
 impl ServerControlHook {
     /// Waits for the server to finish.
     pub async fn wait(&self) {
-        (self.wait_hook)().await;
+        (self.get_wait_hook())().await;
     }
 
     /// Initiates a graceful shutdown of the server.
     pub async fn shutdown(&self) {
-        (self.shutdown_hook)().await;
+        (self.get_shutdown_hook())().await;
     }
 }

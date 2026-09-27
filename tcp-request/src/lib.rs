@@ -12,6 +12,8 @@ pub use {request::*, response::*};
 
 use common::*;
 
+use lombok_macros::*;
+
 use std::{
     fmt::Debug,
     fmt::{self, Display},

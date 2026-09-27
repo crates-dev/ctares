@@ -338,7 +338,9 @@ async fn bump_workspace_members(
         .map(|members: &toml_edit::Array| {
             members
                 .iter()
-                .filter_map(|member: &TomlEditValue| member.as_str().map(|s: &str| s.to_string()))
+                .filter_map(|member: &toml_edit::Value| {
+                    member.as_str().map(|s: &str| s.to_string())
+                })
                 .collect()
         })
         .unwrap_or_default();

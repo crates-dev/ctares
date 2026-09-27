@@ -36,7 +36,7 @@ impl ArcRwLockUdpSocket {
     ///
     /// - `RwLockReadGuard<UdpSocket>` - Read guard for the socket.
     pub async fn get_read_lock(&self) -> RwLockReadGuard<'_, UdpSocket> {
-        self.socket.read().await
+        self.get_socket().read().await
     }
 
     /// Acquires a write lock on the socket.
@@ -45,6 +45,6 @@ impl ArcRwLockUdpSocket {
     ///
     /// - `RwLockWriteGuard<UdpSocket>` - Write guard for the socket.
     pub async fn get_write_lock(&self) -> RwLockWriteGuard<'_, UdpSocket> {
-        self.socket.write().await
+        self.get_socket().write().await
     }
 }
