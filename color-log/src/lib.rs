@@ -21,4 +21,4 @@ pub use {r#const::*, r#fn::*, r#struct::*, r#trait::*};
 
 use std::{fs::read_dir, io::Error};
 
-use {file_operation::*, system_time::*};
+use {file_operation::*, lombok_macros::*, system_time::*};

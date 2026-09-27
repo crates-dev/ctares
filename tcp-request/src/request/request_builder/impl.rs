@@ -18,52 +18,6 @@ impl Default for RequestBuilder {
 
 /// Implementation for RequestBuilder methods.
 impl RequestBuilder {
-    /// Gets a reference to the TCP request being configured.
-    ///
-    /// # Returns
-    ///
-    /// - `&TcpRequest` - Reference to the TCP request.
-    pub(crate) fn get_tcp_request(&self) -> &TcpRequest {
-        &self.tcp_request
-    }
-
-    /// Gets a reference to the built TCP request.
-    ///
-    /// # Returns
-    ///
-    /// - `&TcpRequest` - Reference to the built TCP request.
-    pub(crate) fn get_builder(&self) -> &TcpRequest {
-        &self.builder
-    }
-
-    /// Sets the TCP request being configured.
-    ///
-    /// # Arguments
-    ///
-    /// - `TcpRequest` - The TCP request to configure.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - Mutable reference to self for method chaining.
-    pub(crate) fn set_tcp_request(&mut self, tcp_request: TcpRequest) -> &mut Self {
-        self.tcp_request = tcp_request;
-        self
-    }
-
-    /// Sets the built TCP request.
-    ///
-    /// # Arguments
-    ///
-    /// - `TcpRequest` - The built TCP request.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - Mutable reference to self for method chaining.
-    pub(crate) fn set_builder(&mut self, builder: TcpRequest) -> &mut Self {
-        self.builder = builder;
-        self
-    }
-
     /// Creates a new RequestBuilder instance.
     ///
     /// # Returns

@@ -13,6 +13,8 @@ pub use {color::*, task::*, text::*, utils::*};
 
 pub use system_time::*;
 
+use lombok_macros::*;
+
 use std::{
     borrow::Cow,
     fmt::{self, Display},

@@ -20,6 +20,7 @@ use {
     jsonwebtoken::{
         Algorithm, DecodingKey, EncodingKey, Header, TokenData, Validation, decode, encode,
     },
+    lombok_macros::*,
     serde::{Deserialize, Serialize},
     serde_json::Value,
 };

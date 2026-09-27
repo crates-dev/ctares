@@ -32,15 +32,6 @@ impl Response {
         Self { data: data.into() }
     }
 
-    /// Gets the underlying response data.
-    ///
-    /// # Returns
-    ///
-    /// - `&ResponseData` - Reference to the response data.
-    pub fn get_data(&self) -> &ResponseData {
-        &self.data
-    }
-
     /// Sends the response through the specified socket.
     ///
     /// # Arguments

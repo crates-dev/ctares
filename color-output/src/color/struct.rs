@@ -23,7 +23,7 @@ pub struct ColorOutput<'a> {
 }
 
 /// Builder pattern for constructing ColorOutput configurations.
-#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[derive(Clone, Copy, Data, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct ColorOutputBuilder<'a> {
     /// The ColorOutput configuration being built.
     pub output: ColorOutput<'a>,
@@ -37,7 +37,7 @@ pub struct ColorOutputList<'a>(
 );
 
 /// Builder pattern for constructing ColorOutputList configurations.
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[derive(Clone, Data, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct ColorOutputListBuilder<'a> {
     /// Collection of ColorOutput configurations being built.
     pub output_list: Vec<ColorOutput<'a>>,

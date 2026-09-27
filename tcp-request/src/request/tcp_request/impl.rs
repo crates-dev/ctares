@@ -18,38 +18,6 @@ impl Default for TcpRequest {
 
 /// Implementation of TCP request operations.
 impl TcpRequest {
-    /// Gets a reference to the request configuration.
-    ///
-    /// # Returns
-    ///
-    /// - `&ArcRwLock<Config>` - Reference to the request configuration.
-    pub(crate) fn get_config(&self) -> &ArcRwLock<Config> {
-        &self.config
-    }
-
-    /// Gets a reference to the response storage.
-    ///
-    /// # Returns
-    ///
-    /// - `&ArcRwLock<TcpResponseBinary>` - Reference to the response storage.
-    pub(crate) fn get_response(&self) -> &ArcRwLock<TcpResponseBinary> {
-        &self.response
-    }
-
-    /// Sets the response storage.
-    ///
-    /// # Arguments
-    ///
-    /// - `ArcRwLock<TcpResponseBinary>` - The new response storage.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - Mutable reference to self for method chaining.
-    pub(crate) fn set_response(&mut self, response: ArcRwLock<TcpResponseBinary>) -> &mut Self {
-        self.response = response;
-        self
-    }
-
     /// Sends data through the TCP connection.
     ///
     /// # Arguments

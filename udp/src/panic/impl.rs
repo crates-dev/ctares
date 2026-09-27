@@ -52,36 +52,6 @@ impl PanicData {
             location: None,
         }
     }
-
-    /// Gets the panic message.
-    ///
-    /// # Returns
-    ///
-    /// - `&String` - Reference to the panic message.
-    pub fn get_message(&self) -> &String {
-        &self.message
-    }
-
-    /// Gets the panic location if available.
-    ///
-    /// # Returns
-    ///
-    /// - `Option<&String>` - Reference to the location string if available.
-    pub fn get_location(&self) -> Option<&String> {
-        self.location.as_ref()
-    }
-
-    /// Sets the panic location.
-    ///
-    /// # Arguments
-    ///
-    /// - `AsRef<str>` - The location string (file:line).
-    pub fn set_location<L>(&mut self, location: L)
-    where
-        L: AsRef<str>,
-    {
-        self.location = Some(location.as_ref().to_owned());
-    }
 }
 
 /// Implementation of Display for PanicData.

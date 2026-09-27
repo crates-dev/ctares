@@ -10,26 +10,6 @@ impl<'a> Default for Task<'a> {
 
 /// Implementation of task operations.
 impl<'a> Task<'a> {
-    /// Gets a reference to the text list.
-    ///
-    /// # Returns
-    ///
-    /// - `&Vec<Text<'a>>` - Reference to the text list.
-    #[inline(always)]
-    pub fn get_text_list(&self) -> &Vec<Text<'a>> {
-        &self.text_list
-    }
-
-    /// Gets a mutable reference to the text list.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Vec<Text<'a>>` - Mutable reference to the text list.
-    #[inline(always)]
-    pub fn get_mut_text_list(&mut self) -> &mut Vec<Text<'a>> {
-        &mut self.text_list
-    }
-
     /// Adds a text configuration to the task list.
     ///
     /// # Arguments

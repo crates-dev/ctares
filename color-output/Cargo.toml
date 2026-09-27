@@ -13,3 +13,4 @@ exclude.workspace = true
 
 [dependencies]
 system-time = { workspace = true }
+lombok-macros = { workspace = true }

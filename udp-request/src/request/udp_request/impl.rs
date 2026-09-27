@@ -18,38 +18,6 @@ impl Default for UdpRequest {
 
 /// Implementation of `UdpRequest`.
 impl UdpRequest {
-    /// Gets a reference to the request configuration.
-    ///
-    /// # Returns
-    ///
-    /// - `&ArcRwLock<Config>` - Reference to the request configuration.
-    pub(crate) fn get_config(&self) -> &ArcRwLock<Config> {
-        &self.config
-    }
-
-    /// Gets a reference to the response storage.
-    ///
-    /// # Returns
-    ///
-    /// - `&ArcRwLock<UdpResponseBinary>` - Reference to the response storage.
-    pub(crate) fn get_response(&self) -> &ArcRwLock<UdpResponseBinary> {
-        &self.response
-    }
-
-    /// Sets the response storage.
-    ///
-    /// # Arguments
-    ///
-    /// - `ArcRwLock<UdpResponseBinary>` - The new response storage.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - Mutable reference to self for method chaining.
-    pub(crate) fn set_response(&mut self, response: ArcRwLock<UdpResponseBinary>) -> &mut Self {
-        self.response = response;
-        self
-    }
-
     /// Sends a UDP request and reads the response.
     ///
     /// # Arguments

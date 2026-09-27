@@ -33,11 +33,14 @@ use std::{
     sync::Arc,
 };
 
-use tokio::{
-    net::UdpSocket,
-    sync::{
-        RwLock, RwLockReadGuard, RwLockWriteGuard,
-        watch::{Receiver, Sender, channel},
+use {
+    lombok_macros::*,
+    tokio::{
+        net::UdpSocket,
+        sync::{
+            RwLock, RwLockReadGuard, RwLockWriteGuard,
+            watch::{Receiver, Sender, channel},
+        },
+        task::JoinHandle,
     },
-    task::JoinHandle,
 };

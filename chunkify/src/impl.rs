@@ -51,51 +51,6 @@ impl<'a, F> ChunkNaming<'a> for F where F: Fn(&'a str, usize) -> String + Send +
 
 /// Implementation of chunk strategy methods.
 impl<'a> ChunkStrategy<'a> {
-    /// Gets the starting chunk index.
-    ///
-    /// # Returns
-    ///
-    /// - `usize` - The starting chunk index (0-based).
-    pub(crate) fn get_start_chunk_index(&self) -> usize {
-        self.start_chunk_index
-    }
-
-    /// Gets the upload directory path.
-    ///
-    /// # Returns
-    ///
-    /// - `&'a str` - The upload directory path.
-    pub(crate) fn get_upload_dir(&self) -> &'a str {
-        self.upload_dir
-    }
-
-    /// Gets the unique file identifier.
-    ///
-    /// # Returns
-    ///
-    /// - `&'a str` - The unique file identifier.
-    pub(crate) fn get_file_id(&self) -> &'a str {
-        self.file_id
-    }
-
-    /// Gets the original file name.
-    ///
-    /// # Returns
-    ///
-    /// - `&'a str` - The original file name.
-    pub(crate) fn get_file_name(&self) -> &'a str {
-        self.file_name
-    }
-
-    /// Gets the total number of chunks.
-    ///
-    /// # Returns
-    ///
-    /// - `usize` - The total number of chunks.
-    pub(crate) fn get_total_chunks(&self) -> usize {
-        self.total_chunks
-    }
-
     /// Creates a new chunk strategy instance.
     ///
     /// # Arguments
@@ -149,7 +104,7 @@ impl<'a> ChunkStrategy<'a> {
     /// - `String` - Generated path in JSON format
     #[inline(always)]
     fn get_chunk_json_path(&self, file_id: &'a str, chunk_index: usize) -> String {
-        (self.file_name_func)(file_id, chunk_index)
+        (self.get_file_name_func())(file_id, chunk_index)
     }
 
     /// Gets the full path for a chunk file.
@@ -212,16 +167,16 @@ impl<'a> HandleStrategy<'a> for ChunkStrategy<'a> {
         let chunk_path: String = self.get_chunk_path(self.get_file_id(), chunk_index);
         self.save_chunk(&chunk_path, chunk_data).await?;
         let chunks_status: RefMut<'_, String, RwLock<Vec<bool>>> = UPLOADING_FILES
-            .entry(self.get_file_id().to_owned())
-            .or_insert_with(|| RwLock::new(vec![false; self.get_total_chunks()]));
+            .entry(self.get_file_id().to_string())
+            .or_insert_with(|| RwLock::new(vec![false; *self.get_total_chunks()]));
         let mut chunks_status: RwLockWriteGuard<'_, Vec<bool>> = chunks_status.write().await;
-        if chunks_status.len() != self.get_total_chunks() {
-            *chunks_status = vec![false; self.get_total_chunks()];
+        if chunks_status.len() != *self.get_total_chunks() {
+            *chunks_status = vec![false; *self.get_total_chunks()];
         }
         if chunk_index >= chunks_status.len() {
             return Err(ChunkStrategyError::IndexOutOfBounds(
                 chunk_index,
-                self.get_total_chunks(),
+                *self.get_total_chunks(),
             ));
         }
         chunks_status[chunk_index] = true;
@@ -235,8 +190,8 @@ impl<'a> HandleStrategy<'a> for ChunkStrategy<'a> {
     /// - `ChunkStrategyResult` - Result of merge operation.
     async fn merge_chunks(&self) -> ChunkStrategyResult {
         let chunks_status: RefMut<'_, String, RwLock<Vec<bool>>> = UPLOADING_FILES
-            .entry(self.get_file_id().to_owned())
-            .or_insert_with(|| RwLock::new(vec![false; self.get_total_chunks()]));
+            .entry(self.get_file_id().to_string())
+            .or_insert_with(|| RwLock::new(vec![false; *self.get_total_chunks()]));
         let mut chunks_status: RwLockWriteGuard<'_, Vec<bool>> = chunks_status.write().await;
         let all_chunks_uploaded: bool = chunks_status.iter().all(|&status| status);
         if !all_chunks_uploaded {
@@ -255,7 +210,7 @@ impl<'a> HandleStrategy<'a> for ChunkStrategy<'a> {
             .open(&final_path)
             .map_err(|error: Error| ChunkStrategyError::CreateOutputFile(error.to_string()))?;
         let mut writer: BufWriter<File> = BufWriter::new(output_file);
-        for i in self.get_start_chunk_index()..self.get_total_chunks() {
+        for i in *self.get_start_chunk_index()..*self.get_total_chunks() {
             let chunk_path: String = self.get_chunk_path(self.get_file_id(), i);
             let chunk_data: Vec<u8> = async_read_from_file(&chunk_path).await.map_err(
                 |error: Box<dyn std::error::Error>| {

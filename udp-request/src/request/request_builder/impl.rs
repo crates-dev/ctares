@@ -18,52 +18,6 @@ impl Default for RequestBuilder {
 
 /// Implementation of `RequestBuilder`.
 impl RequestBuilder {
-    /// Gets a reference to the `UdpRequest` being configured.
-    ///
-    /// # Returns
-    ///
-    /// - `&UdpRequest` - Reference to the `UdpRequest`.
-    pub(crate) fn get_udp_request(&self) -> &UdpRequest {
-        &self.udp_request
-    }
-
-    /// Gets a reference to the built `UdpRequest`.
-    ///
-    /// # Returns
-    ///
-    /// - `&UdpRequest` - Reference to the built `UdpRequest`.
-    pub(crate) fn get_builder(&self) -> &UdpRequest {
-        &self.builder
-    }
-
-    /// Sets the `UdpRequest` being configured.
-    ///
-    /// # Arguments
-    ///
-    /// - `UdpRequest` - The `UdpRequest` to configure.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - Mutable reference to self for method chaining.
-    pub(crate) fn set_udp_request(&mut self, udp_request: UdpRequest) -> &mut Self {
-        self.udp_request = udp_request;
-        self
-    }
-
-    /// Sets the built `UdpRequest`.
-    ///
-    /// # Arguments
-    ///
-    /// - `UdpRequest` - The built `UdpRequest`.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Self` - Mutable reference to self for method chaining.
-    pub(crate) fn set_builder(&mut self, builder: UdpRequest) -> &mut Self {
-        self.builder = builder;
-        self
-    }
-
     /// Creates a new `RequestBuilder`.
     ///
     /// # Returns

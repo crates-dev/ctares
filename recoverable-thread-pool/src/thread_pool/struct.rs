@@ -8,14 +8,13 @@ use super::*;
 /// # Returns
 ///
 /// - `ThreadPool` - A new thread pool instance.
-#[derive(Debug)]
+#[derive(Data, Debug)]
 pub struct ThreadPool {
     /// The collection of worker threads.
     ///
     /// # Returns
     ///
     /// - `Vec<Worker>` - The collection of worker threads.
-    #[allow(dead_code)]
     pub(crate) workers: Vec<Worker>,
     /// The sender channel for submitting jobs to workers.
     ///

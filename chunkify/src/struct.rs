@@ -3,6 +3,7 @@ use super::*;
 /// Configuration for chunking operations.
 ///
 /// Contains all necessary parameters for performing chunked file operations.
+#[derive(Data)]
 pub struct ChunkStrategy<'a> {
     /// The starting index for chunking operations.
     pub(crate) start_chunk_index: usize,

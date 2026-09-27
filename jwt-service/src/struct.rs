@@ -1,7 +1,7 @@
 use super::*;
 
 /// JWT configuration struct containing secret key, expiration time, and issuer.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Data, Debug, Default, Deserialize, Serialize)]
 pub struct JwtConfig {
     /// The secret key used for signing JWT tokens.
     pub(super) secret: String,
@@ -12,7 +12,7 @@ pub struct JwtConfig {
 }
 
 /// Standard JWT claims struct with common fields.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Data, Debug, Default, Deserialize, Serialize)]
 pub struct JwtExtraJwtClaims {
     /// The subject (user identifier) of the token.
     pub(super) sub: String,
@@ -27,7 +27,7 @@ pub struct JwtExtraJwtClaims {
 }
 
 /// JWT token response struct containing the token and metadata.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Data, Debug, Default, Deserialize, Serialize)]
 pub struct JwtToken {
     /// The encoded JWT token string.
     pub(super) token: String,
@@ -38,7 +38,7 @@ pub struct JwtToken {
 }
 
 /// JWT service struct providing token generation and validation functionality.
-#[derive(Clone, Debug)]
+#[derive(Clone, Data, Debug)]
 pub struct JwtService {
     /// The JWT configuration.
     pub(super) config: JwtConfig,
@@ -51,7 +51,7 @@ pub struct JwtService {
 }
 
 /// Generic JWT claims struct that supports custom payload data.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Data, Debug, Default, Deserialize, Serialize)]
 pub struct CustomExtraJwtClaims<T: Default> {
     /// The custom payload data.
     #[serde(flatten)]
@@ -67,7 +67,7 @@ pub struct CustomExtraJwtClaims<T: Default> {
 }
 
 /// Extended JWT claims struct with support for custom extra fields.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Data, Debug, Default, Deserialize, Serialize)]
 pub struct ExtraJwtClaims {
     /// The subject (user identifier) of the token.
     pub(super) sub: String,

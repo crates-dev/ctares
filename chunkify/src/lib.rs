@@ -26,6 +26,7 @@ use std::{
 use {
     dashmap::{DashMap, mapref::one::RefMut},
     file_operation::*,
+    lombok_macros::*,
     once_cell::sync::Lazy,
     tokio::sync::{RwLock, RwLockWriteGuard},
     twox_hash::XxHash3_64,

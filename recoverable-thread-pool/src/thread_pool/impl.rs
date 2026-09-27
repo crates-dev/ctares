@@ -2,15 +2,6 @@ use super::*;
 
 /// Sync implementation of thread pool operations.
 impl ThreadPool {
-    /// Gets a reference to the sender channel for submitting jobs.
-    ///
-    /// # Returns
-    ///
-    /// - `&Sender<ThreadPoolJob>` - Reference to the sender channel.
-    pub(crate) fn get_sender(&self) -> &Sender<ThreadPoolJob> {
-        &self.sender
-    }
-
     /// Creates a new thread pool with the specified number of workers.
     ///
     /// # Arguments

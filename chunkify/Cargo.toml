@@ -13,6 +13,7 @@ exclude.workspace = true
 
 [dependencies]
 file-operation = { workspace = true }
+lombok-macros = { workspace = true }
 
 tokio = { workspace = true }
 dashmap = { workspace = true }

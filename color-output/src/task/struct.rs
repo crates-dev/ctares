@@ -1,7 +1,7 @@
 use super::*;
 
 /// Represents a collection of text tasks to be executed sequentially.
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[derive(Clone, Data, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Task<'a> {
     /// Collection of text configurations to process
     pub text_list: Vec<Text<'a>>,

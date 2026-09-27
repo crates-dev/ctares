@@ -3,7 +3,7 @@ use super::*;
 /// Configurable text display with color, background and style options.
 ///
 /// Used for building formatted console output with various display attributes.
-#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[derive(Clone, Copy, Data, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Text<'a> {
     /// The actual text content.
     pub text: &'a str,

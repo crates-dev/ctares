@@ -280,26 +280,6 @@ impl<'a> Default for ColorOutputBuilder<'a> {
 }
 
 impl<'a> ColorOutputBuilder<'a> {
-    /// Gets a reference to the output configuration being built.
-    ///
-    /// # Returns
-    ///
-    /// - `&ColorOutput<'a>` - Reference to the output configuration.
-    #[inline(always)]
-    pub fn get_output(&self) -> &ColorOutput<'a> {
-        &self.output
-    }
-
-    /// Gets a mutable reference to the output configuration being built.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut ColorOutput<'a>` - Mutable reference to the output configuration.
-    #[inline(always)]
-    pub fn get_mut_output(&mut self) -> &mut ColorOutput<'a> {
-        &mut self.output
-    }
-
     /// Creates a new ColorOutputBuilder instance.
     ///
     /// # Returns
@@ -492,26 +472,6 @@ impl<'a> Default for ColorOutputListBuilder<'a> {
 }
 
 impl<'a> ColorOutputListBuilder<'a> {
-    /// Gets a reference to the output list being built.
-    ///
-    /// # Returns
-    ///
-    /// - `&Vec<ColorOutput<'a>>` - Reference to the output list.
-    #[inline(always)]
-    pub fn get_output_list(&self) -> &Vec<ColorOutput<'a>> {
-        &self.output_list
-    }
-
-    /// Gets a mutable reference to the output list being built.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Vec<ColorOutput<'a>>` - Mutable reference to the output list.
-    #[inline(always)]
-    pub fn get_mut_output_list(&mut self) -> &mut Vec<ColorOutput<'a>> {
-        &mut self.output_list
-    }
-
     /// Creates a new empty ColorOutputListBuilder.
     ///
     /// # Returns
