@@ -13,8 +13,8 @@ exclude.workspace = true
 
 [dependencies]
 system-time = { workspace = true }
-file-operation = { workspace = true }
 lombok-macros = { workspace = true }
+file-operation = { workspace = true }
 
 [dev-dependencies]
 tokio = { workspace = true }

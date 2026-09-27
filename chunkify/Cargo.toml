@@ -12,8 +12,8 @@ categories = ["network-programming", "web-programming"]
 exclude.workspace = true
 
 [dependencies]
-file-operation = { workspace = true }
 lombok-macros = { workspace = true }
+file-operation = { workspace = true }
 
 tokio = { workspace = true }
 dashmap = { workspace = true }
