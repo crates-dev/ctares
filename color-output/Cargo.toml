@@ -12,5 +12,5 @@ categories = ["command-line-interface", "development-tools", "visualization"]
 exclude.workspace = true
 
 [dependencies]
-system-time = { workspace = true }
 lombok-macros = { workspace = true }
+system-time = { workspace = true }

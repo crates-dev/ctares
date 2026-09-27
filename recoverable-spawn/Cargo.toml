@@ -12,5 +12,5 @@ categories = ["network-programming", "web-programming"]
 exclude.workspace = true
 
 [dependencies]
-tokio = { workspace = true }
 once_cell = { workspace = true }
+tokio = { workspace = true }

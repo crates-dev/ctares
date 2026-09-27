@@ -12,9 +12,9 @@ categories = ["network-programming", "web-programming", "development-tools"]
 exclude.workspace = true
 
 [dependencies]
-system-time = { workspace = true }
 file-operation = { workspace = true }
 lombok-macros = { workspace = true }
+system-time = { workspace = true }
 
 [dev-dependencies]
 tokio = { workspace = true }
