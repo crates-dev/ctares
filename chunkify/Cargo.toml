@@ -15,7 +15,7 @@ exclude.workspace = true
 file-operation = { workspace = true }
 lombok-macros = { workspace = true }
 
-tokio = { workspace = true }
 dashmap = { workspace = true }
 once_cell = { workspace = true }
+tokio = { workspace = true }
 twox-hash = { workspace = true }
