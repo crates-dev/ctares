@@ -8,7 +8,7 @@ fn signature_header_yields_the_signed_timestamp_and_digest() {
     let event: WebhookEvent =
         WebhookEvent::new(String::from(PAYLOAD), 1614556800, String::from("abc123"));
     let header: String = "t=1614556800,v1=abc123".to_string();
-    let parsed: WebhookEvent = match parse_signature_header(&header, PAYLOAD) {
+    let parsed: WebhookEvent = match WebhookEvent::parse_signature_header(&header, PAYLOAD) {
         Ok(value) => value,
         Err(reason) => panic!("unexpected rejection: {reason}"),
     };
@@ -20,7 +20,7 @@ fn signature_header_yields_the_signed_timestamp_and_digest() {
 #[test]
 fn signature_header_ignores_the_legacy_v0_scheme() {
     let header: String = String::from("t=1614556800,v0=stale,v1=current");
-    let parsed: WebhookEvent = match parse_signature_header(&header, PAYLOAD) {
+    let parsed: WebhookEvent = match WebhookEvent::parse_signature_header(&header, PAYLOAD) {
         Ok(value) => value,
         Err(reason) => panic!("unexpected rejection: {reason}"),
     };
@@ -30,21 +30,24 @@ fn signature_header_ignores_the_legacy_v0_scheme() {
 #[test]
 fn signature_header_without_a_v1_digest_is_rejected() {
     let header: String = String::from("t=1614556800,v0=stale");
-    let outcome: Result<WebhookEvent, WebhookError> = parse_signature_header(&header, PAYLOAD);
+    let outcome: Result<WebhookEvent, WebhookError> =
+        WebhookEvent::parse_signature_header(&header, PAYLOAD);
     assert_eq!(outcome, Err(WebhookError::MissingSignature));
 }
 
 #[test]
 fn signature_header_without_a_timestamp_is_rejected() {
     let header: String = String::from("v1=abc123");
-    let outcome: Result<WebhookEvent, WebhookError> = parse_signature_header(&header, PAYLOAD);
+    let outcome: Result<WebhookEvent, WebhookError> =
+        WebhookEvent::parse_signature_header(&header, PAYLOAD);
     assert_eq!(outcome, Err(WebhookError::MissingSignature));
 }
 
 #[test]
 fn signature_header_rejects_a_non_numeric_timestamp() {
     let header: String = String::from("t=not-a-number,v1=abc123");
-    let outcome: Result<WebhookEvent, WebhookError> = parse_signature_header(&header, PAYLOAD);
+    let outcome: Result<WebhookEvent, WebhookError> =
+        WebhookEvent::parse_signature_header(&header, PAYLOAD);
     assert_eq!(outcome, Err(WebhookError::MissingSignature));
 }
 
@@ -213,7 +216,7 @@ fn verify_webhook_accepts_a_genuine_request() {
         .compute_signature(SECRET)
         .unwrap_or_default();
     let header: String = format!("t=1614556800,v1={digest}");
-    let outcome: Result<WebhookEvent, WebhookError> = verify_webhook(
+    let outcome: Result<WebhookEvent, WebhookError> = WebhookEvent::verify_webhook(
         &header,
         PAYLOAD,
         SECRET,
@@ -226,7 +229,7 @@ fn verify_webhook_accepts_a_genuine_request() {
 #[test]
 fn verify_webhook_rejects_a_forged_request() {
     let header: String = String::from("t=1614556800,v1=deadbeef");
-    let outcome: Result<WebhookEvent, WebhookError> = verify_webhook(
+    let outcome: Result<WebhookEvent, WebhookError> = WebhookEvent::verify_webhook(
         &header,
         PAYLOAD,
         SECRET,

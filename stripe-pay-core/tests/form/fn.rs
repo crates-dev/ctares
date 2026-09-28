@@ -2,44 +2,44 @@ use super::*;
 
 #[test]
 fn form_percent_encode_escapes_bracketed_metadata_key() {
-    let encoded: String = percent_encode("metadata[order_id]");
+    let encoded: String = FormField::percent_encode("metadata[order_id]");
     assert_eq!(encoded, "metadata%5Border_id%5D");
 }
 
 #[test]
 fn form_percent_encode_escapes_reserved_characters() {
-    let encoded: String = percent_encode("a=b&c");
+    let encoded: String = FormField::percent_encode("a=b&c");
     assert_eq!(encoded, "a%3Db%26c");
 }
 
 #[test]
 fn form_percent_encode_maps_space_to_plus() {
-    let encoded: String = percent_encode("order 42");
+    let encoded: String = FormField::percent_encode("order 42");
     assert_eq!(encoded, "order+42");
 }
 
 #[test]
 fn form_percent_encode_keeps_unreserved_characters() {
-    let encoded: String = percent_encode("order-id_42.v1~");
+    let encoded: String = FormField::percent_encode("order-id_42.v1~");
     assert_eq!(encoded, "order-id_42.v1~");
 }
 
 #[test]
 fn form_percent_encode_uses_uppercase_hex_digits() {
-    let encoded: String = percent_encode("/");
+    let encoded: String = FormField::percent_encode("/");
     assert_eq!(encoded, "%2F");
 }
 
 #[test]
 fn form_metadata_key_wraps_the_bare_key_in_brackets() {
-    let key: String = metadata_key("order_id");
+    let key: String = FormField::metadata_key("order_id");
     assert_eq!(key, "metadata[order_id]");
 }
 
 #[test]
 fn form_expand_key_includes_the_list_index() {
-    let first: String = expand_key(0);
-    let second: String = expand_key(1);
+    let first: String = FormField::expand_key(0);
+    let second: String = FormField::expand_key(1);
     assert_eq!(first, "expand[0]");
     assert_eq!(second, "expand[1]");
 }
@@ -113,13 +113,14 @@ fn form_builder_accepts_metadata_value_at_the_documented_limit() {
 
 #[test]
 fn form_create_payment_intent_encodes_amount_and_currency() {
-    let body: String = encode_create_payment_intent(Money::from_minor(2_000, Currency::Usd), None);
+    let body: String =
+        FormParams::encode_create_payment_intent(Money::from_minor(2_000, Currency::Usd), None);
     assert_eq!(body, "amount=2000&currency=USD");
 }
 
 #[test]
 fn form_create_payment_intent_includes_the_customer_when_given() {
-    let body: String = encode_create_payment_intent(
+    let body: String = FormParams::encode_create_payment_intent(
         Money::from_minor(2_000, Currency::Usd),
         Some(String::from("cus_9Xyz456")),
     );
@@ -128,13 +129,14 @@ fn form_create_payment_intent_includes_the_customer_when_given() {
 
 #[test]
 fn form_create_refund_omits_amount_for_a_full_refund() {
-    let body: String = encode_create_refund("ch_1Def789", None, RefundReason::RequestedByCustomer);
+    let body: String =
+        FormParams::encode_create_refund("ch_1Def789", None, RefundReason::RequestedByCustomer);
     assert_eq!(body, "charge=ch_1Def789&reason=requested_by_customer");
 }
 
 #[test]
 fn form_create_refund_includes_a_partial_amount() {
-    let body: String = encode_create_refund(
+    let body: String = FormParams::encode_create_refund(
         "ch_1Def789",
         Some(Money::from_minor(500, Currency::Usd)),
         RefundReason::Fraudulent,

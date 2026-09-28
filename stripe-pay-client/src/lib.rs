@@ -7,9 +7,8 @@
 mod r#const;
 mod r#element;
 mod r#enum;
-mod r#fn;
 
-pub use {r#const::*, r#element::*, r#enum::*, r#fn::*};
+pub use {r#const::*, r#element::*, r#enum::*};
 
 pub use lombok_macros::*;
 

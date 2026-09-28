@@ -4,10 +4,9 @@
 //! verification over the shared `stripe-pay-core` domain types.
 
 mod r#const;
-mod r#fn;
 mod r#webhook;
 
-pub use {r#const::*, r#fn::*, r#webhook::*};
+pub use {r#const::*, r#webhook::*};
 
 pub use hmac::{Hmac, KeyInit, Mac};
 pub use lombok_macros::*;
