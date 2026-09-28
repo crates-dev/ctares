@@ -6,8 +6,8 @@ use super::*;
 ///
 /// # Arguments
 ///
-/// - `&mut Item`: Slot holding the value to replace.
-/// - `&str`: New string content.
+/// - `&mut Item` - Slot holding the value to replace.
+/// - `&str` - New string content.
 pub(crate) fn set_item_string_preserving_decor(slot: &mut Item, new_string: &str) {
     let mut replacement: Item = value(new_string);
     if let Some(old_value) = slot.as_value()
@@ -24,11 +24,11 @@ pub(crate) fn set_item_string_preserving_decor(slot: &mut Item, new_string: &str
 ///
 /// # Arguments
 ///
-/// - `&DocumentMut`: Parsed manifest.
+/// - `&DocumentMut` - Parsed manifest.
 ///
 /// # Returns
 ///
-/// - `Option<String>`: Root version, or `None` when the workspace has no
+/// - `Option<String>` - Root version, or `None` when the workspace has no
 ///   shared version (virtual workspace with per-member versions).
 fn read_root_version(doc: &DocumentMut) -> Option<String> {
     let workspace_version: Option<&str> = doc
@@ -50,12 +50,12 @@ fn read_root_version(doc: &DocumentMut) -> Option<String> {
 ///
 /// # Arguments
 ///
-/// - `&DocumentMut`: Parsed member manifest.
-/// - `Option<&str>`: Shared workspace version, if any.
+/// - `&DocumentMut` - Parsed member manifest.
+/// - `Option<&str>` - Shared workspace version, if any.
 ///
 /// # Returns
 ///
-/// - `Result<String, SyncError>`: The member's effective version.
+/// - `Result<String, SyncError>` - The member's effective version.
 fn read_member_version(
     member_doc: &DocumentMut,
     workspace_version: Option<&str>,
@@ -81,11 +81,11 @@ fn read_member_version(
 ///
 /// # Arguments
 ///
-/// - `&DocumentMut`: Parsed manifest.
+/// - `&DocumentMut` - Parsed manifest.
 ///
 /// # Returns
 ///
-/// - `Result<Vec<String>, SyncError>`: Member path list, or an error.
+/// - `Result<Vec<String>, SyncError>` - Member path list, or an error.
 fn read_workspace_members(doc: &DocumentMut) -> Result<Vec<String>, SyncError> {
     let members: Vec<String> = doc
         .get("workspace")
@@ -102,11 +102,11 @@ fn read_workspace_members(doc: &DocumentMut) -> Result<Vec<String>, SyncError> {
 ///
 /// # Arguments
 ///
-/// - `&DocumentMut`: Parsed member manifest.
+/// - `&DocumentMut` - Parsed member manifest.
 ///
 /// # Returns
 ///
-/// - `Result<String, SyncError>`: Crate name, or an error if missing.
+/// - `Result<String, SyncError>` - Crate name, or an error if missing.
 fn read_member_crate_name(doc: &DocumentMut) -> Result<String, SyncError> {
     let name: String = doc
         .get("package")
@@ -121,12 +121,12 @@ fn read_member_crate_name(doc: &DocumentMut) -> Result<String, SyncError> {
 ///
 /// # Arguments
 ///
-/// - `&dyn TableLike`: Parsed `[workspace.dependencies]` table.
-/// - `&str`: Member path to look up (e.g. `\"type\"`).
+/// - `&dyn TableLike` - Parsed `[workspace.dependencies]` table.
+/// - `&str` - Member path to look up (e.g. `\"type\"`).
 ///
 /// # Returns
 ///
-/// - `Option<String>`: The current dep LHS, if any entry references
+/// - `Option<String>` - The current dep LHS, if any entry references
 ///   `path = \"member_path\"`.
 fn find_dep_alias_for_member_path(deps: &dyn TableLike, member_path: &str) -> Option<String> {
     for (alias, entry) in deps.iter() {
@@ -146,12 +146,12 @@ fn find_dep_alias_for_member_path(deps: &dyn TableLike, member_path: &str) -> Op
 ///
 /// # Arguments
 ///
-/// - `&DocumentMut`: Parsed workspace manifest.
-/// - `&str`: Member path.
+/// - `&DocumentMut` - Parsed workspace manifest.
+/// - `&str` - Member path.
 ///
 /// # Returns
 ///
-/// - `Option<(String, Option<String>)>`: `(current_alias,
+/// - `Option<(String, Option<String>)>` - `(current_alias,
 ///   existing_version)` if an entry references `path = \"member_path\"`.
 fn scan_dep_entry(doc: &DocumentMut, member_path: &str) -> Option<(String, Option<String>)> {
     let deps: &dyn TableLike = doc
@@ -172,9 +172,9 @@ fn scan_dep_entry(doc: &DocumentMut, member_path: &str) -> Option<(String, Optio
 ///
 /// # Arguments
 ///
-/// - `&mut dyn TableLike`: Mutable `[workspace.dependencies]` table.
-/// - `&str`: Dep LHS alias of the entry to update.
-/// - `&str`: Workspace version to write into the entry's `version` field.
+/// - `&mut dyn TableLike` - Mutable `[workspace.dependencies]` table.
+/// - `&str` - Dep LHS alias of the entry to update.
+/// - `&str` - Workspace version to write into the entry's `version` field.
 fn rewrite_entry_version(deps: &mut dyn TableLike, current_alias: &str, workspace_version: &str) {
     let Some(entry) = deps.get_mut(current_alias) else {
         return;
@@ -195,11 +195,11 @@ fn rewrite_entry_version(deps: &mut dyn TableLike, current_alias: &str, workspac
 ///
 /// # Arguments
 ///
-/// - `&str`: Path to the workspace root Cargo.toml.
+/// - `&str` - Path to the workspace root Cargo.toml.
 ///
 /// # Returns
 ///
-/// - `Result<SyncReport, SyncError>`: Summary of what was rewritten.
+/// - `Result<SyncReport, SyncError>` - Summary of what was rewritten.
 ///
 /// # Behavior
 ///

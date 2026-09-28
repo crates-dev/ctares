@@ -109,7 +109,7 @@ impl ServerConfig {
     ///
     /// # Returns
     ///
-    /// - `RwLockReadGuard<ServerConfigData>` - A read guard for the inner configuration.
+    /// - `RwLockReadGuard<'_, ServerConfigData>` - A read guard for the inner configuration.
     async fn read(&self) -> RwLockReadGuard<'_, ServerConfigData> {
         self.0.read().await
     }
@@ -118,7 +118,7 @@ impl ServerConfig {
     ///
     /// # Returns
     ///
-    /// - `RwLockWriteGuard<ServerConfigData>` - A write guard for the inner configuration.
+    /// - `RwLockWriteGuard<'_, ServerConfigData>` - A write guard for the inner configuration.
     async fn write(&self) -> RwLockWriteGuard<'_, ServerConfigData> {
         self.0.write().await
     }
@@ -156,7 +156,7 @@ impl ServerConfig {
     ///
     /// # Arguments
     ///
-    /// - `port` - The port number to set.
+    /// - `u16` - The port number to set.
     ///
     /// # Returns
     ///
@@ -170,7 +170,7 @@ impl ServerConfig {
     ///
     /// # Arguments
     ///
-    /// - `size` - The buffer size in bytes.
+    /// - `usize` - The buffer size in bytes.
     ///
     /// # Returns
     ///
@@ -184,7 +184,7 @@ impl ServerConfig {
     ///
     /// # Arguments
     ///
-    /// - `nodelay` - The value for `TCP_NODELAY`.
+    /// - `bool` - The value for `TCP_NODELAY`.
     ///
     /// # Returns
     ///
@@ -216,7 +216,7 @@ impl ServerConfig {
     ///
     /// # Arguments
     ///
-    /// - `ttl` - The value for `IP_TTL`.
+    /// - `u32` - The value for `IP_TTL`.
     ///
     /// # Returns
     ///

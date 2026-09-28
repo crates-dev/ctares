@@ -10,17 +10,17 @@ use super::*;
 #[derive(Clone, Data)]
 pub struct ContextData {
     /// A flag indicating whether the request handling has been aborted.
-    #[get(pub, type(copy))]
+    #[get(type(copy))]
     pub(super) aborted: bool,
     /// The underlying network socket for the connection.
-    #[get(pub, type(clone))]
+    #[get(type(clone))]
     pub(super) socket: Option<ArcRwLockUdpSocket>,
     /// The incoming UDP request data.
     pub(super) request: Request,
     /// The outgoing UDP response data.
     pub(super) response: Response,
     /// The client's socket address.
-    #[get(pub, type(copy))]
+    #[get(type(copy))]
     pub(super) client_addr: Option<SocketAddr>,
     /// A collection of custom attributes for sharing data within the request lifecycle.
     pub(super) attributes: ThreadSafeAttributeStore,

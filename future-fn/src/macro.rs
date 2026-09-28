@@ -7,7 +7,6 @@
 macro_rules! future_fn {
     ($($var:ident),*, { $($closure_body:tt)* }) => {
         || {
-            #[allow(unused_parens)]
             let ($($var),*) = ($($var.clone()),*);
             async move {
                 $($closure_body)*
@@ -16,7 +15,6 @@ macro_rules! future_fn {
     };
     ($($var:ident),*, |$( $closure_param:ident $(: $closure_param_ty:ty)? ),*| { $($closure_body:tt)* }) => {
         {
-            #[allow(unused_parens)]
             let ($($var),*) = ($($var.clone()),*);
             move |$( $closure_param $(: $closure_param_ty)? ),*| {
                 let ($($var),*) = ($($var.clone()),*);

@@ -135,7 +135,6 @@ impl ColorContrast {
                 (red, green, blue)
             }
             ColorType::Use(color) => {
-                use super::r#enum::Color;
                 match color {
                     Color::Default => (128, 128, 128),
                     Color::Black => (0, 0, 0),
@@ -385,7 +384,7 @@ impl<'a> ColorOutputBuilder<'a> {
     ///
     /// # Returns
     ///
-    /// - `ColorOutput<'a>` - The constructed output.
+    /// - `ColorOutput<'_>` - The constructed output.
     #[inline(always)]
     pub fn build(&'_ self) -> ColorOutput<'_> {
         *self.get_output()
@@ -421,7 +420,7 @@ impl<'a> Deref for ColorOutputList<'a> {
     ///
     /// # Returns
     ///
-    /// - `&Vec<ColorOutput>` - Reference to the internal vector of outputs
+    /// - `&Self::Target` - Reference to the internal vector of outputs
     #[inline(always)]
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -436,7 +435,7 @@ impl<'a> IntoIterator for &'a ColorOutputList<'a> {
     ///
     /// # Returns
     ///
-    /// - `Iter<ColorOutput>` - Iterator over references to ColorOutput elements
+    /// - `Self::IntoIter` - Iterator over references to ColorOutput elements
     #[inline(always)]
     fn into_iter(self) -> Self::IntoIter {
         self.0.iter()
@@ -447,7 +446,7 @@ impl<'a> ColorOutputList<'a> {
     /// Provides an iterator over the elements in the internal `Vec<ColorOutput<'a>>`.
     ///
     /// # Returns
-    /// - `Iter<'_, ColorOutput<'a>>`: An iterator over references to `ColorOutput` elements.
+    /// - `std::slice::Iter<'_, ColorOutput<'a>>` - An iterator over references to `ColorOutput` elements.
     #[inline(always)]
     pub fn iter(&self) -> std::slice::Iter<'_, ColorOutput<'a>> {
         self.0.iter()
@@ -516,11 +515,11 @@ impl<'a> ColorOutputListBuilder<'a> {
     /// Removes an output item from the list at the specified index.
     ///
     /// # Parameters
-    /// - `&mut self`: A mutable reference to the current instance of `ColorOutputListBuilder`.
-    /// - `idx`: The index of the output item to be removed.
+    /// - `&mut self` - A mutable reference to the current instance of `ColorOutputListBuilder`.
+    /// - `idx` - The index of the output item to be removed.
     ///
     /// # Returns
-    /// - `&mut Self`: A mutable reference to the current instance, allowing for method chaining.
+    /// - `&mut Self` - A mutable reference to the current instance, allowing for method chaining.
     ///
     /// If the index is out of bounds, the list remains unchanged.
     pub fn remove(&mut self, idx: usize) -> &mut Self {
@@ -534,7 +533,7 @@ impl<'a> ColorOutputListBuilder<'a> {
     /// Clears all output items from the output list.
     ///
     /// # Parameters
-    /// - `&mut self`: A mutable reference to the current instance of `ColorOutputListBuilder`.
+    /// - `&mut self` - A mutable reference to the current instance of `ColorOutputListBuilder`.
     #[inline(always)]
     pub fn clear(&mut self) {
         self.get_mut_output_list().clear();
@@ -543,10 +542,10 @@ impl<'a> ColorOutputListBuilder<'a> {
     /// Runs all output items in the list, executing their output logic.
     ///
     /// # Parameters
-    /// - `&mut self`: A mutable reference to the current instance of `ColorOutputListBuilder`.
+    /// - `&mut self` - A mutable reference to the current instance of `ColorOutputListBuilder`.
     ///
     /// # Returns
-    /// - `&mut Self`: A mutable reference to the current instance, allowing for method chaining.
+    /// - `&mut Self` - A mutable reference to the current instance, allowing for method chaining.
     ///
     /// The method clones the current output list, clears the original list, and executes
     /// the output for each cloned item.
@@ -560,11 +559,11 @@ impl<'a> ColorOutputListBuilder<'a> {
     /// Queries the output item at the specified index.
     ///
     /// # Parameters
-    /// - `&self`: An immutable reference to the current instance of `ColorOutputListBuilder`.
-    /// - `idx`: The index of the output item to query.
+    /// - `&self` - An immutable reference to the current instance of `ColorOutputListBuilder`.
+    /// - `idx` - The index of the output item to query.
     ///
     /// # Returns
-    /// - `ColorOutput`: The output item at the specified index, or a default output if the index is out of bounds.
+    /// - `ColorOutput<'_>` - The output item at the specified index, or a default output if the index is out of bounds.
     pub fn query_idx(&'_ self, idx: usize) -> ColorOutput<'_> {
         if idx >= self.get_output_list().len() {
             return ColorOutput::default();
@@ -575,11 +574,11 @@ impl<'a> ColorOutputListBuilder<'a> {
     /// Runs the output item at the specified index.
     ///
     /// # Parameters
-    /// - `&mut self`: A mutable reference to the current instance of `ColorOutputListBuilder`.
-    /// - `idx`: The index of the output item to run.
+    /// - `&mut self` - A mutable reference to the current instance of `ColorOutputListBuilder`.
+    /// - `idx` - The index of the output item to run.
     ///
     /// # Returns
-    /// - `&mut Self`: A mutable reference to the current instance, allowing for method chaining.
+    /// - `&mut Self` - A mutable reference to the current instance, allowing for method chaining.
     ///
     /// If the index is out of bounds, the list remains unchanged.
     pub fn run_idx(&mut self, idx: usize) -> &mut Self {

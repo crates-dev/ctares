@@ -12,7 +12,6 @@ pub struct CardDetails {
     #[get(type(copy))]
     pub(super) brand: CardBrand,
     /// The last four digits of the card number.
-    #[get]
     pub(super) last4: String,
     /// The expiry month, 1 through 12.
     #[get(type(copy))]

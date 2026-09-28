@@ -30,30 +30,28 @@ struct User {
 
 #[derive(Clone, Data, Debug)]
 struct TupleStruct(
-    #[get(pub)] String,
-    #[set(pub)] i32,
-    #[get(pub)]
-    #[set(pub)]
+    String,
+    i32,
     bool,
 );
 
 #[derive(Clone, Data, Debug)]
 struct TraitTestStruct {
-    #[set(pub, type(AsRef<str>))]
+    #[set(type(AsRef<str>))]
     name: String,
     #[get(type(clone))]
-    #[set(pub, type(Into<i32>))]
+    #[set(type(Into<i32>))]
     value: i32,
-    #[set(pub, type(AsRef<[u8]>))]
+    #[set(type(AsRef<[u8]>))]
     data: Vec<u8>,
-    #[set(pub, type(Into<Vec<String>>))]
+    #[set(type(Into<Vec<String>>))]
     items: Vec<String>,
 }
 
 #[derive(Clone, Data, Debug)]
 struct TupleWithResult(
-    #[get(pub, type(clone))] String,
-    #[get(pub)] Result<i32, &'static str>,
+    #[get(type(clone))] String,
+    Result<i32, &'static str>,
 );
 
 #[derive(CustomDebug)]
@@ -75,7 +73,7 @@ struct Person {
 }
 
 #[derive(New)]
-#[new(pub)]
+#[new]
 struct PublicPerson {
     _name: String,
     _age: u32,
@@ -110,19 +108,14 @@ struct TuplePoint(f64, #[new(skip)] f64, f64);
 
 #[derive(Clone, Data, Debug)]
 struct NestedStruct {
-    #[get(pub)]
     name: String,
-    #[set(pub)]
     _value: i32,
 }
 
 #[derive(Clone, Data, Debug)]
 struct ComplexNestedStruct {
-    #[get(pub)]
     nested: NestedStruct,
-    #[get(pub)]
     nested_list: Vec<NestedStruct>,
-    #[set(pub)]
     metadata: std::collections::HashMap<String, String>,
 }
 
@@ -147,23 +140,19 @@ struct GenericStruct<T: Default + Clone> {
 
 #[derive(Clone, Data, Debug)]
 struct LifetimesTest<'a, 'b> {
-    #[get(pub)]
     name: &'a str,
-    #[get(pub)]
     description: &'b str,
 }
 
 #[derive(Clone, Data, Debug)]
 struct EdgeCaseTest {
-    #[get(pub)]
     empty_string: String,
-    #[get(pub, type(clone))]
+    #[get(type(clone))]
     empty_vec: Vec<i32>,
-    #[get(pub, type(clone))]
+    #[get(type(clone))]
     zero_value: i32,
-    #[get(pub, type(clone))]
+    #[get(type(clone))]
     bool_false: bool,
-    #[get(pub)]
     option_none: Option<String>,
 }
 
@@ -179,7 +168,6 @@ struct CopyTest {
 
 #[derive(Data)]
 struct UnitGetSet {
-    #[get(pub)]
     flag: bool,
 }
 
@@ -193,7 +181,7 @@ struct AllSkipped {
 
 #[derive(Clone, Data, Debug)]
 struct MultiAttributes {
-    #[get(pub, type(clone))]
+    #[get(type(clone))]
     #[set(pub(crate), type(Into<Vec<String>>))]
     complex_field: Vec<String>,
 }
@@ -443,44 +431,34 @@ fn main() {
 
 #[derive(Clone, Data, Debug)]
 struct GenericPtr<T> {
-    #[get(pub)]
-    #[set(pub)]
     ptr: *mut T,
 }
 
 #[derive(Clone, Data, Debug)]
 struct DstPtr {
-    #[get(pub)]
-    #[get_mut(pub)]
-    #[set(pub)]
     ptr: *mut dyn FnMut(),
 }
 
 #[derive(Clone, Data, Debug)]
 struct ConstPtr {
-    #[get(pub)]
-    #[set(pub)]
     cptr: *const dyn FnMut(),
 }
 
 #[derive(Clone, Data, Debug)]
 struct OptPtr {
-    #[get(pub)]
     opt: Option<*mut u8>,
 }
 
 #[derive(Clone, Data, Debug)]
 struct OptDstPtr {
-    #[get(pub)]
     opt: Option<*mut dyn FnMut()>,
 }
 
 #[derive(Clone, Data, Debug)]
 struct CopyPtr {
-    #[get(pub, type(copy))]
-    #[set(pub)]
+    #[get(type(copy))]
     ptr: *mut u8,
 }
 
 #[derive(Clone, Data, Debug)]
-struct TuplePtr(#[get(pub)] #[set(pub)] *mut dyn FnMut(), #[get(pub)] i32);
+struct TuplePtr(*mut dyn FnMut(), i32);

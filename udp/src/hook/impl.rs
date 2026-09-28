@@ -52,7 +52,7 @@ impl ServerHook for DefaultServerHook {
     ///
     /// # Arguments
     ///
-    /// - `_ctx` - The request context (unused).
+    /// - `&Context` - The request context (unused).
     ///
     /// # Returns
     ///
@@ -65,6 +65,6 @@ impl ServerHook for DefaultServerHook {
     ///
     /// # Arguments
     ///
-    /// - `_ctx` - The request context (unused).
+    /// - `&Context` - The request context (unused).
     async fn handle(self, _ctx: &Context) {}
 }

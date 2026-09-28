@@ -191,11 +191,11 @@ fn is_arc_type(ty: &Type) -> bool {
 /// # Arguments
 ///
 /// - `&Type` - The original field type.
-/// - `param_type_override` - Optional custom parameter type from attribute specification.
+/// - `Option<&proc_macro2::TokenStream>` - Optional custom parameter type from attribute specification.
 ///
 /// # Returns
 ///
-/// - `TokenStream2` - The generated parameter type as tokens.
+/// - `proc_macro2::TokenStream` - The generated parameter type as tokens.
 fn generate_param_type(
     field_type: &Type,
     param_type_override: Option<&proc_macro2::TokenStream>,
@@ -239,11 +239,11 @@ fn generate_param_type(
 /// # Arguments
 ///
 /// - `ident` - The field identifier to assign to.
-/// - `param_type_override` - Optional custom parameter type from attribute specification.
+/// - `Option<&proc_macro2::TokenStream>` - Optional custom parameter type from attribute specification.
 ///
 /// # Returns
 ///
-/// - `TokenStream2` - The generated assignment expression.
+/// - `proc_macro2::TokenStream` - The generated assignment expression.
 fn generate_assignment(
     field_ident: &proc_macro2::Ident,
     param_type_override: Option<&proc_macro2::TokenStream>,
@@ -276,11 +276,11 @@ fn generate_assignment(
 /// # Arguments
 ///
 /// - `index` - The tuple field index to assign to.
-/// - `param_type_override` - Optional custom parameter type from attribute specification.
+/// - `Option<&proc_macro2::TokenStream>` - Optional custom parameter type from attribute specification.
 ///
 /// # Returns
 ///
-/// - `TokenStream2` - The generated assignment expression.
+/// - `proc_macro2::TokenStream` - The generated assignment expression.
 fn generate_assignment_tuple(
     field_index: &Index,
     param_type_override: Option<&proc_macro2::TokenStream>,
@@ -468,7 +468,7 @@ fn normalize_angle_bracketed_args(args: &mut AngleBracketedGenericArguments) {
 ///
 /// # Returns
 ///
-/// - `TokenStream2` - The generated return type as tokens.
+/// - `proc_macro2::TokenStream` - The generated return type as tokens.
 fn generate_return_type(field_type: &Type, return_type: ReturnType) -> proc_macro2::TokenStream {
     let normalized_field_type: Type = normalize_signature_type(field_type);
     let field_type: &Type = &normalized_field_type;
@@ -543,7 +543,7 @@ fn generate_return_type(field_type: &Type, return_type: ReturnType) -> proc_macr
 ///
 /// # Returns
 ///
-/// - `TokenStream2` - The generated getter function.
+/// - `proc_macro2::TokenStream` - The generated getter function.
 fn build_named_get_quote(
     need_getter: bool,
     vis: proc_macro2::TokenStream,
@@ -646,7 +646,7 @@ fn build_named_get_quote(
 ///
 /// # Returns
 ///
-/// - `TokenStream2` - The generated try getter function.
+/// - `proc_macro2::TokenStream` - The generated try getter function.
 fn build_named_try_get_quote(
     need_getter: bool,
     vis: proc_macro2::TokenStream,
@@ -720,7 +720,7 @@ fn build_named_try_get_quote(
 ///
 /// # Returns
 ///
-/// - `TokenStream2` - The generated mutable getter function.
+/// - `proc_macro2::TokenStream` - The generated mutable getter function.
 fn build_named_get_mut_quote(
     need_getter_mut: bool,
     vis: proc_macro2::TokenStream,
@@ -752,7 +752,7 @@ fn build_named_get_mut_quote(
 ///
 /// # Returns
 ///
-/// - `TokenStream2` - The generated getter and setter functions.
+/// - `proc_macro2::TokenStream` - The generated getter and setter functions.
 fn build_named_set_quote(
     need_setter: bool,
     vis: proc_macro2::TokenStream,
@@ -789,7 +789,7 @@ fn build_named_set_quote(
 ///
 /// # Returns
 ///
-/// - `TokenStream2` - The generated getter and setter functions.
+/// - `proc_macro2::TokenStream` - The generated getter and setter functions.
 fn generate_named_getter_setter(
     field: &Field,
     need_getter: bool,
@@ -940,7 +940,7 @@ fn generate_named_getter_setter(
 ///
 /// # Returns
 ///
-/// - `TokenStream2` - The generated getter function.
+/// - `proc_macro2::TokenStream` - The generated getter function.
 fn build_tuple_get_quote(
     need_getter: bool,
     vis: proc_macro2::TokenStream,
@@ -1029,7 +1029,7 @@ fn build_tuple_get_quote(
 ///
 /// # Returns
 ///
-/// - `TokenStream2` - The generated try getter function.
+/// - `proc_macro2::TokenStream` - The generated try getter function.
 fn build_tuple_try_get_quote(
     need_getter: bool,
     vis: proc_macro2::TokenStream,
@@ -1103,7 +1103,7 @@ fn build_tuple_try_get_quote(
 ///
 /// # Returns
 ///
-/// - `TokenStream2` - The generated mutable getter function.
+/// - `proc_macro2::TokenStream` - The generated mutable getter function.
 fn build_tuple_get_mut_quote(
     need_getter_mut: bool,
     vis: proc_macro2::TokenStream,
@@ -1136,7 +1136,7 @@ fn build_tuple_get_mut_quote(
 ///
 /// # Returns
 ///
-/// - `TokenStream2` - The generated getter and setter functions.
+/// - `proc_macro2::TokenStream` - The generated getter and setter functions.
 fn build_tuple_set_quote(
     need_setter: bool,
     vis: proc_macro2::TokenStream,
@@ -1174,7 +1174,7 @@ fn build_tuple_set_quote(
 ///
 /// # Returns
 ///
-/// - `TokenStream2` - The generated getter and setter functions.
+/// - `proc_macro2::TokenStream` - The generated getter and setter functions.
 fn generate_tuple_getter_setter(
     field: &Field,
     index: usize,
@@ -1324,7 +1324,7 @@ fn generate_tuple_getter_setter(
 ///
 /// # Returns
 ///
-/// - `TokenStream2` - The generated getter and setter functions.
+/// - `proc_macro2::TokenStream` - The generated getter and setter functions.
 pub(crate) fn generate_getter_setter(
     field: &Field,
     field_index: Option<usize>,

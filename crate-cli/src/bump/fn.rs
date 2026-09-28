@@ -4,11 +4,11 @@ use super::*;
 ///
 /// # Arguments
 ///
-/// - `&str`: The version string to parse (e.g., "0.1.0" or "0.1.0-alpha")
+/// - `&str` - The version string to parse (e.g., "0.1.0" or "0.1.0-alpha")
 ///
 /// # Returns
 ///
-/// - `Option<Version>`: Parsed version if successful, None otherwise
+/// - `Option<Version>` - Parsed version if successful, None otherwise
 fn parse_version(version_str: &str) -> Option<Version> {
     let parts: Vec<&str> = version_str.split('-').collect();
     let version_part: &str = parts.first()?;
@@ -32,11 +32,11 @@ fn parse_version(version_str: &str) -> Option<Version> {
 ///
 /// # Arguments
 ///
-/// - `&str`: The pre-release string (e.g., "alpha", "alpha.1", "beta.2")
+/// - `&str` - The pre-release string (e.g., "alpha", "alpha.1", "beta.2")
 ///
 /// # Returns
 ///
-/// - `Option<(&str, u64)>`: Tuple of (pre_release_type, number) if parsed successfully
+/// - `Option<(&str, u64)>` - Tuple of (pre_release_type, number) if parsed successfully
 fn parse_prerelease(prerelease: &str) -> Option<(&str, u64)> {
     let parts: Vec<&str> = prerelease.split('.').collect();
     let pre_type: &str = parts.first()?;
@@ -51,12 +51,12 @@ fn parse_prerelease(prerelease: &str) -> Option<(&str, u64)> {
 ///
 /// # Arguments
 ///
-/// - `Option<&String>`: Current pre-release identifier
-/// - `&str`: Target pre-release type ("alpha", "beta", "rc")
+/// - `Option<&String>` - Current pre-release identifier
+/// - `&str` - Target pre-release type ("alpha", "beta", "rc")
 ///
 /// # Returns
 ///
-/// - `String`: The new pre-release identifier
+/// - `String` - The new pre-release identifier
 fn get_next_prerelease(current: Option<&String>, target_type: &str) -> String {
     match current {
         Some(pre) => {
@@ -76,11 +76,11 @@ fn get_next_prerelease(current: Option<&String>, target_type: &str) -> String {
 ///
 /// # Arguments
 ///
-/// - `&Version`: The Version struct to convert
+/// - `&Version` - The Version struct to convert
 ///
 /// # Returns
 ///
-/// - `String`: Version string (e.g., "0.1.0" or "0.1.0-alpha")
+/// - `String` - Version string (e.g., "0.1.0" or "0.1.0-alpha")
 fn version_to_string(version: &Version) -> String {
     let base: String = format!("{}.{}.{}", version.major, version.minor, version.patch);
     match &version.prerelease {
@@ -93,12 +93,12 @@ fn version_to_string(version: &Version) -> String {
 ///
 /// # Arguments
 ///
-/// - `&Version`: The current version
-/// - `&BumpVersionType`: The type of version bump to apply
+/// - `&Version` - The current version
+/// - `&BumpVersionType` - The type of version bump to apply
 ///
 /// # Returns
 ///
-/// - `Version`: The new version after bumping
+/// - `Version` - The new version after bumping
 fn bump_version(version: &Version, bump_type: &BumpVersionType) -> Version {
     match bump_type {
         BumpVersionType::Patch => Version {
@@ -159,12 +159,12 @@ fn bump_version(version: &Version, bump_type: &BumpVersionType) -> Version {
 ///
 /// # Arguments
 ///
-/// - `&str`: Current version string (e.g., "0.1.0" or "0.1.0-alpha.1")
-/// - `&BumpVersionType`: The type of version bump to apply
+/// - `&str` - Current version string (e.g., "0.1.0" or "0.1.0-alpha.1")
+/// - `&BumpVersionType` - The type of version bump to apply
 ///
 /// # Returns
 ///
-/// - `Option<String>`: New version string, or None if parsing fails
+/// - `Option<String>` - New version string, or None if parsing fails
 fn bump_version_str(version_str: &str, bump_type: &BumpVersionType) -> Option<String> {
     let version: Version = parse_version(version_str)?;
     Some(version_to_string(&bump_version(&version, bump_type)))
@@ -178,12 +178,12 @@ fn bump_version_str(version_str: &str, bump_type: &BumpVersionType) -> Option<St
 ///
 /// # Arguments
 ///
-/// - `&Path`: Workspace root directory
-/// - `&str`: Raw members entry (e.g., "core" or "crates/*")
+/// - `&Path` - Workspace root directory
+/// - `&str` - Raw members entry (e.g., "core" or "crates/*")
 ///
 /// # Returns
 ///
-/// - `Vec<PathBuf>`: Resolved member directories
+/// - `Vec<PathBuf>` - Resolved member directories
 fn expand_member_entry(root_dir: &Path, entry: &str) -> Vec<PathBuf> {
     match entry.strip_suffix("/*") {
         Some(prefix) => {
@@ -212,13 +212,13 @@ fn expand_member_entry(root_dir: &Path, entry: &str) -> Vec<PathBuf> {
 ///
 /// # Arguments
 ///
-/// - `&mut dyn TableLike`: Dependency table to scan
-/// - `&Path`: Base directory that relative `path` values resolve against
-/// - `&[(PathBuf, String)]`: Bumped members as (canonical dir, new version)
+/// - `&mut dyn TableLike` - Dependency table to scan
+/// - `&Path` - Base directory that relative `path` values resolve against
+/// - `&[(PathBuf, String)]` - Bumped members as (canonical dir, new version)
 ///
 /// # Returns
 ///
-/// - `bool`: True if at least one entry was rewritten
+/// - `bool` - True if at least one entry was rewritten
 fn realign_dep_versions(
     deps: &mut dyn TableLike,
     base_dir: &Path,
@@ -259,9 +259,9 @@ fn realign_dep_versions(
 ///
 /// # Arguments
 ///
-/// - `&Path`: Member directory that relative dep paths resolve against
-/// - `&Path`: Member Cargo.toml path
-/// - `&[(PathBuf, String)]`: Bumped members as (canonical dir, new version)
+/// - `&Path` - Member directory that relative dep paths resolve against
+/// - `&Path` - Member Cargo.toml path
+/// - `&[(PathBuf, String)]` - Bumped members as (canonical dir, new version)
 async fn realign_member_manifest(
     member_dir: &Path,
     member_manifest_path: &Path,
@@ -317,14 +317,14 @@ async fn realign_member_manifest(
 ///
 /// # Arguments
 ///
-/// - `&Path`: Workspace root Cargo.toml path
-/// - `&mut DocumentMut`: Parsed root manifest, updated and written when a
+/// - `&Path` - Workspace root Cargo.toml path
+/// - `&mut DocumentMut` - Parsed root manifest, updated and written when a
 ///   `[workspace.dependencies]` entry needs realigning
-/// - `&BumpVersionType`: Type of version bump to apply to each member
+/// - `&BumpVersionType` - Type of version bump to apply to each member
 ///
 /// # Returns
 ///
-/// - `Result<String, Box<dyn std::error::Error>>`: Summary string
+/// - `Result<String, Box<dyn std::error::Error>>` - Summary string
 async fn bump_workspace_members(
     root_path: &Path,
     doc: &mut DocumentMut,
@@ -426,12 +426,12 @@ async fn bump_workspace_members(
 ///
 /// # Arguments
 ///
-/// - `&str`: Path to Cargo.toml file
-/// - `&BumpVersionType`: Type of version bump to apply
+/// - `&str` - Path to Cargo.toml file
+/// - `&BumpVersionType` - Type of version bump to apply
 ///
 /// # Returns
 ///
-/// - `Result<String, Box<dyn std::error::Error>>`: The new version string, a
+/// - `Result<String, Box<dyn std::error::Error>>` - The new version string, a
 ///   workspace bump summary, or an error
 pub async fn execute_bump(
     manifest_path: &str,

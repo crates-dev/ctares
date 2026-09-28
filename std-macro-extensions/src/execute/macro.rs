@@ -1,8 +1,8 @@
 /// Execute a synchronous function with given arguments.
 ///
 /// # Parameters
-/// - `$path`: The function path.
-/// - `$array`: The primary argument.
+/// - `$path` - The function path.
+/// - `$array` - The primary argument.
 /// - `$arg`...: Optional trailing arguments.
 ///
 /// # Returns
@@ -20,8 +20,8 @@ macro_rules! execute {
 /// Execute an asynchronous function and return a future.
 ///
 /// # Parameters
-/// - `$path`: The async function path.
-/// - `$array`: The primary argument.
+/// - `$path` - The async function path.
+/// - `$array` - The primary argument.
 /// - `$arg`...: Optional trailing arguments.
 ///
 /// # Returns

@@ -106,7 +106,7 @@ impl Server {
     ///
     /// # Returns
     ///
-    /// - `RwLockReadGuard<ServerData>` - The read guard for ServerData.
+    /// - `RwLockReadGuard<'_, ServerData>` - The read guard for ServerData.
     async fn read(&self) -> RwLockReadGuard<'_, ServerData> {
         self.0.read().await
     }
@@ -115,7 +115,7 @@ impl Server {
     ///
     /// # Returns
     ///
-    /// - `RwLockWriteGuard<ServerData>` - The write guard for ServerData.
+    /// - `RwLockWriteGuard<'_, ServerData>` - The write guard for ServerData.
     async fn write(&self) -> RwLockWriteGuard<'_, ServerData> {
         self.0.write().await
     }

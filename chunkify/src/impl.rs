@@ -64,7 +64,7 @@ impl<'a> ChunkStrategy<'a> {
     ///
     /// # Returns
     ///
-    /// - `NewChunkStrategyResult` - Result containing strategy or error
+    /// - `NewChunkStrategyResult<'a>` - Result containing strategy or error
     pub fn new<F>(
         start_chunk_index: usize,
         upload_dir: &'a str,

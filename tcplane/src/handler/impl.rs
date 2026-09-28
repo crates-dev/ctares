@@ -1,23 +1,23 @@
 use super::*;
 
-/// Implementation of server hook handler factory functions.
-/// Creates a server hook handler factory from a type implementing `ServerHook`.
-///
-/// # Arguments
-///
-/// - `ServerHook` - The hook type that implements `ServerHook`.
-///
-/// # Returns
-///
-/// - `ServerHookHandler` - A boxed handler function.
-pub fn server_hook_factory<H>() -> ServerHookHandler
-where
-    H: ServerHook,
-{
-    Arc::new(|ctx: Context| {
-        Box::pin(async move {
-            let hook: H = H::new(&ctx).await;
-            hook.handle(&ctx).await;
-        })
-    })
+impl ServerHook for DefaultHook {
+    /// Creates a new `DefaultHook` instance.
+    ///
+    /// # Arguments
+    ///
+    /// - `&Context` - The context (unused).
+    ///
+    /// # Returns
+    ///
+    /// - `Self` - A new instance of `DefaultHook`.
+    async fn new(_: &Context) -> Self {
+        Self
+    }
+
+    /// Handles the hook execution (no-op).
+    ///
+    /// # Arguments
+    ///
+    /// - `&Context` - The context (unused).
+    async fn handle(self, _: &Context) {}
 }

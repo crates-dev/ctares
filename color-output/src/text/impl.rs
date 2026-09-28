@@ -23,7 +23,7 @@ impl<'a> Text<'a> {
     ///
     /// # Returns
     ///
-    /// - `Text` - New instance with cloned configuration
+    /// - `["&Text<'a>"]` - New instance with cloned configuration
     #[inline(always)]
     pub(crate) fn new_from(text: &Text<'a>) -> Self {
         Self { ..*text }
@@ -36,7 +36,7 @@ impl<'a> Text<'a> {
     /// bold formatting to the text color.
     ///
     /// # Returns
-    /// - `Cow<'a, str>`: An owned copy of the formatted string.
+    /// - `Cow<'a, str>` - An owned copy of the formatted string.
     pub fn get_display_str_cow(&self) -> Cow<'a, str> {
         let text: &str = self.get_text();
         let bold: bool = *self.get_bold();

@@ -45,7 +45,7 @@ impl ServerConfig {
     ///
     /// # Returns
     ///
-    /// - `ArcRwLockReadGuard<ServerConfigData>` - The read guard.
+    /// - `ArcRwLockReadGuard<'_, ServerConfigData>` - The read guard.
     pub(crate) async fn read(&self) -> ArcRwLockReadGuard<'_, ServerConfigData> {
         self.0.read().await
     }
@@ -54,7 +54,7 @@ impl ServerConfig {
     ///
     /// # Returns
     ///
-    /// - `ArcRwLockWriteGuard<ServerConfigData>` - The write guard.
+    /// - `ArcRwLockWriteGuard<'_, ServerConfigData>` - The write guard.
     pub(crate) async fn write(&self) -> ArcRwLockWriteGuard<'_, ServerConfigData> {
         self.0.write().await
     }
@@ -99,7 +99,7 @@ impl ServerConfig {
     ///
     /// # Arguments
     ///
-    /// - `Into<String>` - Type that can be converted into String.
+    /// - `H` - Type that can be converted into String.
     ///
     /// # Returns
     ///

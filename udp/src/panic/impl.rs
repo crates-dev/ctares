@@ -22,7 +22,7 @@ impl PanicData {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The panic message.
+    /// - `M` - The panic message.
     ///
     /// # Returns
     ///
@@ -60,7 +60,7 @@ impl Display for PanicData {
     ///
     /// # Arguments
     ///
-    /// - `f` - Formatter for the output.
+    /// - `&mut fmt::Formatter<'_>` - Formatter for the output.
     ///
     /// # Returns
     ///

@@ -14,8 +14,8 @@ macro_rules! cin {
 /// Parse input string into a value or a vector of values of a specified type.
 ///
 /// # Parameters
-/// - `input`: The input `&str` to be parsed.
-/// - `type`: The target type to parse into.
+/// - `input` - The input `&str` to be parsed.
+/// - `type` - The target type to parse into.
 ///
 /// # Returns
 /// - A single value of the specified type if used in scalar mode.

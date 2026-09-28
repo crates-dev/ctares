@@ -7,8 +7,8 @@ use super::*;
 ///
 /// # Arguments
 ///
-/// - `attr` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
-/// - `item` - The function to instrument
+/// - `TokenStream` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
+/// - `TokenStream` - The function to instrument
 ///
 /// # Returns
 ///
@@ -27,8 +27,8 @@ pub(crate) fn instrument_trace_macro(attr: TokenStream, item: TokenStream) -> To
 ///
 /// # Arguments
 ///
-/// - `attr` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
-/// - `item` - The function to instrument
+/// - `TokenStream` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
+/// - `TokenStream` - The function to instrument
 ///
 /// # Returns
 ///
@@ -47,8 +47,8 @@ pub(crate) fn instrument_debug_macro(attr: TokenStream, item: TokenStream) -> To
 ///
 /// # Arguments
 ///
-/// - `attr` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
-/// - `item` - The function to instrument
+/// - `TokenStream` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
+/// - `TokenStream` - The function to instrument
 ///
 /// # Returns
 ///
@@ -67,8 +67,8 @@ pub(crate) fn instrument_info_macro(attr: TokenStream, item: TokenStream) -> Tok
 ///
 /// # Arguments
 ///
-/// - `attr` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
-/// - `item` - The function to instrument
+/// - `TokenStream` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
+/// - `TokenStream` - The function to instrument
 ///
 /// # Returns
 ///
@@ -87,8 +87,8 @@ pub(crate) fn instrument_warn_macro(attr: TokenStream, item: TokenStream) -> Tok
 ///
 /// # Arguments
 ///
-/// - `attr` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
-/// - `item` - The function to instrument
+/// - `TokenStream` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
+/// - `TokenStream` - The function to instrument
 ///
 /// # Returns
 ///

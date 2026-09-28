@@ -79,7 +79,7 @@ impl FileLogger {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The data to be logged, which will be converted to string slice.
+    /// - `T` - The data to be logged, which will be converted to string slice.
     /// - `L: FileLoggerFuncTrait<T>` - The log formatting function.
     /// - `&str` - The subdirectory for log file.
     ///
@@ -104,7 +104,7 @@ impl FileLogger {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The data to be logged, which will be converted to string slice.
+    /// - `T` - The data to be logged, which will be converted to string slice.
     /// - `L: FileLoggerFuncTrait<T>` - The log formatting function.
     /// - `&str` - The subdirectory for log file.
     ///
@@ -129,7 +129,7 @@ impl FileLogger {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - Trace data to be logged, which will be converted to string slice.
+    /// - `T` - Trace data to be logged, which will be converted to string slice.
     /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
     ///
     /// # Returns
@@ -147,7 +147,7 @@ impl FileLogger {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - Trace data to be logged, which will be converted to string slice.
+    /// - `T` - Trace data to be logged, which will be converted to string slice.
     /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
     ///
     /// # Returns
@@ -165,7 +165,7 @@ impl FileLogger {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - Debug data to be logged, which will be converted to string slice.
+    /// - `T` - Debug data to be logged, which will be converted to string slice.
     /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
     ///
     /// # Returns
@@ -183,7 +183,7 @@ impl FileLogger {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - Debug data to be logged, which will be converted to string slice.
+    /// - `T` - Debug data to be logged, which will be converted to string slice.
     /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
     ///
     /// # Returns
@@ -201,7 +201,7 @@ impl FileLogger {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - Info data to be logged, which will be converted to string slice.
+    /// - `T` - Info data to be logged, which will be converted to string slice.
     /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
     ///
     /// # Returns
@@ -219,7 +219,7 @@ impl FileLogger {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - Info data to be logged, which will be converted to string slice.
+    /// - `T` - Info data to be logged, which will be converted to string slice.
     /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
     ///
     /// # Returns
@@ -237,7 +237,7 @@ impl FileLogger {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - Warn data to be logged, which will be converted to string slice.
+    /// - `T` - Warn data to be logged, which will be converted to string slice.
     /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
     ///
     /// # Returns
@@ -255,7 +255,7 @@ impl FileLogger {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - Warn data to be logged, which will be converted to string slice.
+    /// - `T` - Warn data to be logged, which will be converted to string slice.
     /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
     ///
     /// # Returns
@@ -273,7 +273,7 @@ impl FileLogger {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - Error data to be logged, which will be converted to string slice.
+    /// - `T` - Error data to be logged, which will be converted to string slice.
     /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
     ///
     /// # Returns
@@ -291,7 +291,7 @@ impl FileLogger {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - Error data to be logged, which will be converted to string slice.
+    /// - `T` - Error data to be logged, which will be converted to string slice.
     /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
     ///
     /// # Returns

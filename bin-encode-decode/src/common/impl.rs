@@ -101,7 +101,7 @@ impl<'a> Charset<'a> {
     ///
     /// # Returns
     ///
-    /// - `&mut Charset<'a>` - Self reference for method chaining.
+    /// - `&mut Self` - Self reference for method chaining.
     pub fn charset<'b>(&mut self, charset: &'b str) -> &mut Self
     where
         'b: 'a,

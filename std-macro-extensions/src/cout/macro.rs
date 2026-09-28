@@ -1,7 +1,7 @@
 /// Print formatted output to standard output using `print!`.
 ///
 /// # Parameters
-/// - `args`: A format string followed by optional expressions, just like in `print!`.
+/// - `args` - A format string followed by optional expressions, just like in `print!`.
 ///
 /// # Returns
 /// - Nothing. This macro prints directly to standard output.
@@ -30,7 +30,7 @@ macro_rules! endl {
 /// Print formatted output with a newline and flush the standard output buffer.
 ///
 /// # Parameters
-/// - `args`: A format string followed by optional expressions, just like in `println!`.
+/// - `args` - A format string followed by optional expressions, just like in `println!`.
 ///
 /// # Returns
 /// - Nothing. This macro prints to standard output and flushes the buffer.

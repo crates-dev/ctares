@@ -119,7 +119,7 @@ impl ThreadPool {
     where
         F: AsyncRecoverableFunction,
     {
-        let job_with_handler = Box::new(move || {
+        let job_with_handler: ThreadPoolJob = Box::new(move || {
             Builder::new_current_thread()
                 .enable_all()
                 .build()
@@ -149,7 +149,7 @@ impl ThreadPool {
         F: AsyncRecoverableFunction,
         E: AsyncErrorHandlerFunction,
     {
-        let job_with_handler = Box::new(move || {
+        let job_with_handler: ThreadPoolJob = Box::new(move || {
             Builder::new_current_thread()
                 .enable_all()
                 .build()
@@ -196,7 +196,7 @@ impl ThreadPool {
         E: AsyncErrorHandlerFunction,
         L: AsyncRecoverableFunction,
     {
-        let job_with_handler = Box::new(move || {
+        let job_with_handler: ThreadPoolJob = Box::new(move || {
             Builder::new_current_thread()
                 .enable_all()
                 .build()

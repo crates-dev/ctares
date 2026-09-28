@@ -15,7 +15,6 @@ use super::*;
 #[derive(Clone, Debug, Eq, Getter, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct PaymentIntent {
     /// Stripe's identifier for this intent.
-    #[get]
     pub(super) id: String,
     /// The amount Stripe will capture, in minor units.
     #[get(skip)]

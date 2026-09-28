@@ -13,12 +13,10 @@ use super::*;
 #[derive(Clone, Debug, Eq, Getter, PartialEq)]
 pub struct WebhookEvent {
     /// The exact bytes Stripe signed.
-    #[get]
     pub(super) payload: String,
     /// The timestamp Stripe signed, in seconds since the epoch.
     #[get(type(copy))]
     pub(super) timestamp: i64,
     /// The hex digest Stripe sent, without the `v1=` prefix.
-    #[get]
     pub(super) signature: String,
 }

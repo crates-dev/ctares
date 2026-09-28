@@ -26,7 +26,7 @@ use {
 };
 
 use std::{
-    collections::HashMap,
+    collections::{HashMap, HashSet},
     fmt::{Display, Formatter},
     iter::Peekable,
     str::FromStr,

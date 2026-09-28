@@ -11,6 +11,5 @@ pub struct StripeId {
     #[get(type(copy))]
     pub(super) kind: StripeIdKind,
     /// The full wire value including its type prefix.
-    #[get]
     pub(super) raw: String,
 }

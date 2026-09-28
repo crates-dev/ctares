@@ -99,7 +99,7 @@ impl Context {
     ///
     /// # Returns
     ///
-    /// - `ArcRwLockReadGuard<ContextData>` - The read guard.
+    /// - `ArcRwLockReadGuard<'_, ContextData>` - The read guard.
     pub(crate) async fn read(&self) -> ArcRwLockReadGuard<'_, ContextData> {
         self.0.read().await
     }
@@ -108,7 +108,7 @@ impl Context {
     ///
     /// # Returns
     ///
-    /// - `ArcRwLockWriteGuard<ContextData>` - The write guard.
+    /// - `ArcRwLockWriteGuard<'_, ContextData>` - The write guard.
     pub(crate) async fn write(&self) -> ArcRwLockWriteGuard<'_, ContextData> {
         self.0.write().await
     }
@@ -383,8 +383,8 @@ impl Context {
     ///
     /// # Arguments
     ///
-    /// - `Into<String>` - The key for the data.
-    /// - `Any + Send + Sync + Clone` - The value to set, which must be cloneable and thread-safe.
+    /// - `K` - The key for the data.
+    /// - `V` - The value to set, which must be cloneable and thread-safe.
     ///
     /// # Returns
     ///
@@ -405,7 +405,7 @@ impl Context {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The key for the data.
+    /// - `K` - The key for the data.
     ///
     /// # Returns
     ///
@@ -427,7 +427,7 @@ impl Context {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The key for the data.
+    /// - `K` - The key for the data.
     ///
     /// # Returns
     ///
@@ -448,7 +448,7 @@ impl Context {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The key of the data to remove.
+    /// - `K` - The key of the data to remove.
     ///
     /// # Returns
     ///

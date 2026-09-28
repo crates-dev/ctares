@@ -79,7 +79,6 @@ impl ServerManager {
     #[cfg(windows)]
     pub async fn start_daemon(&self) -> ServerManagerResult {
         (self.get_start_hook())().await;
-        use std::os::windows::process::CommandExt;
         if std::env::var(RUNNING_AS_DAEMON).is_ok() {
             self.write_pid_file()?;
             let rt: Runtime = Runtime::new()?;
@@ -206,8 +205,8 @@ impl ServerManager {
     ///
     /// # Arguments
     ///
-    /// - `run_args` - A slice of string arguments to pass to `cargo-watch`.
-    /// - `wait` - A boolean indicating whether to wait for the `cargo-watch` process to complete.
+    /// - `&[&str]` - A slice of string arguments to pass to `cargo-watch`.
+    /// - `bool` - A boolean indicating whether to wait for the `cargo-watch` process to complete.
     ///
     /// # Returns
     ///
@@ -255,7 +254,7 @@ impl ServerManager {
     ///
     /// # Arguments
     ///
-    /// - `run_args` - A slice of string arguments to pass to `cargo-watch`.
+    /// - `&[&str]` - A slice of string arguments to pass to `cargo-watch`.
     ///
     /// # Returns
     ///
@@ -270,7 +269,7 @@ impl ServerManager {
     ///
     /// # Arguments
     ///
-    /// - `run_args` - A slice of string arguments to pass to `cargo-watch`.
+    /// - `&[&str]` - A slice of string arguments to pass to `cargo-watch`.
     ///
     /// # Returns
     ///

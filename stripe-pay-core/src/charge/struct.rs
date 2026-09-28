@@ -8,7 +8,6 @@ use super::*;
 #[derive(Clone, Debug, Eq, Getter, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Charge {
     /// Stripe's identifier for this charge.
-    #[get]
     pub(super) id: String,
     /// The amount captured, in minor units.
     #[get(skip)]

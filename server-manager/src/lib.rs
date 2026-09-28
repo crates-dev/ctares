@@ -28,6 +28,6 @@ use std::{
 };
 
 #[cfg(windows)]
-use std::ffi::c_void;
+use std::{ffi::c_void, os::windows::process::CommandExt};
 
 use {lombok_macros::*, tokio::runtime::Runtime};

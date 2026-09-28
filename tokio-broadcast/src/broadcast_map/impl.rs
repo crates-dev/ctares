@@ -51,7 +51,7 @@ impl<T: BroadcastMapTrait> BroadcastMap<T> {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - Key convertible to `str`.
+    /// - `K` - Key convertible to `str`.
     /// - `capacity` - Maximum number of buffered messages.
     ///
     /// # Returns
@@ -70,7 +70,7 @@ impl<T: BroadcastMapTrait> BroadcastMap<T> {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - Key convertible to `str`.
+    /// - `K` - Key convertible to `str`.
     ///
     /// # Returns
     ///
@@ -89,11 +89,11 @@ impl<T: BroadcastMapTrait> BroadcastMap<T> {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - Key convertible to `str`.
+    /// - `K` - Key convertible to `str`.
     ///
     /// # Returns
     ///
-    /// - `Option<BroadcastReceiver<T>>` - New receiver if channel exists.
+    /// - `Option<BroadcastMapReceiver<T>>` - New receiver if channel exists.
     #[inline(always)]
     pub fn subscribe<K>(&self, key: K) -> Option<BroadcastMapReceiver<T>>
     where
@@ -109,12 +109,12 @@ impl<T: BroadcastMapTrait> BroadcastMap<T> {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - Key convertible to `str`.
+    /// - `K` - Key convertible to `str`.
     /// - `capacity` - Capacity for new channel if needed.
     ///
     /// # Returns
     ///
-    /// - `BroadcastReceiver<T>` - New receiver for the channel.
+    /// - `BroadcastMapReceiver<T>` - New receiver for the channel.
     #[inline(always)]
     pub fn subscribe_or_insert<K>(&self, key: K, capacity: Capacity) -> BroadcastMapReceiver<T>
     where
@@ -134,7 +134,7 @@ impl<T: BroadcastMapTrait> BroadcastMap<T> {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - Key convertible to `str`.
+    /// - `K` - Key convertible to `str`.
     /// - `T` - Message to broadcast.
     ///
     /// # Returns
@@ -155,7 +155,7 @@ impl<T: BroadcastMapTrait> BroadcastMap<T> {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - Key convertible to `str`.
+    /// - `K` - Key convertible to `str`.
     /// - `T` - Message to broadcast.
     ///
     /// # Returns
@@ -180,7 +180,7 @@ impl<T: BroadcastMapTrait> BroadcastMap<T> {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - Key convertible to `str`.
+    /// - `K` - Key convertible to `str`.
     ///
     /// # Returns
     ///

@@ -66,7 +66,7 @@ pub trait AsyncErrorHandlerFunction: Send + Sync + 'static {
 
     /// Handles an error asynchronously.
     ///
-    /// - `error`: The error message to handle.
+    /// - `error` - The error message to handle.
     fn call(self, error: Arc<String>) -> Self::Future;
 }
 

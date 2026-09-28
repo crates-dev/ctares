@@ -6,7 +6,6 @@ impl fmt::Display for HotRestartError {
     ///
     /// # Arguments
     ///
-    /// - `&Self` - The HotRestartError instance.
     /// - `&mut fmt::Formatter` - The formatter to write to.
     ///
     /// # Returns

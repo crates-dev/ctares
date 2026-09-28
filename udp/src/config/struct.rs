@@ -8,19 +8,19 @@ use super::*;
 #[derive(Clone, Data, Debug, Eq, PartialEq)]
 pub struct ServerConfigData {
     /// The host address the server will bind to.
-    #[set(pub, type(AsRef<str>))]
+    #[set(type(AsRef<str>))]
     pub(super) host: String,
     /// The port number the server will listen on.
-    #[get(pub, type(copy))]
+    #[get(type(copy))]
     pub(super) port: u16,
     /// The buffer size for receiving UDP packets.
-    #[get(pub, type(copy))]
+    #[get(type(copy))]
     pub(super) buffer_size: usize,
     /// The `TCP_NODELAY` option for sockets (applied when applicable).
-    #[get(pub, type(copy))]
+    #[get(type(copy))]
     pub(super) nodelay: Option<bool>,
     /// The `IP_TTL` option for sockets (applied when applicable).
-    #[get(pub, type(copy))]
+    #[get(type(copy))]
     pub(super) ttl: Option<u32>,
 }
 

@@ -7,7 +7,7 @@ use super::*;
 /// It supports various visibility modifiers like `pub`, `pub(crate)`, `pub(super)`, etc.
 ///
 /// # Arguments
-/// - `input` - The derive input to analyze for visibility attributes
+/// - `&DeriveInput` - The derive input to analyze for visibility attributes
 ///
 /// # Returns
 /// - The parsed visibility for the constructor, defaults to Public if not specified

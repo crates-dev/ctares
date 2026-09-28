@@ -6,7 +6,7 @@ impl Response {
     ///
     /// # Arguments
     ///
-    /// - `Into<ResponseData>` - Data that can be converted into ResponseData.
+    /// - `T` - Data that can be converted into ResponseData.
     ///
     /// # Returns
     ///
@@ -40,7 +40,7 @@ impl Response {
     ///
     /// # Arguments
     ///
-    /// - `Into<ResponseData>` - Data that can be converted into ResponseData.
+    /// - `T` - Data that can be converted into ResponseData.
     ///
     /// # Returns
     ///

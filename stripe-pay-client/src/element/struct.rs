@@ -13,15 +13,12 @@ use super::*;
 #[derive(Clone, Data, Debug, Eq, PartialEq)]
 pub struct ElementConfig {
     /// The client secret Stripe issued for the intent.
-    #[get]
     #[set(skip)]
     pub(super) client_secret: String,
     /// Which element variant to render.
     #[get(type(copy))]
-    #[set]
     pub(super) kind: ElementKind,
     /// The locale for the element's built-in labels.
-    #[get]
     #[set(type(AsRef<str>))]
     pub(super) locale: String,
 }

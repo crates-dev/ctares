@@ -9,7 +9,7 @@ use super::*;
 ///
 /// # Returns
 ///
-/// - `Result<(), IoError>` - Ok if successful, Err with error details otherwise.
+/// - `Result<(), Error>` - Ok if successful, Err with error details otherwise.
 pub async fn async_write_to_file(file_path: &str, content: &[u8]) -> Result<(), Error> {
     if let Some(parent_dir) = std::path::Path::new(file_path).parent() {
         tokio::fs::create_dir_all(parent_dir).await?;
@@ -33,7 +33,7 @@ pub async fn async_write_to_file(file_path: &str, content: &[u8]) -> Result<(), 
 ///
 /// # Returns
 ///
-/// - `Result<(), IoError>` - Ok if successful, Err with error details otherwise.
+/// - `Result<(), Error>` - Ok if successful, Err with error details otherwise.
 pub async fn async_append_to_file(file_path: &str, content: &[u8]) -> Result<(), Error> {
     if let Some(parent_dir) = std::path::Path::new(file_path).parent() {
         tokio::fs::create_dir_all(parent_dir).await?;

@@ -3,8 +3,8 @@ use super::*;
 /// Parses the provided token stream and modifies the given configuration.
 ///
 /// # Arguments
-/// - `tokens` - A `TokenStream2` containing the tokens to be parsed.
-/// - `config` - A mutable reference to the `Config` structure that will be modified based on the parsed tokens.
+/// - `proc_macro2::TokenStream` - A `TokenStream2` containing the tokens to be parsed.
+/// - `&mut Config` - A mutable reference to the `Config` structure that will be modified based on the parsed tokens.
 ///
 /// # Returns
 /// - The function does not return a value. It modifies the provided `config` in place.
@@ -87,7 +87,7 @@ pub(crate) fn parse_tokens(tokens: proc_macro2::TokenStream, config: &mut Config
 /// Analyzes the given token stream and returns a configuration based on the attributes found.
 ///
 /// # Arguments
-/// - `tokens` - A `TokenStream2` containing the tokens representing the attributes to be analyzed.
+/// - `proc_macro2::TokenStream` - A `TokenStream2` containing the tokens representing the attributes to be analyzed.
 ///
 /// # Returns
 /// - A `Config` structure representing the parsed configuration based on the attributes in the token stream.

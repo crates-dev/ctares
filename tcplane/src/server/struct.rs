@@ -43,14 +43,14 @@ pub struct Server(pub(super) ArcRwLock<ServerData>);
 #[derive(Clone, Data)]
 pub struct ServerControlHook {
     /// A hook that returns a future, which completes when the server's main task finishes.
-    #[get(pub, type(clone))]
+    #[get(type(clone))]
     #[get(pub(crate))]
     #[get_mut(pub(crate))]
     #[set(pub(crate))]
     pub(crate) wait_hook:
         Arc<dyn Fn() -> Pin<Box<dyn Future<Output = ()> + Send + 'static>> + Send + Sync>,
     /// A hook that, when called, initiates a graceful shutdown of the server.
-    #[get(pub, type(clone))]
+    #[get(type(clone))]
     #[get(pub(crate))]
     #[get_mut(pub(crate))]
     #[set(pub(crate))]

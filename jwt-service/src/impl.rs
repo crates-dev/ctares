@@ -7,7 +7,7 @@ impl JwtConfig {
     ///
     /// - `secret` - The secret key for signing tokens.
     /// - `expiration_seconds` - Token validity duration in seconds.
-    /// - `AsRef<str>` - The issuer identifier for the token.
+    /// - `S` - The issuer identifier for the token.
     ///
     /// # Returns
     ///
@@ -29,8 +29,8 @@ impl JwtExtraJwtClaims {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The subject (user identifier).
-    /// - `AsRef<str>` - The issuer.
+    /// - `S` - The subject (user identifier).
+    /// - `S` - The issuer.
     /// - `usize` - Expiration time as a Unix timestamp.
     /// - `usize` - Issued at time as a Unix timestamp.
     /// - `usize` - Not before time as a Unix timestamp.
@@ -85,8 +85,8 @@ impl ExtraJwtClaims {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The subject (user identifier).
-    /// - `AsRef<str>` - The issuer.
+    /// - `S` - The subject (user identifier).
+    /// - `S` - The issuer.
     /// - `usize` - Expiration time as a Unix timestamp.
     ///
     /// # Returns
@@ -198,7 +198,7 @@ impl JwtService {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The subject (user identifier) to include in the token.
+    /// - `S` - The subject (user identifier) to include in the token.
     ///
     /// # Returns
     ///
@@ -237,7 +237,7 @@ impl JwtService {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The JWT token to validate.
+    /// - `T` - The JWT token to validate.
     ///
     /// # Returns
     ///
@@ -258,7 +258,7 @@ impl JwtService {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The JWT token to extract the subject from.
+    /// - `T` - The JWT token to extract the subject from.
     ///
     /// # Returns
     ///
@@ -275,7 +275,7 @@ impl JwtService {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The JWT token to check.
+    /// - `T` - The JWT token to check.
     ///
     /// # Returns
     ///
@@ -307,8 +307,8 @@ impl JwtService {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The subject (user identifier) to include in the token.
-    /// - `Clone + Default + Serialize + for<'de> Deserialize<'de>` - The custom claims to include in the token payload.
+    /// - `S` - The subject (user identifier) to include in the token.
+    /// - `U` - The custom claims to include in the token payload.
     ///
     /// # Returns
     ///
@@ -350,7 +350,7 @@ impl JwtService {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The JWT token to validate.
+    /// - `T` - The JWT token to validate.
     ///
     /// # Returns
     ///
@@ -375,7 +375,7 @@ impl JwtService {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The subject (user identifier) to include in the token.
+    /// - `S` - The subject (user identifier) to include in the token.
     /// - `HashMap<String, Value>` - Additional key-value pairs to include in the token payload.
     ///
     /// # Returns
@@ -416,7 +416,7 @@ impl JwtService {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The JWT token to validate.
+    /// - `T` - The JWT token to validate.
     ///
     /// # Returns
     ///
@@ -495,7 +495,7 @@ impl ExtraJwtClaims {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The key to look up.
+    /// - `K` - The key to look up.
     ///
     /// # Returns
     ///
@@ -511,7 +511,7 @@ impl ExtraJwtClaims {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The key to check.
+    /// - `K` - The key to check.
     ///
     /// # Returns
     ///
@@ -527,7 +527,7 @@ impl ExtraJwtClaims {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The key to remove.
+    /// - `K` - The key to remove.
     ///
     /// # Returns
     ///

@@ -1,6 +1,9 @@
-//! A high-performance async library for JWT (JSON Web Token) authentication and authorization.
-//! Supports token generation, validation, and custom claims with optimized memory usage,
-//! ideal for HTTP clients/servers and web applications.
+//! jwt-service
+//!
+//! A high-performance async library for JWT (JSON Web Token) authentication
+//! and authorization. Supports token generation, validation, and custom
+//! claims with optimized memory usage, ideal for HTTP clients/servers and
+//! web applications.
 
 mod r#const;
 mod r#enum;

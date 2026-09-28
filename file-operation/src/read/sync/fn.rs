@@ -8,7 +8,7 @@ use super::*;
 ///
 /// # Returns
 ///
-/// - `Result<T, Box<dyn std::error::Error + Send + Sync>>` - The converted file content or an error.
+/// - `Result<T, Box<dyn std::error::Error>>` - The converted file content or an error.
 pub fn read_from_file<T>(file_path: &str) -> Result<T, Box<dyn std::error::Error>>
 where
     T: From<Vec<u8>>,

@@ -118,7 +118,7 @@ impl RequestTrait for TcpRequest {
     ///
     /// # Returns
     ///
-    /// - `RequestResult` - The result of the send operation.
+    /// - `Self::RequestResult` - The result of the send operation.
     fn send(&mut self, data: &[u8]) -> Self::RequestResult {
         let cfg_timeout: Config = self
             .get_config()

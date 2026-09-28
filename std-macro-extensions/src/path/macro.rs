@@ -5,11 +5,11 @@
 /// - Supports multiple path segments for flexible usage.
 ///
 /// # Parameters
-/// - `base`: The base path as a string slice. It serves as the starting point for the combined path.
-/// - `sub_path`: One or more subsequent paths as string slices. These are appended to the base path in order.
+/// - `base` - The base path as a string slice. It serves as the starting point for the combined path.
+/// - `sub_path` - One or more subsequent paths as string slices. These are appended to the base path in order.
 ///
 /// # Returns
-/// - `String`: The resulting combined path as a `String`, with platform-specific separators and cleaned of redundant slashes.
+/// - `String` - The resulting combined path as a `String`, with platform-specific separators and cleaned of redundant slashes.
 #[macro_export]
 macro_rules! join_paths {
     ($base:expr, $($sub_path:expr),+) => {{

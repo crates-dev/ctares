@@ -44,7 +44,7 @@ impl Server {
     ///
     /// # Returns
     ///
-    /// - `ArcRwLockReadGuard<ServerData>` - The read guard.
+    /// - `ArcRwLockReadGuard<'_, ServerData>` - The read guard.
     pub async fn read(&self) -> ArcRwLockReadGuard<'_, ServerData> {
         self.0.read().await
     }
@@ -53,7 +53,7 @@ impl Server {
     ///
     /// # Returns
     ///
-    /// - `ArcRwLockWriteGuard<ServerData>` - The write guard.
+    /// - `ArcRwLockWriteGuard<'_, ServerData>` - The write guard.
     pub(crate) async fn write(&self) -> ArcRwLockWriteGuard<'_, ServerData> {
         self.0.write().await
     }
@@ -76,7 +76,7 @@ impl Server {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - Type that can be referenced as a string slice.
+    /// - `H` - Type that can be referenced as a string slice.
     /// - `u16` - The port number.
     ///
     /// # Returns

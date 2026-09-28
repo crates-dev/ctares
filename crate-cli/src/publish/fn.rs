@@ -6,11 +6,11 @@ use super::*;
 ///
 /// # Arguments
 ///
-/// - `&Path`: Path to workspace root Cargo.toml
+/// - `&Path` - Path to workspace root Cargo.toml
 ///
 /// # Returns
 ///
-/// - `Result<(Vec<Package>, bool), PublishError>`: Packages and whether a
+/// - `Result<(Vec<Package>, bool), PublishError>` - Packages and whether a
 ///   root package was appended
 async fn discover_packages(
     workspace_manifest: &Path,
@@ -55,14 +55,14 @@ async fn discover_packages(
 ///
 /// # Arguments
 ///
-/// - `&Path`: Base path for expansion
-/// - `&str`: Glob pattern
-/// - `&mut Vec<Package>`: Output vector for found packages
-/// - `Option<&str>`: Workspace root version for `version.workspace = true`
+/// - `&Path` - Base path for expansion
+/// - `&str` - Glob pattern
+/// - `&mut Vec<Package>` - Output vector for found packages
+/// - `Option<&str>` - Workspace root version for `version.workspace = true`
 ///
 /// # Returns
 ///
-/// - `Result<(), PublishError>`: Success or error
+/// - `Result<(), PublishError>` - Success or error
 async fn expand_pattern(
     base_path: &Path,
     pattern: &str,
@@ -103,12 +103,12 @@ async fn expand_pattern(
 ///
 /// # Arguments
 ///
-/// - `&Path`: Path to package Cargo.toml
-/// - `Option<&str>`: Workspace root `[workspace.package].version`, if any
+/// - `&Path` - Path to package Cargo.toml
+/// - `Option<&str>` - Workspace root `[workspace.package].version`, if any
 ///
 /// # Returns
 ///
-/// - `Result<Package, PublishError>`: Package info or error
+/// - `Result<Package, PublishError>` - Package info or error
 async fn read_package_manifest(
     manifest_path: &Path,
     workspace_version: Option<&str>,
@@ -169,12 +169,12 @@ async fn read_package_manifest(
 ///
 /// # Arguments
 ///
-/// - `&Value`: Parsed manifest
-/// - `&Path`: Path to manifest for resolving relative paths
+/// - `&Value` - Parsed manifest
+/// - `&Path` - Path to manifest for resolving relative paths
 ///
 /// # Returns
 ///
-/// - `Result<Vec<String>, PublishError>`: List of local dependency names
+/// - `Result<Vec<String>, PublishError>` - List of local dependency names
 fn extract_local_dependencies(
     doc: &Value,
     _manifest_path: &Path,
@@ -213,11 +213,11 @@ fn extract_local_dependencies(
 ///
 /// # Arguments
 ///
-/// - `&[Package]`: Packages in intended publish order
+/// - `&[Package]` - Packages in intended publish order
 ///
 /// # Returns
 ///
-/// - `Result<(), PublishError>`: `InvalidPublishOrder` naming the first
+/// - `Result<(), PublishError>` - `InvalidPublishOrder` naming the first
 ///   offending pair when the order violates a local dependency.
 fn validate_publish_order(packages: &[Package]) -> Result<(), PublishError> {
     let position: HashMap<String, usize> = packages
@@ -256,11 +256,11 @@ fn validate_publish_order(packages: &[Package]) -> Result<(), PublishError> {
 ///
 /// # Arguments
 ///
-/// - `&mut Vec<Package>`: Packages with the root package as last element
+/// - `&mut Vec<Package>` - Packages with the root package as last element
 ///
 /// # Returns
 ///
-/// - `Result<(), PublishError>`: Success or `InvalidPublishOrder`
+/// - `Result<(), PublishError>` - Success or `InvalidPublishOrder`
 fn position_root_package(packages: &mut Vec<Package>) -> Result<(), PublishError> {
     let Some(root) = packages.pop() else {
         return Ok(());
@@ -302,11 +302,11 @@ fn position_root_package(packages: &mut Vec<Package>) -> Result<(), PublishError
 ///
 /// # Arguments
 ///
-/// - `&str`: Path to the workspace root Cargo.toml
+/// - `&str` - Path to the workspace root Cargo.toml
 ///
 /// # Returns
 ///
-/// - `Result<Vec<Package>, PublishError>`: Ordered packages, or an
+/// - `Result<Vec<Package>, PublishError>` - Ordered packages, or an
 ///   error when the members order violates a local dependency.
 pub async fn resolve_publish_order(manifest_path: &str) -> Result<Vec<Package>, PublishError> {
     let workspace_manifest: &Path = Path::new(manifest_path);
@@ -324,11 +324,11 @@ pub async fn resolve_publish_order(manifest_path: &str) -> Result<Vec<Package>, 
 ///
 /// # Arguments
 ///
-/// - `&str`: cargo publish stderr output
+/// - `&str` - cargo publish stderr output
 ///
 /// # Returns
 ///
-/// - `bool`: True when the output means "already published"
+/// - `bool` - True when the output means "already published"
 pub fn is_already_published(stderr: &str) -> bool {
     stderr.contains("already been uploaded")
         || stderr.contains("is already published")
@@ -339,12 +339,12 @@ pub fn is_already_published(stderr: &str) -> bool {
 ///
 /// # Arguments
 ///
-/// - `&Package`: Package to publish
-/// - `u32`: Maximum retry attempts
+/// - `&Package` - Package to publish
+/// - `u32` - Maximum retry attempts
 ///
 /// # Returns
 ///
-/// - `PublishResult`: Result with success status and retry count
+/// - `PublishResult` - Result with success status and retry count
 async fn publish_package_with_retry(package: &Package, max_retries: u32) -> PublishResult {
     let mut attempt: u32 = 0;
     let mut last_error: Option<String> = None;
@@ -379,11 +379,11 @@ async fn publish_package_with_retry(package: &Package, max_retries: u32) -> Publ
 ///
 /// # Arguments
 ///
-/// - `&Package`: Package to publish
+/// - `&Package` - Package to publish
 ///
 /// # Returns
 ///
-/// - `Result<(), Box<dyn std::error::Error>>`: Success or error
+/// - `Result<(), Box<dyn std::error::Error>>` - Success or error
 async fn publish_single_package(package: &Package) -> Result<(), Box<dyn std::error::Error>> {
     let output: std::process::Output = Command::new("cargo")
         .arg("publish")
@@ -413,12 +413,12 @@ async fn publish_single_package(package: &Package) -> Result<(), Box<dyn std::er
 ///
 /// # Arguments
 ///
-/// - `&str`: Path to workspace Cargo.toml
-/// - `u32`: Maximum retry attempts per package
+/// - `&str` - Path to workspace Cargo.toml
+/// - `u32` - Maximum retry attempts per package
 ///
 /// # Returns
 ///
-/// - `Result<Vec<PublishResult>, PublishError>`: Results for all packages
+/// - `Result<Vec<PublishResult>, PublishError>` - Results for all packages
 pub async fn execute_publish(
     manifest_path: &str,
     max_retries: u32,

@@ -64,9 +64,9 @@ impl Context {
     ///
     /// # Arguments
     ///
-    /// - `socket` - The network socket.
-    /// - `request` - The request data.
-    /// - `client_addr` - The client's socket address.
+    /// - `&ArcRwLockUdpSocket` - The network socket.
+    /// - `&Request` - The request data.
+    /// - `SocketAddr` - The client's socket address.
     ///
     /// # Returns
     ///
@@ -83,7 +83,7 @@ impl Context {
     ///
     /// # Returns
     ///
-    /// - `RwLockReadGuard<ContextData>` - The read guard for the inner context.
+    /// - `RwLockReadGuard<'_, ContextData>` - The read guard for the inner context.
     async fn read(&self) -> RwLockReadGuard<'_, ContextData> {
         self.0.read().await
     }
@@ -92,7 +92,7 @@ impl Context {
     ///
     /// # Returns
     ///
-    /// - `RwLockWriteGuard<ContextData>` - The write guard for the inner context.
+    /// - `RwLockWriteGuard<'_, ContextData>` - The write guard for the inner context.
     async fn write(&self) -> RwLockWriteGuard<'_, ContextData> {
         self.0.write().await
     }
@@ -110,7 +110,7 @@ impl Context {
     ///
     /// # Arguments
     ///
-    /// - `aborted` - The aborted state to set.
+    /// - `bool` - The aborted state to set.
     pub async fn set_aborted(&self, aborted: bool) {
         self.write().await.set_aborted(aborted);
     }
@@ -312,7 +312,7 @@ impl Context {
     ///
     /// # Arguments
     ///
-    /// - `Into<ResponseData>` - The response data.
+    /// - `T` - The response data.
     ///
     /// # Returns
     ///

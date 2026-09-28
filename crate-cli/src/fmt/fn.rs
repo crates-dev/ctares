@@ -4,11 +4,11 @@ use super::*;
 ///
 /// # Arguments
 ///
-/// - `&str`: The line containing derive attribute
+/// - `&str` - The line containing derive attribute
 ///
 /// # Returns
 ///
-/// - `Option<String>`: Sorted line if derive found, None otherwise
+/// - `Option<String>` - Sorted line if derive found, None otherwise
 fn sort_derive_in_line(line: &str) -> Option<String> {
     let captures: Captures<'_> = DERIVE_REGEX.captures(line)?;
     let derive_content: &str = captures.get(1)?.as_str();
@@ -27,11 +27,11 @@ fn sort_derive_in_line(line: &str) -> Option<String> {
 ///
 /// # Arguments
 ///
-/// - `&Path`: Path to the Rust file
+/// - `&Path` - Path to the Rust file
 ///
 /// # Returns
 ///
-/// - `Result<bool, io::Error>`: True if file was modified, false otherwise
+/// - `Result<bool, io::Error>` - True if file was modified, false otherwise
 async fn format_derive_in_file(file_path: &Path) -> Result<bool, io::Error> {
     let content: String = read_to_string(file_path).await?;
     let lines: std::str::Lines<'_> = content.lines();
@@ -64,11 +64,11 @@ async fn format_derive_in_file(file_path: &Path) -> Result<bool, io::Error> {
 ///
 /// # Arguments
 ///
-/// - `&Path`: Path to Cargo.toml
+/// - `&Path` - Path to Cargo.toml
 ///
 /// # Returns
 ///
-/// - `Result<Vec<PathBuf>, io::Error>`: List of Rust file paths
+/// - `Result<Vec<PathBuf>, io::Error>` - List of Rust file paths
 async fn find_rust_files(manifest_path: &Path) -> Result<Vec<PathBuf>, io::Error> {
     let mut files: Vec<PathBuf> = Vec::new();
     let workspace_root: &Path = manifest_path.parent().unwrap_or(Path::new("."));
@@ -97,12 +97,12 @@ async fn find_rust_files(manifest_path: &Path) -> Result<Vec<PathBuf>, io::Error
 ///
 /// # Arguments
 ///
-/// - `&Path`: Directory to search
-/// - `&mut Vec<PathBuf>`: Vector to collect file paths
+/// - `&Path` - Directory to search
+/// - `&mut Vec<PathBuf>` - Vector to collect file paths
 ///
 /// # Returns
 ///
-/// - `Result<(), io::Error>`: Success or error
+/// - `Result<(), io::Error>` - Success or error
 async fn find_rust_files_in_dir(dir: &Path, files: &mut Vec<PathBuf>) -> Result<(), io::Error> {
     let mut entries: ReadDir = read_dir(dir).await?;
     while let Some(entry) = entries.next_entry().await? {
@@ -120,11 +120,11 @@ async fn find_rust_files_in_dir(dir: &Path, files: &mut Vec<PathBuf>) -> Result<
 ///
 /// # Arguments
 ///
-/// - `&str`: Path to Cargo.toml
+/// - `&str` - Path to Cargo.toml
 ///
 /// # Returns
 ///
-/// - `Result<(), io::Error>`: Success or error
+/// - `Result<(), io::Error>` - Success or error
 async fn format_derive_attributes(manifest_path: &str) -> Result<(), io::Error> {
     let path: &Path = Path::new(manifest_path);
     let files: Vec<PathBuf> = find_rust_files(path).await?;
@@ -155,7 +155,7 @@ async fn format_derive_attributes(manifest_path: &str) -> Result<(), io::Error> 
 ///
 /// # Returns
 ///
-/// - `bool`: True if cargo-clippy is available
+/// - `bool` - True if cargo-clippy is available
 fn is_cargo_clippy_installed() -> bool {
     which("cargo-clippy").is_ok()
 }
@@ -164,7 +164,7 @@ fn is_cargo_clippy_installed() -> bool {
 ///
 /// # Returns
 ///
-/// - `Result<(), io::Error>`: Success or error
+/// - `Result<(), io::Error>` - Success or error
 async fn install_cargo_clippy() -> Result<(), io::Error> {
     log::warn!("cargo-clippy not found, installing...");
     let output: std::process::Output = Command::new("rustup")
@@ -209,11 +209,11 @@ async fn install_cargo_clippy() -> Result<(), io::Error> {
 ///
 /// # Arguments
 ///
-/// - `&Args`: The parsed arguments
+/// - `&Args` - The parsed arguments
 ///
 /// # Returns
 ///
-/// - `Result<(), io::Error>`: Success or error
+/// - `Result<(), io::Error>` - Success or error
 async fn execute_clippy_fix(args: &Args) -> Result<(), io::Error> {
     if !is_cargo_clippy_installed() {
         install_cargo_clippy().await?;
@@ -263,11 +263,11 @@ async fn execute_clippy_fix(args: &Args) -> Result<(), io::Error> {
 ///
 /// # Arguments
 ///
-/// - `&Args`: The parsed arguments
+/// - `&Args` - The parsed arguments
 ///
 /// # Returns
 ///
-/// - `Result<(), io::Error>`: Success or error
+/// - `Result<(), io::Error>` - Success or error
 pub async fn execute_fmt(args: &Args) -> Result<(), io::Error> {
     let manifest_path: String = args
         .manifest_path
@@ -323,11 +323,11 @@ pub async fn execute_fmt(args: &Args) -> Result<(), io::Error> {
 ///
 /// # Arguments
 ///
-/// - `&Path`: Path to format
+/// - `&Path` - Path to format
 ///
 /// # Returns
 ///
-/// - `Result<(), io::Error>`: Success or error
+/// - `Result<(), io::Error>` - Success or error
 pub async fn format_path(path: &Path) -> Result<(), io::Error> {
     let mut cmd: Command = Command::new("cargo");
     cmd.arg("fmt").arg("--").arg(path);
