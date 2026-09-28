@@ -21,3 +21,6 @@ pub const COLON_SPACE: &str = ": ";
 
 /// Request separator bytes for detecting end of request.
 pub const SPLIT_REQUEST_BYTES: &[u8] = b"\r\n\r\n";
+
+/// Context attribute key holding the error message passed to read-error handlers.
+pub const CONTEXT_ERROR_KEY: &str = "error";

@@ -195,7 +195,7 @@ impl Context {
     pub async fn try_get_client_addr_string(&self) -> Option<String> {
         self.try_get_client_addr()
             .await
-            .map(|addr| addr.to_string())
+            .map(|addr: SocketAddr| addr.to_string())
     }
 
     /// Retrieves the client host IP address.
@@ -204,7 +204,9 @@ impl Context {
     ///
     /// - `Option<IpAddr>` - The client IP address if available.
     pub async fn try_get_client_host(&self) -> Option<IpAddr> {
-        self.try_get_client_addr().await.map(|addr| addr.ip())
+        self.try_get_client_addr()
+            .await
+            .map(|addr: SocketAddr| addr.ip())
     }
 
     /// Retrieves the client port number.
@@ -213,7 +215,9 @@ impl Context {
     ///
     /// - `Option<u16>` - The client port number if available.
     pub async fn try_get_client_port(&self) -> Option<u16> {
-        self.try_get_client_addr().await.map(|addr| addr.port())
+        self.try_get_client_addr()
+            .await
+            .map(|addr: SocketAddr| addr.port())
     }
 
     /// Sets an attribute in the context.
@@ -256,7 +260,7 @@ impl Context {
             .await
             .get_attributes()
             .get(key.as_ref())
-            .and_then(|arc| arc.downcast_ref::<V>())
+            .and_then(|arc: &Arc<dyn Any + Send + Sync>| arc.downcast_ref::<V>())
             .cloned()
     }
 

@@ -162,7 +162,7 @@ impl ThreadPool {
                     if let Err(err) = run_result {
                         let err_string: String = tokio_error_to_string(&err);
                         let _: AsyncSpawnResult = async_run_error_handle_function(
-                            move |err_str| async move {
+                            move |err_str: Arc<String>| async move {
                                 handle_error.call(err_str).await;
                             },
                             Arc::new(err_string),
@@ -209,7 +209,7 @@ impl ThreadPool {
                     if let Err(err) = run_result {
                         let err_string: String = tokio_error_to_string(&err);
                         let _: AsyncSpawnResult = async_run_error_handle_function(
-                            move |err_str| async move {
+                            move |err_str: Arc<String>| async move {
                                 handle_error.call(err_str).await;
                             },
                             Arc::new(err_string),

@@ -12,7 +12,9 @@ impl From<Vec<u8>> for FileDataString {
     ///
     /// - `FileDataString` - The converted string wrapper.
     fn from(bytes: Vec<u8>) -> Self {
-        FileDataString(String::from_utf8(bytes).unwrap_or_else(|_| String::new()))
+        FileDataString(
+            String::from_utf8(bytes).unwrap_or_else(|_: std::string::FromUtf8Error| String::new()),
+        )
     }
 }
 

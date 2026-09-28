@@ -10,6 +10,10 @@ mod sync;
 
 pub use {r#async::*, common::*, sync::*};
 
-use std::{any::Any, panic::set_hook, sync::Arc};
+use std::{
+    any::Any,
+    panic::{PanicHookInfo, set_hook},
+    sync::Arc,
+};
 
 use tokio::task::JoinError;

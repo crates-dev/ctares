@@ -10,7 +10,8 @@ use super::*;
 /// - `&DeriveInput` - The derive input to analyze for visibility attributes
 ///
 /// # Returns
-/// - The parsed visibility for the constructor, defaults to Public if not specified
+///
+/// - `Visibility` - The parsed visibility for the constructor, defaults to Public if not specified
 pub(crate) fn parse_new_visibility(input: &DeriveInput) -> Visibility {
     for attr in &input.attrs {
         if attr.path().is_ident(NEW)
@@ -32,9 +33,7 @@ pub(crate) fn parse_new_visibility(input: &DeriveInput) -> Visibility {
                                                 .stream()
                                                 .to_string()
                                                 .parse::<Visibility>()
-                                                .expect(
-                                                    "Failed to parse visibility from group tokens",
-                                                );
+                                                .expect(VISIBILITY_PARSE_FAILURE);
                                         }
                                     } else {
                                         visibility = Visibility::Public;
@@ -58,7 +57,7 @@ pub(crate) fn parse_new_visibility(input: &DeriveInput) -> Visibility {
                                 visibility = ident
                                     .to_string()
                                     .parse::<Visibility>()
-                                    .expect("Failed to parse visibility from group tokens");
+                                    .expect(VISIBILITY_PARSE_FAILURE);
                             }
                         }
                     }

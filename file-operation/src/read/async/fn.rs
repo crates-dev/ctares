@@ -32,6 +32,6 @@ where
 pub async fn async_get_file_size(file_path: &str) -> Option<u64> {
     tokio::fs::metadata(file_path)
         .await
-        .map(|metadata| Some(metadata.len()))
+        .map(|metadata: std::fs::Metadata| Some(metadata.len()))
         .unwrap_or(None)
 }

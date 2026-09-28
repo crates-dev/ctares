@@ -7,7 +7,8 @@ use super::*;
 /// - `&mut Config` - A mutable reference to the `Config` structure that will be modified based on the parsed tokens.
 ///
 /// # Returns
-/// - The function does not return a value. It modifies the provided `config` in place.
+///
+/// The function returns nothing; it modifies the provided `config` in place.
 pub(crate) fn parse_tokens(tokens: proc_macro2::TokenStream, config: &mut Config) {
     let mut tokens_iter: Peekable<IntoIter> = tokens.into_iter().peekable();
     while let Some(token) = tokens_iter.next() {
@@ -47,7 +48,7 @@ pub(crate) fn parse_tokens(tokens: proc_macro2::TokenStream, config: &mut Config
                     let mut lookahead: Peekable<IntoIter> = tokens_iter.clone();
                     if let Some(proc_macro2::TokenTree::Group(group)) = lookahead.next() {
                         if group.delimiter() == Delimiter::Parenthesis {
-                            let group_content = group.stream().to_string();
+                            let group_content: String = group.stream().to_string();
                             if group_content == CRATE {
                                 config.visibility = Visibility::PublicCrate;
                                 tokens_iter.next();
@@ -90,7 +91,8 @@ pub(crate) fn parse_tokens(tokens: proc_macro2::TokenStream, config: &mut Config
 /// - `proc_macro2::TokenStream` - A `TokenStream2` containing the tokens representing the attributes to be analyzed.
 ///
 /// # Returns
-/// - A `Config` structure representing the parsed configuration based on the attributes in the token stream.
+///
+/// - `Config` - A structure representing the parsed configuration based on the attributes in the token stream.
 pub(crate) fn analyze_attributes(tokens: proc_macro2::TokenStream) -> Config {
     let mut config: Config = Config::default();
     parse_tokens(tokens, &mut config);

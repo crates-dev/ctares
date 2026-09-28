@@ -4,7 +4,7 @@ use super::*;
 ///
 /// # Arguments
 ///
-/// - `&str` - The version string to parse (e.g., "0.1.0" or "0.1.0-alpha")
+/// - `&str` - The version string to parse (e.g. 0.1.0 or 0.1.0-alpha)
 ///
 /// # Returns
 ///
@@ -32,7 +32,7 @@ fn parse_version(version_str: &str) -> Option<Version> {
 ///
 /// # Arguments
 ///
-/// - `&str` - The pre-release string (e.g., "alpha", "alpha.1", "beta.2")
+/// - `&str` - The pre-release string (e.g. alpha, alpha.1, beta.2)
 ///
 /// # Returns
 ///
@@ -52,7 +52,7 @@ fn parse_prerelease(prerelease: &str) -> Option<(&str, u64)> {
 /// # Arguments
 ///
 /// - `Option<&String>` - Current pre-release identifier
-/// - `&str` - Target pre-release type ("alpha", "beta", "rc")
+/// - `&str` - Target pre-release type (alpha, beta, rc)
 ///
 /// # Returns
 ///
@@ -80,7 +80,7 @@ fn get_next_prerelease(current: Option<&String>, target_type: &str) -> String {
 ///
 /// # Returns
 ///
-/// - `String` - Version string (e.g., "0.1.0" or "0.1.0-alpha")
+/// - `String` - Version string (e.g. 0.1.0 or 0.1.0-alpha)
 fn version_to_string(version: &Version) -> String {
     let base: String = format!("{}.{}.{}", version.major, version.minor, version.patch);
     match &version.prerelease {
@@ -126,7 +126,8 @@ fn bump_version(version: &Version, bump_type: &BumpVersionType) -> Version {
             prerelease: None,
         },
         BumpVersionType::Alpha => {
-            let prerelease: String = get_next_prerelease(version.prerelease.as_ref(), "alpha");
+            let prerelease: String =
+                get_next_prerelease(version.prerelease.as_ref(), PRERELEASE_ALPHA);
             Version {
                 major: version.major,
                 minor: version.minor,
@@ -135,7 +136,8 @@ fn bump_version(version: &Version, bump_type: &BumpVersionType) -> Version {
             }
         }
         BumpVersionType::Beta => {
-            let prerelease: String = get_next_prerelease(version.prerelease.as_ref(), "beta");
+            let prerelease: String =
+                get_next_prerelease(version.prerelease.as_ref(), PRERELEASE_BETA);
             Version {
                 major: version.major,
                 minor: version.minor,
@@ -159,7 +161,7 @@ fn bump_version(version: &Version, bump_type: &BumpVersionType) -> Version {
 ///
 /// # Arguments
 ///
-/// - `&str` - Current version string (e.g., "0.1.0" or "0.1.0-alpha.1")
+/// - `&str` - Current version string (e.g. 0.1.0 or 0.1.0-alpha.1)
 /// - `&BumpVersionType` - The type of version bump to apply
 ///
 /// # Returns
@@ -179,7 +181,7 @@ fn bump_version_str(version_str: &str, bump_type: &BumpVersionType) -> Option<St
 /// # Arguments
 ///
 /// - `&Path` - Workspace root directory
-/// - `&str` - Raw members entry (e.g., "core" or "crates/*")
+/// - `&str` - Raw members entry (e.g. core or crates/*)
 ///
 /// # Returns
 ///
@@ -191,7 +193,7 @@ fn expand_member_entry(root_dir: &Path, entry: &str) -> Vec<PathBuf> {
             if let Ok(entries) = std::fs::read_dir(root_dir.join(prefix)) {
                 for entry in entries.flatten() {
                     let path: PathBuf = entry.path();
-                    if path.is_dir() && path.join("Cargo.toml").exists() {
+                    if path.is_dir() && path.join(CARGO_TOML).exists() {
                         dirs.push(path);
                     }
                 }
@@ -227,7 +229,7 @@ fn realign_dep_versions(
     let mut changed: bool = false;
     for (_alias, entry) in deps.iter_mut() {
         let Some(dep_path) = entry
-            .get("path")
+            .get(TOML_PATH)
             .and_then(|path_item: &Item| path_item.as_str())
         else {
             continue;
@@ -235,13 +237,16 @@ fn realign_dep_versions(
         let Ok(canonical) = base_dir.join(dep_path).canonicalize() else {
             continue;
         };
-        let Some((_, new_version)) = bumped.iter().find(|(dir, _)| *dir == canonical) else {
+        let Some((_, new_version)) = bumped
+            .iter()
+            .find(|(dir, _bumped_version): &&(PathBuf, String)| *dir == canonical)
+        else {
             continue;
         };
-        if entry.get("version").is_none() {
+        if entry.get(TOML_VERSION).is_none() {
             continue;
         }
-        let Some(version_slot) = entry.get_mut("version") else {
+        let Some(version_slot) = entry.get_mut(TOML_VERSION) else {
             continue;
         };
         if version_slot.as_str() == Some(new_version.as_str()) {
@@ -262,6 +267,10 @@ fn realign_dep_versions(
 /// - `&Path` - Member directory that relative dep paths resolve against
 /// - `&Path` - Member Cargo.toml path
 /// - `&[(PathBuf, String)]` - Bumped members as (canonical dir, new version)
+///
+/// # Returns
+///
+/// - `Result<(), Box<dyn std::error::Error>>` - Success or error
 async fn realign_member_manifest(
     member_dir: &Path,
     member_manifest_path: &Path,
@@ -272,7 +281,11 @@ async fn realign_member_manifest(
         format!("failed to parse {}: {}", member_manifest_path.display(), e)
     })?;
     let mut changed: bool = false;
-    for section in ["dependencies", "dev-dependencies", "build-dependencies"] {
+    for section in [
+        TOML_DEPENDENCIES,
+        TOML_DEV_DEPENDENCIES,
+        TOML_BUILD_DEPENDENCIES,
+    ] {
         if let Some(deps) = member_doc
             .get_mut(section)
             .and_then(|deps_item: &mut Item| deps_item.as_table_like_mut())
@@ -281,10 +294,13 @@ async fn realign_member_manifest(
         }
     }
     if let Some(targets) = member_doc
-        .get_mut("target")
+        .get_mut(TOML_TARGET)
         .and_then(|target_item: &mut Item| target_item.as_table_like_mut())
     {
-        let target_keys: Vec<String> = targets.iter().map(|(key, _)| key.to_string()).collect();
+        let target_keys: Vec<String> = targets
+            .iter()
+            .map(|(key, _target_value): (&str, &Item)| key.to_string())
+            .collect();
         for target_key in target_keys {
             let Some(target_table) = targets
                 .get_mut(&target_key)
@@ -292,7 +308,11 @@ async fn realign_member_manifest(
             else {
                 continue;
             };
-            for section in ["dependencies", "dev-dependencies", "build-dependencies"] {
+            for section in [
+                TOML_DEPENDENCIES,
+                TOML_DEV_DEPENDENCIES,
+                TOML_BUILD_DEPENDENCIES,
+            ] {
                 if let Some(deps) = target_table
                     .get_mut(section)
                     .and_then(|deps_item: &mut Item| deps_item.as_table_like_mut())
@@ -332,8 +352,8 @@ async fn bump_workspace_members(
 ) -> Result<String, Box<dyn std::error::Error>> {
     let root_dir: &Path = root_path.parent().unwrap_or_else(|| Path::new("."));
     let member_entries: Vec<String> = doc
-        .get("workspace")
-        .and_then(|workspace: &Item| workspace.get("members"))
+        .get(TOML_WORKSPACE)
+        .and_then(|workspace: &Item| workspace.get(TOML_MEMBERS))
         .and_then(|members_item: &Item| members_item.as_array())
         .map(|members: &toml_edit::Array| {
             members
@@ -352,7 +372,7 @@ async fn bump_workspace_members(
     member_dirs.dedup();
     let mut bumped: Vec<(PathBuf, String)> = Vec::new();
     for dir in &member_dirs {
-        let member_manifest_path: PathBuf = dir.join("Cargo.toml");
+        let member_manifest_path: PathBuf = dir.join(CARGO_TOML);
         if !member_manifest_path.exists() {
             return Err(format!(
                 "member manifest not found: {}",
@@ -365,8 +385,8 @@ async fn bump_workspace_members(
             format!("failed to parse {}: {}", member_manifest_path.display(), e)
         })?;
         let version_slot: &mut Item = member_doc
-            .get_mut("package")
-            .and_then(|package: &mut Item| package.get_mut("version"))
+            .get_mut(TOML_PACKAGE)
+            .and_then(|package: &mut Item| package.get_mut(TOML_VERSION))
             .ok_or_else(|| -> Box<dyn std::error::Error> {
                 format!(
                     "package.version not found in {}",
@@ -392,18 +412,18 @@ async fn bump_workspace_members(
         bumped.push((dir.canonicalize()?, new_version));
     }
     if bumped.is_empty() {
-        return Ok("0 workspace members".to_string());
+        return Ok(REPORT_ZERO_WORKSPACE_MEMBERS.to_string());
     }
     let root_changed: bool = doc
-        .get_mut("workspace")
-        .and_then(|workspace: &mut Item| workspace.get_mut("dependencies"))
+        .get_mut(TOML_WORKSPACE)
+        .and_then(|workspace: &mut Item| workspace.get_mut(TOML_DEPENDENCIES))
         .and_then(|deps_item: &mut Item| deps_item.as_table_like_mut())
         .is_some_and(|deps: &mut dyn TableLike| realign_dep_versions(deps, root_dir, &bumped));
     if root_changed {
         write(root_path, doc.to_string()).await?;
     }
     for dir in &member_dirs {
-        realign_member_manifest(dir, &dir.join("Cargo.toml"), &bumped).await?;
+        realign_member_manifest(dir, &dir.join(CARGO_TOML), &bumped).await?;
     }
     Ok(format!("{} workspace members", bumped.len()))
 }
@@ -443,36 +463,36 @@ pub async fn execute_bump(
         .parse()
         .map_err(|e: TomlError| format!("failed to parse {}: {}", manifest_path, e))?;
     let has_workspace_version: bool = doc
-        .get("workspace")
-        .and_then(|workspace: &Item| workspace.get("package"))
-        .and_then(|package: &Item| package.get("version"))
+        .get(TOML_WORKSPACE)
+        .and_then(|workspace: &Item| workspace.get(TOML_PACKAGE))
+        .and_then(|package: &Item| package.get(TOML_VERSION))
         .is_some();
-    let has_root_package: bool = doc.get("package").is_some();
+    let has_root_package: bool = doc.get(TOML_PACKAGE).is_some();
     let has_members: bool = doc
-        .get("workspace")
-        .and_then(|workspace: &Item| workspace.get("members"))
+        .get(TOML_WORKSPACE)
+        .and_then(|workspace: &Item| workspace.get(TOML_MEMBERS))
         .and_then(|members_item: &Item| members_item.as_array())
         .is_some_and(|members: &toml_edit::Array| !members.is_empty());
     if !has_workspace_version && !has_root_package && has_members {
         return bump_workspace_members(path, &mut doc, bump_type).await;
     }
     let version_slot: &mut Item = if has_workspace_version {
-        doc.get_mut("workspace")
-            .and_then(|workspace: &mut Item| workspace.get_mut("package"))
-            .and_then(|package: &mut Item| package.get_mut("version"))
+        doc.get_mut(TOML_WORKSPACE)
+            .and_then(|workspace: &mut Item| workspace.get_mut(TOML_PACKAGE))
+            .and_then(|package: &mut Item| package.get_mut(TOML_VERSION))
             .ok_or_else(|| -> Box<dyn std::error::Error> {
-                "workspace.package.version not found".into()
+                ERROR_WORKSPACE_PACKAGE_VERSION_MISSING.into()
             })?
     } else if has_root_package {
-        doc.get_mut("package")
-            .and_then(|package: &mut Item| package.get_mut("version"))
-            .ok_or_else(|| -> Box<dyn std::error::Error> { "package.version not found".into() })?
+        doc.get_mut(TOML_PACKAGE)
+            .and_then(|package: &mut Item| package.get_mut(TOML_VERSION))
+            .ok_or_else(|| -> Box<dyn std::error::Error> { ERROR_PACKAGE_VERSION_MISSING.into() })?
     } else {
-        return Err("neither [package] nor [workspace.package] found in Cargo.toml".into());
+        return Err(ERROR_NO_VERSION_SLOT.into());
     };
     let version_str: String = version_slot
         .as_str()
-        .ok_or_else(|| -> Box<dyn std::error::Error> { "version field is not a string".into() })?
+        .ok_or_else(|| -> Box<dyn std::error::Error> { ERROR_VERSION_NOT_STRING.into() })?
         .to_string();
     let version: Version =
         parse_version(&version_str).ok_or_else(|| -> Box<dyn std::error::Error> {

@@ -27,7 +27,7 @@ impl ChineseIdCard {
         let sum: i32 = id_number_string[..17]
             .chars()
             .zip(WEIGHTS.iter())
-            .map(|(c, &w)| c.to_digit(10).unwrap() as i32 * w)
+            .map(|(c, &w): (char, &i32)| c.to_digit(10).unwrap() as i32 * w)
             .sum();
         let check_code: char = CHECK_CODES[(sum % 11) as usize];
         check_code == last_char

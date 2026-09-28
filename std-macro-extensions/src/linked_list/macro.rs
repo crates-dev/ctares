@@ -9,8 +9,6 @@ macro_rules! linked_list {
         std::collections::LinkedList::new()
     };
     ($($elem:expr),*) => {{
-        let mut list = std::collections::LinkedList::new();
-        $( list.push_back($elem); )*
-        list
+        std::collections::LinkedList::from([$($elem),*])
     }};
 }

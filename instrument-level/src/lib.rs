@@ -13,13 +13,14 @@ use {proc_macro::TokenStream, quote::quote, syn::*};
 
 /// Enables trace-level instrumentation for the decorated function.
 ///
-/// This attribute macro wraps the function with `#[::tracing::instrument(level = "trace", skip_all)]`,
-/// enabling automatic tracing instrumentation at the trace level with all arguments excluded from span fields.
+/// This attribute macro wraps the function with a trace-level `tracing::instrument` attribute
+/// that sets `skip_all`, enabling automatic tracing instrumentation at the trace level with
+/// all arguments excluded from span fields.
 ///
 /// # Arguments
 ///
-/// - `'TokenStream'` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
-/// - `'TokenStream'` - The TokenStream representing the function to be instrumented.
+/// - `TokenStream` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
+/// - `TokenStream` - The TokenStream representing the function to be instrumented.
 ///
 /// # Returns
 ///
@@ -43,13 +44,13 @@ pub fn instrument_trace(attr: TokenStream, item: TokenStream) -> TokenStream {
 
 /// Enables debug-level instrumentation for the decorated function.
 ///
-/// This attribute macro wraps the function with `#[::tracing::instrument(level = "debug")]`,
+/// This attribute macro wraps the function with a debug-level `tracing::instrument` attribute,
 /// enabling automatic tracing instrumentation at the debug level.
 ///
 /// # Arguments
 ///
-/// - `'TokenStream'` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
-/// - `'TokenStream'` - The TokenStream representing the function to be instrumented.
+/// - `TokenStream` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
+/// - `TokenStream` - The TokenStream representing the function to be instrumented.
 ///
 /// # Returns
 ///
@@ -78,13 +79,13 @@ pub fn instrument_debug(attr: TokenStream, item: TokenStream) -> TokenStream {
 
 /// Enables info-level instrumentation for the decorated function.
 ///
-/// This attribute macro wraps the function with `#[::tracing::instrument(level = "info")]`,
+/// This attribute macro wraps the function with an info-level `tracing::instrument` attribute,
 /// enabling automatic tracing instrumentation at the info level.
 ///
 /// # Arguments
 ///
-/// - `'TokenStream'` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
-/// - `'TokenStream'` - The TokenStream representing the function to be instrumented.
+/// - `TokenStream` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
+/// - `TokenStream` - The TokenStream representing the function to be instrumented.
 ///
 /// # Returns
 ///
@@ -113,13 +114,13 @@ pub fn instrument_info(attr: TokenStream, item: TokenStream) -> TokenStream {
 
 /// Enables warn-level instrumentation for the decorated function.
 ///
-/// This attribute macro wraps the function with `#[::tracing::instrument(level = "warn")]`,
+/// This attribute macro wraps the function with a warn-level `tracing::instrument` attribute,
 /// enabling automatic tracing instrumentation at the warn level.
 ///
 /// # Arguments
 ///
-/// - `'TokenStream'` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
-/// - `'TokenStream'` - The TokenStream representing the function to be instrumented.
+/// - `TokenStream` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
+/// - `TokenStream` - The TokenStream representing the function to be instrumented.
 ///
 /// # Returns
 ///
@@ -148,13 +149,13 @@ pub fn instrument_warn(attr: TokenStream, item: TokenStream) -> TokenStream {
 
 /// Enables error-level instrumentation for the decorated function.
 ///
-/// This attribute macro wraps the function with `#[::tracing::instrument(level = "error")]`,
+/// This attribute macro wraps the function with an error-level `tracing::instrument` attribute,
 /// enabling automatic tracing instrumentation at the error level.
 ///
 /// # Arguments
 ///
-/// - `'TokenStream'` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
-/// - `'TokenStream'` - The TokenStream representing the function to be instrumented.
+/// - `TokenStream` - Additional tracing instrument parameters (optional): target, name, skip, fields, etc.
+/// - `TokenStream` - The TokenStream representing the function to be instrumented.
 ///
 /// # Returns
 ///

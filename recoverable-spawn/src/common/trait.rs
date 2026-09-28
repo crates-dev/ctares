@@ -35,6 +35,10 @@ pub trait AsyncRecoverableFunction: Send + Sync + 'static {
     type Future: Future<Output = Self::Output> + Send;
 
     /// Executes the asynchronous function.
+    ///
+    /// # Returns
+    ///
+    /// - `Self::Future` - The future that resolves once the function completes.
     fn call(self) -> Self::Future;
 }
 
@@ -47,6 +51,11 @@ where
     type Output = O;
     type Future = Fut;
 
+    /// Calls the underlying function to obtain its future.
+    ///
+    /// # Returns
+    ///
+    /// - `Self::Future` - The future returned by the wrapped function.
     fn call(self) -> Self::Future {
         self()
     }
@@ -66,7 +75,13 @@ pub trait AsyncErrorHandlerFunction: Send + Sync + 'static {
 
     /// Handles an error asynchronously.
     ///
-    /// - `error` - The error message to handle.
+    /// # Arguments
+    ///
+    /// - `Arc<String>` - The error message to handle.
+    ///
+    /// # Returns
+    ///
+    /// - `Self::Future` - The future that resolves once the error has been handled.
     fn call(self, error: Arc<String>) -> Self::Future;
 }
 
@@ -77,6 +92,15 @@ where
 {
     type Future = Fut;
 
+    /// Calls the underlying error handler to obtain its future.
+    ///
+    /// # Arguments
+    ///
+    /// - `Arc<String>` - The error message to handle.
+    ///
+    /// # Returns
+    ///
+    /// - `Self::Future` - The future returned by the wrapped error handler.
     fn call(self, error: Arc<String>) -> Self::Future {
         self(error)
     }

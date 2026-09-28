@@ -1,9 +1,6 @@
 use super::*;
+
 /// Creates a new `ServerHookHandler` from a trait object.
-///
-/// # Arguments
-///
-/// - `ServerHook` - The trait object implementing `ServerHook`.
 ///
 /// # Returns
 ///

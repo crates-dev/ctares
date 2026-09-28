@@ -16,15 +16,15 @@ where
     F: Future<Output = ()>,
 {
     before_hook.await;
-    let check_output: Output = Command::new("cargo")
-        .args(["install", "--list"])
+    let check_output: Output = Command::new(CARGO_PROGRAM)
+        .args([CARGO_INSTALL_ARG, CARGO_LIST_ARG])
         .output()
         .map_err(|error: Error| HotRestartError::Other(error.to_string()))?;
     let check_output_str: Cow<'_, str> = String::from_utf8_lossy(&check_output.stdout);
-    if !check_output_str.contains("cargo-watch") {
+    if !check_output_str.contains(CARGO_WATCH_PROGRAM) {
         eprintln!("Cargo-watch is not installed. Attempting to install...");
-        let install_status: ExitStatus = Command::new("cargo")
-            .args(["install", "cargo-watch"])
+        let install_status: ExitStatus = Command::new(CARGO_PROGRAM)
+            .args([CARGO_INSTALL_ARG, CARGO_WATCH_PROGRAM])
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
             .spawn()?
@@ -34,7 +34,7 @@ where
         }
         eprintln!("Cargo-watch installed successfully.");
     }
-    let mut command: Command = Command::new("cargo-watch");
+    let mut command: Command = Command::new(CARGO_WATCH_PROGRAM);
     command
         .args(run_args)
         .stdout(Stdio::inherit())

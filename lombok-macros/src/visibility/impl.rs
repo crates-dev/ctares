@@ -3,9 +3,6 @@ use super::*;
 impl Visibility {
     /// Converts the `Visibility` enum variant into a token stream representation.
     ///
-    /// # Arguments
-    /// - `self` - The reference to the `Visibility` instance being converted.
-    ///
     /// # Returns
     /// - `proc_macro2::TokenStream` - representing the corresponding visibility modifier in Rust syntax.
     pub(crate) fn to_token_stream(self) -> proc_macro2::TokenStream {
@@ -24,7 +21,7 @@ impl Display for Visibility {
     /// Formats the `Visibility` enum variant into its string representation.
     ///
     /// # Arguments
-    /// - `Formatter<'_>` - The formatter to write the string representation to.
+    /// - `&mut Formatter<'_>` - The formatter to write the string representation to.
     ///
     /// # Returns
     /// - `std::fmt::Result` - indicating success or failure of the formatting operation.

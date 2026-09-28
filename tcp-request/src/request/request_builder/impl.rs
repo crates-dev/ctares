@@ -41,9 +41,12 @@ impl RequestBuilder {
     where
         T: Into<String>,
     {
-        let _ = self.get_tcp_request().get_config().write().map(|mut data| {
-            data.host = host.into();
-        });
+        let _: Result<(), PoisonError<RwLockWriteGuard<'_, Config>>> =
+            self.get_tcp_request().get_config().write().map(
+                |mut data: RwLockWriteGuard<'_, Config>| {
+                    data.host = host.into();
+                },
+            );
         self
     }
 
@@ -57,9 +60,12 @@ impl RequestBuilder {
     ///
     /// - `&mut Self` - The builder for method chaining.
     pub fn port(&mut self, port: usize) -> &mut Self {
-        let _ = self.get_tcp_request().get_config().write().map(|mut data| {
-            data.port = port;
-        });
+        let _: Result<(), PoisonError<RwLockWriteGuard<'_, Config>>> =
+            self.get_tcp_request().get_config().write().map(
+                |mut data: RwLockWriteGuard<'_, Config>| {
+                    data.port = port;
+                },
+            );
         self
     }
 
@@ -73,9 +79,12 @@ impl RequestBuilder {
     ///
     /// - `&mut Self` - The builder for method chaining.
     pub fn buffer(&mut self, buffer_size: usize) -> &mut Self {
-        let _ = self.get_tcp_request().get_config().write().map(|mut data| {
-            data.buffer_size = buffer_size;
-        });
+        let _: Result<(), PoisonError<RwLockWriteGuard<'_, Config>>> =
+            self.get_tcp_request().get_config().write().map(
+                |mut data: RwLockWriteGuard<'_, Config>| {
+                    data.buffer_size = buffer_size;
+                },
+            );
         self
     }
 
@@ -89,9 +98,12 @@ impl RequestBuilder {
     ///
     /// - `&mut Self` - The builder for method chaining.
     pub fn timeout(&mut self, timeout: u64) -> &mut Self {
-        let _ = self.get_tcp_request().get_config().write().map(|mut data| {
-            data.timeout = timeout;
-        });
+        let _: Result<(), PoisonError<RwLockWriteGuard<'_, Config>>> =
+            self.get_tcp_request().get_config().write().map(
+                |mut data: RwLockWriteGuard<'_, Config>| {
+                    data.timeout = timeout;
+                },
+            );
         self
     }
 

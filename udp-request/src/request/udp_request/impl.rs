@@ -35,7 +35,7 @@ impl UdpRequest {
     ) -> Result<BoxResponseTrait, RequestError> {
         socket
             .send(data)
-            .map_err(|err| RequestError::SendResponseError(err.to_string()))?;
+            .map_err(|err: std::io::Error| RequestError::SendResponseError(err.to_string()))?;
         self.read_response(socket)
     }
 
@@ -52,7 +52,9 @@ impl UdpRequest {
         let cfg_buffer_size: usize = self
             .get_config()
             .read()
-            .map_or(DEFAULT_BUFFER_SIZE, |data| data.buffer_size);
+            .map_or(DEFAULT_BUFFER_SIZE, |data: RwLockReadGuard<'_, Config>| {
+                data.buffer_size
+            });
         let mut tmp_buf: Vec<u8> = vec![0u8; cfg_buffer_size];
         let mut response_bytes: Vec<u8> = Vec::with_capacity(cfg_buffer_size);
         if let Ok(n) = socket.recv(&mut tmp_buf) {
@@ -61,11 +63,10 @@ impl UdpRequest {
         self.set_response(Arc::new(RwLock::new(
             <UdpResponseBinary as ResponseTrait>::from(&response_bytes),
         )));
-        Ok(Box::new(
-            self.get_response()
-                .read()
-                .map_or(Vec::new(), |data| data.clone()),
-        ))
+        Ok(Box::new(self.get_response().read().map_or(
+            Vec::new(),
+            |data: RwLockReadGuard<'_, UdpResponseBinary>| data.clone(),
+        )))
     }
 
     /// Creates and configures a UDP socket for the connection.
@@ -87,17 +88,17 @@ impl UdpRequest {
                 data.timeout
             });
         let timeout: Duration = Duration::from_millis(cfg_timeout);
-        let socket: UdpSocket =
-            UdpSocket::bind("0.0.0.0:0").map_err(|_| RequestError::UdpSocketCreateError)?;
+        let socket: UdpSocket = UdpSocket::bind(UDP_BIND_ADDR)
+            .map_err(|_: std::io::Error| RequestError::UdpSocketCreateError)?;
         socket
             .connect(host_port)
-            .map_err(|_| RequestError::UdpSocketConnectError)?;
+            .map_err(|_: std::io::Error| RequestError::UdpSocketConnectError)?;
         socket
             .set_read_timeout(Some(timeout))
-            .map_err(|_| RequestError::SetReadTimeoutError)?;
+            .map_err(|_: std::io::Error| RequestError::SetReadTimeoutError)?;
         socket
             .set_write_timeout(Some(timeout))
-            .map_err(|_| RequestError::SetWriteTimeoutError)?;
+            .map_err(|_: std::io::Error| RequestError::SetWriteTimeoutError)?;
         let socket_result: Result<UdpSocket, RequestError> = Ok(socket);
         socket_result
     }
@@ -120,7 +121,9 @@ impl RequestTrait for UdpRequest {
         let cfg_timeout: Config = self
             .get_config()
             .read()
-            .map_or(Config::default(), |data| data.clone());
+            .map_or(Config::default(), |data: RwLockReadGuard<'_, Config>| {
+                data.clone()
+            });
         let host: String = cfg_timeout.host.clone();
         let port: usize = cfg_timeout.port;
         let mut socket: UdpSocket = self.get_connection_socket(host, port)?;

@@ -16,55 +16,55 @@ pub fn parse_args() -> Args {
     while i < raw_args.len() {
         let arg: &str = raw_args[i].as_str();
         match arg {
-            "-h" | "--help" => {
+            "-h" | CLI_FLAG_HELP => {
                 command = CommandType::Help;
             }
-            "-v" | "--version" => {
+            "-v" | CLI_FLAG_VERSION => {
                 command = CommandType::Version;
             }
             "fmt" if (command == CommandType::Help || command == CommandType::Version) => {
                 command = CommandType::Fmt;
             }
-            "bump" if (command == CommandType::Help || command == CommandType::Version) => {
+            CLI_BUMP if (command == CommandType::Help || command == CommandType::Version) => {
                 command = CommandType::Bump;
             }
-            "publish" if (command == CommandType::Help || command == CommandType::Version) => {
+            CLI_PUBLISH if (command == CommandType::Help || command == CommandType::Version) => {
                 command = CommandType::Publish;
             }
-            "sync" if (command == CommandType::Help || command == CommandType::Version) => {
+            CLI_SYNC if (command == CommandType::Help || command == CommandType::Version) => {
                 command = CommandType::Sync;
             }
-            "--patch" => {
+            CLI_FLAG_PATCH => {
                 bump_type = Some(BumpVersionType::Patch);
             }
-            "--minor" => {
+            CLI_FLAG_MINOR => {
                 bump_type = Some(BumpVersionType::Minor);
             }
-            "--major" => {
+            CLI_FLAG_MAJOR => {
                 bump_type = Some(BumpVersionType::Major);
             }
-            "--release" => {
+            CLI_FLAG_RELEASE => {
                 bump_type = Some(BumpVersionType::Release);
             }
-            "--alpha" => {
+            CLI_FLAG_ALPHA => {
                 bump_type = Some(BumpVersionType::Alpha);
             }
-            "--beta" => {
+            CLI_FLAG_BETA => {
                 bump_type = Some(BumpVersionType::Beta);
             }
-            "--rc" => {
+            CLI_FLAG_RC => {
                 bump_type = Some(BumpVersionType::Rc);
             }
-            "--check" => {
+            CLI_FLAG_CHECK => {
                 check = true;
             }
-            "--manifest-path" => {
+            CLI_FLAG_MANIFEST_PATH => {
                 i += 1;
                 if i < raw_args.len() {
                     manifest_path = Some(raw_args[i].clone());
                 }
             }
-            "--max-retries" => {
+            CLI_FLAG_MAX_RETRIES => {
                 i += 1;
                 if i < raw_args.len()
                     && let Ok(n) = raw_args[i].parse::<u32>()

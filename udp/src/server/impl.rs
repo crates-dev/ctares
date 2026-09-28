@@ -136,10 +136,6 @@ impl Server {
 
     /// Registers a hook using the `ServerHook` trait.
     ///
-    /// # Arguments
-    ///
-    /// - `ServerHook` - The hook type that implements `ServerHook`.
-    ///
     /// # Returns
     ///
     /// - `&Self` - Reference to self for method chaining.
@@ -155,10 +151,6 @@ impl Server {
     }
 
     /// Registers a task panic handler using the `ServerHook` trait.
-    ///
-    /// # Arguments
-    ///
-    /// - `ServerHook` - The handler type that implements `ServerHook`.
     ///
     /// # Returns
     ///

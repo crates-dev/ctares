@@ -16,17 +16,18 @@ async fn discover_packages(
     workspace_manifest: &Path,
 ) -> Result<(Vec<Package>, bool), PublishError> {
     let content: String = read_to_string(workspace_manifest).await?;
-    let doc: Value = toml::from_str(&content).map_err(|_| PublishError::ManifestParseError)?;
+    let doc: Value = toml::from_str(&content)
+        .map_err(|_error: toml::de::Error| PublishError::ManifestParseError)?;
     let workspace_version: Option<String> = doc
-        .get("workspace")
-        .and_then(|workspace: &Value| workspace.get("package"))
-        .and_then(|package: &Value| package.get("version"))
+        .get(TOML_WORKSPACE)
+        .and_then(|workspace: &Value| workspace.get(TOML_PACKAGE))
+        .and_then(|package: &Value| package.get(TOML_VERSION))
         .and_then(|version: &Value| version.as_str())
         .map(|version: &str| version.to_string());
     let mut packages: Vec<Package> = Vec::new();
-    if let Some(workspace) = doc.get("workspace")
+    if let Some(workspace) = doc.get(TOML_WORKSPACE)
         && let Some(members) = workspace
-            .get("members")
+            .get(TOML_MEMBERS)
             .and_then(|members_value: &Value| members_value.as_array())
     {
         for member in members {
@@ -42,7 +43,7 @@ async fn discover_packages(
             }
         }
     }
-    let has_root_package: bool = doc.get("package").is_some();
+    let has_root_package: bool = doc.get(TOML_PACKAGE).is_some();
     if has_root_package {
         let root_package: Package =
             read_package_manifest(workspace_manifest, workspace_version.as_deref()).await?;
@@ -77,7 +78,7 @@ async fn expand_pattern(
             while let Some(entry) = entries.next_entry().await? {
                 let path: PathBuf = entry.path();
                 if path.is_dir() {
-                    let cargo_toml: PathBuf = path.join("Cargo.toml");
+                    let cargo_toml: PathBuf = path.join(CARGO_TOML);
                     if cargo_toml.exists() {
                         let package: Package =
                             read_package_manifest(&cargo_toml, workspace_version).await?;
@@ -87,7 +88,7 @@ async fn expand_pattern(
             }
         }
     } else {
-        let cargo_toml: PathBuf = base_path.join(pattern).join("Cargo.toml");
+        let cargo_toml: PathBuf = base_path.join(pattern).join(CARGO_TOML);
         if cargo_toml.exists() {
             let package: Package = read_package_manifest(&cargo_toml, workspace_version).await?;
             packages.push(package);
@@ -114,19 +115,22 @@ async fn read_package_manifest(
     workspace_version: Option<&str>,
 ) -> Result<Package, PublishError> {
     let content: String = read_to_string(manifest_path).await?;
-    let doc: Value = toml::from_str(&content).map_err(|_| PublishError::ManifestParseError)?;
-    let package_table: &Value = doc.get("package").ok_or(PublishError::ManifestParseError)?;
+    let doc: Value = toml::from_str(&content)
+        .map_err(|_error: toml::de::Error| PublishError::ManifestParseError)?;
+    let package_table: &Value = doc
+        .get(TOML_PACKAGE)
+        .ok_or(PublishError::ManifestParseError)?;
     let name: String = package_table
-        .get("name")
+        .get(TOML_NAME)
         .and_then(|n: &Value| n.as_str())
         .ok_or(PublishError::ManifestParseError)?
         .to_string();
-    let version: String = match package_table.get("version") {
+    let version: String = match package_table.get(TOML_VERSION) {
         Some(version_value) => {
             if let Some(version_str) = version_value.as_str() {
                 version_str.to_string()
             } else if version_value
-                .get("workspace")
+                .get(TOML_WORKSPACE)
                 .and_then(|workspace_value: &Value| workspace_value.as_bool())
                 .unwrap_or(false)
             {
@@ -142,7 +146,7 @@ async fn read_package_manifest(
             .to_string(),
     };
     let publish: bool = package_table
-        .get("publish")
+        .get(TOML_PUBLISH_KEY)
         .and_then(|publish_value: &Value| publish_value.as_bool())
         .unwrap_or(true);
     let path: PathBuf = manifest_path
@@ -180,7 +184,11 @@ fn extract_local_dependencies(
     _manifest_path: &Path,
 ) -> Result<Vec<String>, PublishError> {
     let mut deps: Vec<String> = Vec::new();
-    let dep_sections: [&str; 3] = ["dependencies", "build-dependencies", "dev-dependencies"];
+    let dep_sections: [&str; 3] = [
+        TOML_DEPENDENCIES,
+        TOML_BUILD_DEPENDENCIES,
+        TOML_DEV_DEPENDENCIES,
+    ];
     for section in &dep_sections {
         if let Some(table) = doc
             .get(section)
@@ -189,12 +197,12 @@ fn extract_local_dependencies(
             for (dep_name, dep_value) in table {
                 let is_local: bool = match dep_value {
                     Value::Table(t) => {
-                        let has_path_or_workspace: bool = t.get("path").is_some()
-                            || t.get("workspace")
+                        let has_path_or_workspace: bool = t.get(TOML_PATH).is_some()
+                            || t.get(TOML_WORKSPACE)
                                 .and_then(|workspace_value: &Value| workspace_value.as_bool())
                                 .unwrap_or(false);
-                        let versioned: bool = t.get("version").is_some();
-                        has_path_or_workspace && (*section != "dev-dependencies" || versioned)
+                        let versioned: bool = t.get(TOML_VERSION).is_some();
+                        has_path_or_workspace && (*section != TOML_DEV_DEPENDENCIES || versioned)
                     }
                     _ => false,
                 };
@@ -268,8 +276,10 @@ fn position_root_package(packages: &mut Vec<Package>) -> Result<(), PublishError
     let earliest_dependent: Option<usize> = packages
         .iter()
         .enumerate()
-        .filter(|(_, package)| package.local_dependencies.contains(&root.name))
-        .map(|(index, _)| index)
+        .filter(|(_index, package): &(usize, &Package)| {
+            package.local_dependencies.contains(&root.name)
+        })
+        .map(|(index, _item): (usize, &Package)| index)
         .min();
     let Some(earliest) = earliest_dependent else {
         packages.push(root);
@@ -278,12 +288,12 @@ fn position_root_package(packages: &mut Vec<Package>) -> Result<(), PublishError
     let member_positions: HashMap<&str, usize> = packages
         .iter()
         .enumerate()
-        .map(|(index, package)| (package.name.as_str(), index))
+        .map(|(index, package): (usize, &Package)| (package.name.as_str(), index))
         .collect();
     if let Some(max_dep) = root
         .local_dependencies
         .iter()
-        .filter_map(|dep| member_positions.get(dep.as_str()))
+        .filter_map(|dep: &String| member_positions.get(dep.as_str()))
         .max()
         && max_dep >= &earliest
     {
@@ -328,11 +338,11 @@ pub async fn resolve_publish_order(manifest_path: &str) -> Result<Vec<Package>, 
 ///
 /// # Returns
 ///
-/// - `bool` - True when the output means "already published"
+/// - `bool` - True when the output reports the version is already published
 pub fn is_already_published(stderr: &str) -> bool {
-    stderr.contains("already been uploaded")
-        || stderr.contains("is already published")
-        || stderr.contains("already exists on crates.io index")
+    stderr.contains(STDERR_ALREADY_BEEN_UPLOADED)
+        || stderr.contains(STDERR_IS_ALREADY_PUBLISHED)
+        || stderr.contains(STDERR_ALREADY_ON_INDEX)
 }
 
 /// Publish a single package with retry logic
@@ -385,10 +395,10 @@ async fn publish_package_with_retry(package: &Package, max_retries: u32) -> Publ
 ///
 /// - `Result<(), Box<dyn std::error::Error>>` - Success or error
 async fn publish_single_package(package: &Package) -> Result<(), Box<dyn std::error::Error>> {
-    let output: std::process::Output = Command::new("cargo")
-        .arg("publish")
-        .arg("--allow-dirty")
-        .arg("--no-verify")
+    let output: std::process::Output = Command::new(CARGO)
+        .arg(CARGO_PUBLISH)
+        .arg(CLI_FLAG_ALLOW_DIRTY)
+        .arg(CLI_FLAG_NO_VERIFY)
         .current_dir(&package.path)
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
@@ -428,9 +438,9 @@ pub async fn execute_publish(
         Some(parent) if !parent.as_os_str().is_empty() => parent,
         _ => Path::new("."),
     };
-    let workspace_manifest: PathBuf = path.join("Cargo.toml");
+    let workspace_manifest: PathBuf = path.join(CARGO_TOML);
     let sync_report: SyncReport =
-        match execute_sync(workspace_manifest.to_str().unwrap_or("Cargo.toml")).await {
+        match execute_sync(workspace_manifest.to_str().unwrap_or(CARGO_TOML)).await {
             Ok(report) => report,
             Err(error) => return Err(PublishError::SyncFailed(error)),
         };
@@ -443,7 +453,7 @@ pub async fn execute_publish(
         );
     }
     let ordered_packages: Vec<Package> =
-        resolve_publish_order(workspace_manifest.to_str().unwrap_or("Cargo.toml")).await?;
+        resolve_publish_order(workspace_manifest.to_str().unwrap_or(CARGO_TOML)).await?;
     if ordered_packages.is_empty() {
         return Ok(Vec::new());
     }

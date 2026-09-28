@@ -42,9 +42,11 @@ impl RequestBuilder {
         T: Into<String>,
     {
         let _: Result<(), PoisonError<RwLockWriteGuard<'_, Config>>> =
-            self.get_udp_request().get_config().write().map(|mut data| {
-                data.host = host.into();
-            });
+            self.get_udp_request().get_config().write().map(
+                |mut data: RwLockWriteGuard<'_, Config>| {
+                    data.host = host.into();
+                },
+            );
         self
     }
 
@@ -59,9 +61,11 @@ impl RequestBuilder {
     /// - `&mut Self` - A mutable reference to the `RequestBuilder` for method chaining.
     pub fn port(&mut self, port: usize) -> &mut Self {
         let _: Result<(), PoisonError<RwLockWriteGuard<'_, Config>>> =
-            self.get_udp_request().get_config().write().map(|mut data| {
-                data.port = port;
-            });
+            self.get_udp_request().get_config().write().map(
+                |mut data: RwLockWriteGuard<'_, Config>| {
+                    data.port = port;
+                },
+            );
         self
     }
 
@@ -76,9 +80,11 @@ impl RequestBuilder {
     /// - `&mut Self` - A mutable reference to the `RequestBuilder` for method chaining.
     pub fn buffer(&mut self, buffer_size: usize) -> &mut Self {
         let _: Result<(), PoisonError<RwLockWriteGuard<'_, Config>>> =
-            self.get_udp_request().get_config().write().map(|mut data| {
-                data.buffer_size = buffer_size;
-            });
+            self.get_udp_request().get_config().write().map(
+                |mut data: RwLockWriteGuard<'_, Config>| {
+                    data.buffer_size = buffer_size;
+                },
+            );
         self
     }
 
@@ -93,9 +99,11 @@ impl RequestBuilder {
     /// - `&mut Self` - A mutable reference to the `RequestBuilder` for method chaining.
     pub fn timeout(&mut self, timeout: u64) -> &mut Self {
         let _: Result<(), PoisonError<RwLockWriteGuard<'_, Config>>> =
-            self.get_udp_request().get_config().write().map(|mut data| {
-                data.timeout = timeout;
-            });
+            self.get_udp_request().get_config().write().map(
+                |mut data: RwLockWriteGuard<'_, Config>| {
+                    data.timeout = timeout;
+                },
+            );
         self
     }
 

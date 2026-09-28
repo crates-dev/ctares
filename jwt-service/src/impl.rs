@@ -5,8 +5,8 @@ impl JwtConfig {
     ///
     /// # Arguments
     ///
-    /// - `secret` - The secret key for signing tokens.
-    /// - `expiration_seconds` - Token validity duration in seconds.
+    /// - `S` - The secret key for signing tokens.
+    /// - `u64` - Token validity duration in seconds.
     /// - `S` - The issuer identifier for the token.
     ///
     /// # Returns
@@ -112,6 +112,15 @@ impl ExtraJwtClaims {
 
 /// Display implementation for JwtValidationError.
 impl std::fmt::Display for JwtValidationError {
+    /// Formats the validation error for display.
+    ///
+    /// # Arguments
+    ///
+    /// - `&mut std::fmt::Formatter<'_>` - Formatter for the output.
+    ///
+    /// # Returns
+    ///
+    /// - `std::fmt::Result` - Result of the formatting operation.
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Expired => write!(f, "Token has expired"),
@@ -138,6 +147,15 @@ impl std::error::Error for JwtValidationError {}
 ///
 /// - `JwtValidationError` - The corresponding validation error.
 impl From<jsonwebtoken::errors::Error> for JwtValidationError {
+    /// Converts a jsonwebtoken error into a validation error.
+    ///
+    /// # Arguments
+    ///
+    /// - `jsonwebtoken::errors::Error` - The jsonwebtoken error to convert.
+    ///
+    /// # Returns
+    ///
+    /// - `Self` - The corresponding validation error.
     fn from(error: jsonwebtoken::errors::Error) -> Self {
         match error.kind() {
             jsonwebtoken::errors::ErrorKind::ExpiredSignature => Self::Expired,
@@ -183,6 +201,15 @@ impl JwtConfig {
 ///
 /// - `JwtService` - The initialized JWT service.
 impl From<JwtConfig> for JwtService {
+    /// Builds a JWT service from its configuration.
+    ///
+    /// # Arguments
+    ///
+    /// - `JwtConfig` - The JWT configuration to convert.
+    ///
+    /// # Returns
+    ///
+    /// - `Self` - The initialized JWT service.
     fn from(config: JwtConfig) -> Self {
         let encoding_key: EncodingKey = EncodingKey::from_secret(config.get_secret().as_bytes());
         let decoding_key: DecodingKey = DecodingKey::from_secret(config.get_secret().as_bytes());
@@ -224,7 +251,7 @@ impl JwtService {
             &claims,
             self.get_encoding_key(),
         )
-        .map_err(|error| error.to_string())?;
+        .map_err(|error: jsonwebtoken::errors::Error| error.to_string())?;
         let mut jwt_token: JwtToken = JwtToken::default();
         jwt_token
             .set_token(token)
@@ -246,7 +273,7 @@ impl JwtService {
     where
         T: AsRef<str>,
     {
-        let token_data = decode::<JwtExtraJwtClaims>(
+        let token_data: TokenData<JwtExtraJwtClaims> = decode::<JwtExtraJwtClaims>(
             token.as_ref(),
             self.get_decoding_key(),
             self.get_validation(),
@@ -267,7 +294,9 @@ impl JwtService {
     where
         T: AsRef<str>,
     {
-        let claims: JwtExtraJwtClaims = self.validate_token(token).map_err(|e| e.to_string())?;
+        let claims: JwtExtraJwtClaims = self
+            .validate_token(token)
+            .map_err(|e: JwtValidationError| e.to_string())?;
         Ok(claims.get_sub().clone())
     }
 
@@ -338,7 +367,7 @@ impl JwtService {
             &res_claims,
             self.get_encoding_key(),
         )
-        .map_err(|error| error.to_string())?;
+        .map_err(|error: jsonwebtoken::errors::Error| error.to_string())?;
         let mut jwt_token: JwtToken = JwtToken::default();
         jwt_token.set_token(token);
         jwt_token.set_token_type(BEARER.to_string());
@@ -404,7 +433,7 @@ impl JwtService {
             &claims,
             self.get_encoding_key(),
         )
-        .map_err(|error| error.to_string())?;
+        .map_err(|error: jsonwebtoken::errors::Error| error.to_string())?;
         let mut jwt_token: JwtToken = JwtToken::default();
         jwt_token.set_token(token);
         jwt_token.set_token_type(BEARER.to_string());
@@ -440,8 +469,8 @@ impl JwtService {
     ///
     /// # Arguments
     ///
-    /// - `AsRef<str>` - The JWT AsRef<str token to extract the field from.
-    /// - `AsRef<str>` - The key of the field to retrieve.
+    /// - `T` - The JWT token to extract the field from.
+    /// - `K` - The key of the field to retrieve.
     ///
     /// # Returns
     ///

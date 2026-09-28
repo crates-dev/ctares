@@ -37,7 +37,7 @@ impl TcpRequest {
         data_vec.extend_from_slice(SPLIT_REQUEST_BYTES);
         stream
             .write_all(&data_vec)
-            .and_then(|_| stream.flush())
+            .and_then(|_: ()| stream.flush())
             .unwrap();
         self.read_response(stream)
     }
@@ -55,7 +55,9 @@ impl TcpRequest {
         let cfg_buffer_size: usize = self
             .get_config()
             .read()
-            .map_or(DEFAULT_BUFFER_SIZE, |data| data.buffer_size);
+            .map_or(DEFAULT_BUFFER_SIZE, |data: RwLockReadGuard<'_, Config>| {
+                data.buffer_size
+            });
         let mut tmp_buf: Vec<u8> = vec![0u8; cfg_buffer_size];
         let mut response_bytes: Vec<u8> = Vec::with_capacity(cfg_buffer_size);
         while let Ok(n) = stream.read(&mut tmp_buf) {
@@ -67,11 +69,10 @@ impl TcpRequest {
         self.set_response(Arc::new(RwLock::new(
             <TcpResponseBinary as ResponseTrait>::from(&response_bytes),
         )));
-        Ok(Box::new(
-            self.get_response()
-                .read()
-                .map_or(Vec::new(), |data| data.clone()),
-        ))
+        Ok(Box::new(self.get_response().read().map_or(
+            Vec::new(),
+            |data: RwLockReadGuard<'_, TcpResponseBinary>| data.clone(),
+        )))
     }
 
     /// Establishes a TCP connection to the specified host and port.
@@ -94,13 +95,13 @@ impl TcpRequest {
             });
         let timeout: Duration = Duration::from_millis(cfg_timeout);
         let tcp_stream: TcpStream = TcpStream::connect(host_port.clone())
-            .map_err(|_| RequestError::TcpStreamConnectError)?;
+            .map_err(|_: std::io::Error| RequestError::TcpStreamConnectError)?;
         tcp_stream
             .set_read_timeout(Some(timeout))
-            .map_err(|_| RequestError::SetReadTimeoutError)?;
+            .map_err(|_: std::io::Error| RequestError::SetReadTimeoutError)?;
         tcp_stream
             .set_write_timeout(Some(timeout))
-            .map_err(|_| RequestError::SetWriteTimeoutError)?;
+            .map_err(|_: std::io::Error| RequestError::SetWriteTimeoutError)?;
         let stream: Result<TcpStream, RequestError> = Ok(tcp_stream);
         stream
     }
@@ -123,12 +124,14 @@ impl RequestTrait for TcpRequest {
         let cfg_timeout: Config = self
             .get_config()
             .read()
-            .map_or(Config::default(), |data| data.clone());
+            .map_or(Config::default(), |data: RwLockReadGuard<'_, Config>| {
+                data.clone()
+            });
         let host: String = cfg_timeout.host.clone();
         let port: usize = cfg_timeout.port;
         let mut stream: TcpStream = self
             .get_connection_stream(host, port)
-            .map_err(|_| RequestError::TcpStreamConnectError)?;
+            .map_err(|_: RequestError| RequestError::TcpStreamConnectError)?;
         let res: Result<BoxResponseTrait, RequestError> = self.send_request(&mut stream, data);
         res
     }

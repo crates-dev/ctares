@@ -56,6 +56,7 @@ impl fmt::Display for DecodeError {
 ///
 /// - `Charset<'a>` - New instance with empty charset.
 impl<'a> Default for Charset<'a> {
+    /// Creates an empty charset instance.
     #[inline(always)]
     fn default() -> Self {
         Charset("")

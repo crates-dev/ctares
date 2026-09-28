@@ -27,3 +27,6 @@ pub(crate) const RAW_IDENT_PREFIX: &str = "r#";
 
 /// The try_get method prefix.
 pub(crate) const TRY_GET_METHOD_PREFIX: &str = "try_";
+
+/// The prefix used to name an anonymous tuple-struct field in generated bindings.
+pub(crate) const FIELD_NAME_PREFIX: &str = "field_";
