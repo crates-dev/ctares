@@ -1,0 +1,24 @@
+[package]
+name = "stripe-pay-client"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = """WebAssembly client for the Stripe payment SDK: renders Stripe payment element configuration and forwards it to the server transport."""
+keywords = ["stripe", "payments", "wasm", "checkout", "payment-element"]
+categories = ["web-programming", "payment-processing", "wasm"]
+repository.workspace = true
+exclude.workspace = true
+
+[dependencies]
+stripe-pay-core = { workspace = true }
+
+log = { workspace = true }
+serde = { workspace = true }
+js-sys = { workspace = true }
+thiserror = { workspace = true }
+serde_json = { workspace = true }
+wasm-bindgen = { workspace = true }
+serde-wasm-bindgen = { workspace = true }
+wasm-bindgen-futures = { workspace = true }

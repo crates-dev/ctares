@@ -1,0 +1,21 @@
+[package]
+name = "stripe-pay-core"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = """Shared Stripe domain types for the Stripe payment SDK: money, identifiers, payment intents, charges, refunds, and form encoding."""
+keywords = ["stripe", "payments", "sdk", "payment-intent", "money"]
+categories = ["web-programming::http", "payment-processing"]
+repository.workspace = true
+exclude.workspace = true
+
+[dependencies]
+hex = { workspace = true }
+log = { workspace = true }
+serde = { workspace = true }
+chrono = { workspace = true }
+thiserror = { workspace = true }
+serde_json = { workspace = true }
+rust_decimal = { workspace = true }
