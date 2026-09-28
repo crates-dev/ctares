@@ -9,9 +9,6 @@ macro_rules! hash_set {
         std::collections::HashSet::new()
     };
     ($($elem:expr),*) => {{
-        let mut set: std::collections::HashSet<_> =
-            std::collections::HashSet::new();
-        $( set.insert($elem); )*
-        set
+        std::collections::HashSet::from([$($elem),*])
     }};
 }

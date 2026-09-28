@@ -13,9 +13,6 @@ macro_rules! b_tree_map {
         std::collections::BTreeMap::new()
     };
     ($($key:expr => $val:expr),*) => {{
-        let mut map: std::collections::BTreeMap<_, _> =
-            std::collections::BTreeMap::new();
-        $( map.insert($key, $val); )*
-        map
+        std::collections::BTreeMap::from([$(($key, $val)),*])
     }};
 }

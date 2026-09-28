@@ -13,9 +13,6 @@ macro_rules! hash_map {
         std::collections::HashMap::new()
     };
     ($($key:expr => $val:expr),*) => {{
-        let mut map: std::collections::HashMap<_, _> =
-            std::collections::HashMap::new();
-        $( map.insert($key, $val); )*
-        map
+        std::collections::HashMap::from([$(($key, $val)),*])
     }};
 }
