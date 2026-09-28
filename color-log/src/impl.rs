@@ -36,7 +36,7 @@ impl FileLogger {
     ///
     /// # Arguments
     ///
-    /// - `P: AsRef<str>` - The path for storing log files, which will be converted to string slice.
+    /// - `P` - The path for storing log files, which will be converted to string slice.
     /// - `usize` - The maximum file size limit in bytes.
     ///
     /// # Returns
@@ -80,7 +80,7 @@ impl FileLogger {
     /// # Arguments
     ///
     /// - `T` - The data to be logged, which will be converted to string slice.
-    /// - `L: FileLoggerFuncTrait<T>` - The log formatting function.
+    /// - `L` - The log formatting function.
     /// - `&str` - The subdirectory for log file.
     ///
     /// # Returns
@@ -105,7 +105,7 @@ impl FileLogger {
     /// # Arguments
     ///
     /// - `T` - The data to be logged, which will be converted to string slice.
-    /// - `L: FileLoggerFuncTrait<T>` - The log formatting function.
+    /// - `L` - The log formatting function.
     /// - `&str` - The subdirectory for log file.
     ///
     /// # Returns
@@ -130,7 +130,7 @@ impl FileLogger {
     /// # Arguments
     ///
     /// - `T` - Trace data to be logged, which will be converted to string slice.
-    /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
+    /// - `L` - FileLogger formatting function.
     ///
     /// # Returns
     ///
@@ -148,7 +148,7 @@ impl FileLogger {
     /// # Arguments
     ///
     /// - `T` - Trace data to be logged, which will be converted to string slice.
-    /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
+    /// - `L` - FileLogger formatting function.
     ///
     /// # Returns
     ///
@@ -166,7 +166,7 @@ impl FileLogger {
     /// # Arguments
     ///
     /// - `T` - Debug data to be logged, which will be converted to string slice.
-    /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
+    /// - `L` - FileLogger formatting function.
     ///
     /// # Returns
     ///
@@ -184,7 +184,7 @@ impl FileLogger {
     /// # Arguments
     ///
     /// - `T` - Debug data to be logged, which will be converted to string slice.
-    /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
+    /// - `L` - FileLogger formatting function.
     ///
     /// # Returns
     ///
@@ -202,7 +202,7 @@ impl FileLogger {
     /// # Arguments
     ///
     /// - `T` - Info data to be logged, which will be converted to string slice.
-    /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
+    /// - `L` - FileLogger formatting function.
     ///
     /// # Returns
     ///
@@ -220,7 +220,7 @@ impl FileLogger {
     /// # Arguments
     ///
     /// - `T` - Info data to be logged, which will be converted to string slice.
-    /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
+    /// - `L` - FileLogger formatting function.
     ///
     /// # Returns
     ///
@@ -238,7 +238,7 @@ impl FileLogger {
     /// # Arguments
     ///
     /// - `T` - Warn data to be logged, which will be converted to string slice.
-    /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
+    /// - `L` - FileLogger formatting function.
     ///
     /// # Returns
     ///
@@ -256,7 +256,7 @@ impl FileLogger {
     /// # Arguments
     ///
     /// - `T` - Warn data to be logged, which will be converted to string slice.
-    /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
+    /// - `L` - FileLogger formatting function.
     ///
     /// # Returns
     ///
@@ -274,7 +274,7 @@ impl FileLogger {
     /// # Arguments
     ///
     /// - `T` - Error data to be logged, which will be converted to string slice.
-    /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
+    /// - `L` - FileLogger formatting function.
     ///
     /// # Returns
     ///
@@ -292,7 +292,7 @@ impl FileLogger {
     /// # Arguments
     ///
     /// - `T` - Error data to be logged, which will be converted to string slice.
-    /// - `L: FileLoggerFuncTrait<T>` - FileLogger formatting function.
+    /// - `L` - FileLogger formatting function.
     ///
     /// # Returns
     ///

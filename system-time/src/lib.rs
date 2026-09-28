@@ -2,11 +2,14 @@
 //!
 //! A library for fetching the current time based on the system's locale settings.
 
+mod r#const;
 mod r#enum;
 mod r#fn;
 mod r#impl;
 
 pub use r#fn::*;
+
+pub use r#const::*;
 
 use r#enum::*;
 

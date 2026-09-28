@@ -12,10 +12,10 @@ macro_rules! output_macro {
 
 /// Prints a success message with green background and white text.
 ///
-/// Supports format string syntax like `format!` macro:
-/// - `println_success!("Hello")` - Simple string
-/// - `println_success!("Hello {}", name)` - Positional arguments
-/// - `println_success!("Hello {name}")` - Named arguments (Rust 1.58+)
+/// Supports format string syntax like the `format!` macro:
+/// - `println_success!(body)` - Simple string with no arguments
+/// - `println_success!(body, name)` - Positional arguments replaced by `{}`
+/// - `println_success!(body, name = value)` - Named arguments replaced by `{name}` (Rust 1.58+)
 #[macro_export]
 macro_rules! println_success {
     ($($arg:tt)*) => {
@@ -25,10 +25,10 @@ macro_rules! println_success {
 
 /// Prints a warning message with yellow background and white text.
 ///
-/// Supports format string syntax like `format!` macro:
-/// - `println_warning!("Warning")` - Simple string
-/// - `println_warning!("Warning: {}", error)` - Positional arguments
-/// - `println_warning!("Warning: {error}")` - Named arguments (Rust 1.58+)
+/// Supports format string syntax like the `format!` macro:
+/// - `println_warning!(body)` - Simple string with no arguments
+/// - `println_warning!(body, error)` - Positional arguments replaced by `{}`
+/// - `println_warning!(body, error = value)` - Named arguments replaced by `{error}` (Rust 1.58+)
 #[macro_export]
 macro_rules! println_warning {
     ($($arg:tt)*) => {
@@ -38,10 +38,10 @@ macro_rules! println_warning {
 
 /// Prints an error message with red background and white text.
 ///
-/// Supports format string syntax like `format!` macro:
-/// - `println_error!("Error")` - Simple string
-/// - `println_error!("Error: {}", message)` - Positional arguments
-/// - `println_error!("Error: {message}")` - Named arguments (Rust 1.58+)
+/// Supports format string syntax like the `format!` macro:
+/// - `println_error!(body)` - Simple string with no arguments
+/// - `println_error!(body, message)` - Positional arguments replaced by `{}`
+/// - `println_error!(body, message = value)` - Named arguments replaced by `{message}` (Rust 1.58+)
 #[macro_export]
 macro_rules! println_error {
     ($($arg:tt)*) => {

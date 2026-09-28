@@ -143,7 +143,7 @@ pub fn output(output: ColorOutput) {
 ///
 /// # Arguments
 ///
-/// - `Vec<ColorOutput>` - Collection of output configurations to execute
+/// - `&Vec<ColorOutput>` - Collection of output configurations to execute
 ///
 /// # Returns
 ///

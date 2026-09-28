@@ -6,7 +6,6 @@ pub trait ColorDisplay {
     ///
     /// # Arguments
     ///
-    /// - `&Self` - Reference to self
     /// - `DisplayType` - Whether to apply to text or background
     ///
     /// # Returns

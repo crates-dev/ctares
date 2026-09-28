@@ -2,6 +2,11 @@ use super::*;
 
 /// Default implementation for Text with empty content and default styling.
 impl<'a> Default for Text<'a> {
+    /// Creates empty text with default colors and no trailing newline.
+    ///
+    /// # Returns
+    ///
+    /// - `Self` - Empty text with default styling.
     #[inline(always)]
     fn default() -> Self {
         Text {
@@ -19,11 +24,11 @@ impl<'a> Text<'a> {
     ///
     /// # Arguments
     ///
-    /// - `Text` - Source text configuration to clone
+    /// - `&Text<'a>` - Source text configuration to clone
     ///
     /// # Returns
     ///
-    /// - `["&Text<'a>"]` - New instance with cloned configuration
+    /// - `Self` - New instance with cloned configuration
     #[inline(always)]
     pub(crate) fn new_from(text: &Text<'a>) -> Self {
         Self { ..*text }

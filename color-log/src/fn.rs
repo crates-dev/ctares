@@ -94,7 +94,7 @@ pub(crate) fn get_log_path(system_dir: &str, base_path: &str, limit_file_size: &
 ///
 /// # Arguments
 ///
-/// - `AsRef<str>` - The data to be logged, which will be converted to string slice.
+/// - `T` - The data to be logged, which will be converted to string slice.
 ///
 /// # Returns
 ///
@@ -113,7 +113,7 @@ pub fn common_log<T: AsRef<str>>(data: T) -> String {
 ///
 /// # Arguments
 ///
-/// - `AsRef<str>` - The data to be logged, which will be converted to string slice.
+/// - `T` - The data to be logged, which will be converted to string slice.
 ///
 /// # Returns
 ///

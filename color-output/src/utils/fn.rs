@@ -1,5 +1,12 @@
 use super::*;
 
+/// Prints a colored, timestamped block to the terminal.
+///
+/// # Arguments
+///
+/// - `ColorType` - The foreground color applied to every line of the block.
+/// - `ColorType` - The background color applied to every line of the block.
+/// - `&str` - The text to print, one output entry per line.
 pub fn __println_text(color: ColorType, bg_color: ColorType, text: &str) {
     let binding: String = format!("[{}]", time());
     let mut time_output_builder: ColorOutputBuilder<'_> = ColorOutputBuilder::new();
@@ -10,9 +17,9 @@ pub fn __println_text(color: ColorType, bg_color: ColorType, text: &str) {
         .color(color)
         .bg_color(bg_color)
         .build();
-    let lines = text.lines().peekable();
+    let lines: std::str::Lines<'_> = text.lines();
     for line in lines {
-        let mut output_list_builder = ColorOutputListBuilder::new();
+        let mut output_list_builder: ColorOutputListBuilder<'_> = ColorOutputListBuilder::new();
         output_list_builder.add(time_output);
         let text_output: ColorOutput<'_> =
             text_output_builder.text(line).bold(true).endl(true).build();

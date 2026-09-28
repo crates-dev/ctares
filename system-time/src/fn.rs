@@ -1,19 +1,5 @@
 use super::*;
 
-/// Leap Year
-pub const LEAP_YEAR: [u64; 12] = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-/// Common Year
-pub const COMMON_YEAR: [u64; 12] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-/// Days
-pub const DAYS: [&str; 7] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-/// Months
-pub const MONTHS: [&str; 12] = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-];
-
 /// Gets the time zone offset from the system environment variable.
 ///
 /// This function retrieves the `LANG` environment variable and attempts to
@@ -24,7 +10,7 @@ pub const MONTHS: [&str; 12] = [
 ///
 /// - `Lang` - The corresponding `Lang` value based on the `LANG` environment variable.
 pub fn from_env_var() -> Lang {
-    let lang: Lang = env::var("LANG")
+    let lang: Lang = env::var(LANG_ENV_VAR)
         .unwrap_or_default()
         .parse::<Lang>()
         .unwrap_or_default();
@@ -49,7 +35,7 @@ pub fn is_leap_year(year: u64) -> bool {
 ///
 /// # Returns
 ///
-/// - `String` - The formatted time as "YYYY-MM-DD HH:MM:SS"
+/// - `String` - The formatted time as `YYYY-MM-DD HH:MM:SS`
 pub fn time() -> String {
     let (year, month, day, hour, minute, second, _, _) = calculate_time();
     let mut date_time: String = String::new();
@@ -65,7 +51,7 @@ pub fn time() -> String {
 ///
 /// # Returns
 ///
-/// - `String` - The formatted date as "YYYY-MM-DD"
+/// - `String` - The formatted date as `YYYY-MM-DD`
 pub fn date() -> String {
     let (year, month, day, _, _, _, _, _) = calculate_time();
     let mut date_time: String = String::new();
@@ -268,7 +254,7 @@ pub fn calculate_time() -> (u64, u64, u64, u64, u64, u64, u64, u64) {
 ///
 /// # Returns
 ///
-/// - `String` - The formatted time as "YYYY-MM-DD HH:MM:SS.sss"
+/// - `String` - The formatted time as `YYYY-MM-DD HH:MM:SS.sss`
 pub fn time_millis() -> String {
     let (year, month, day, hour, minute, second, millisecond, _) = calculate_time();
     let mut date_time: String = String::new();
@@ -284,7 +270,7 @@ pub fn time_millis() -> String {
 ///
 /// # Returns
 ///
-/// - `String` - The formatted time as "YYYY-MM-DD HH:MM:SS.ssssss"
+/// - `String` - The formatted time as `YYYY-MM-DD HH:MM:SS.ssssss`
 pub fn time_micros() -> String {
     let (year, month, day, hour, minute, second, _, microseconds) = calculate_time();
     let mut date_time: String = String::new();

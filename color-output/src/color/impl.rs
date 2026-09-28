@@ -1,6 +1,15 @@
 use super::*;
 
 impl ColorDisplay for Color {
+    /// Gets the ANSI escape sequence of this color for the requested display kind.
+    ///
+    /// # Arguments
+    ///
+    /// - `DisplayType` - Whether to resolve the text color or the background color.
+    ///
+    /// # Returns
+    ///
+    /// - `String` - The ANSI escape sequence string.
     fn get_str(&self, display_type: DisplayType) -> String {
         let str: &str = match display_type {
             DisplayType::Text => match self {
@@ -31,18 +40,45 @@ impl ColorDisplay for Color {
 }
 
 impl Display for Color {
+    /// Formats this color as its foreground ANSI escape sequence.
+    ///
+    /// # Arguments
+    ///
+    /// - `&mut fmt::Formatter` - The formatter the escape sequence is written to.
+    ///
+    /// # Returns
+    ///
+    /// - `fmt::Result` - The result of the formatting operation.
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.get_str(DisplayType::Text))
     }
 }
 
 impl Display for ColorType {
+    /// Formats this color type as its foreground ANSI escape sequence.
+    ///
+    /// # Arguments
+    ///
+    /// - `&mut fmt::Formatter` - The formatter the escape sequence is written to.
+    ///
+    /// # Returns
+    ///
+    /// - `fmt::Result` - The result of the formatting operation.
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.get_str(DisplayType::Text))
     }
 }
 
 impl ColorDisplay for ColorType {
+    /// Gets the ANSI escape sequence of this color type for the requested display kind.
+    ///
+    /// # Arguments
+    ///
+    /// - `DisplayType` - Whether to resolve the text color or the background color.
+    ///
+    /// # Returns
+    ///
+    /// - `String` - The ANSI escape sequence string.
     fn get_str(&self, display_type: DisplayType) -> String {
         match self {
             ColorType::Color256(fg) => match display_type {
@@ -59,6 +95,11 @@ impl ColorDisplay for ColorType {
 }
 
 impl Default for ColorType {
+    /// Creates the default color type, which renders no escape sequence.
+    ///
+    /// # Returns
+    ///
+    /// - `Self` - The default color type.
     fn default() -> Self {
         ColorType::Use(Color::Default)
     }
@@ -134,19 +175,17 @@ impl ColorContrast {
                 let blue: u8 = (hex & 0xFF) as u8;
                 (red, green, blue)
             }
-            ColorType::Use(color) => {
-                match color {
-                    Color::Default => (128, 128, 128),
-                    Color::Black => (0, 0, 0),
-                    Color::Red => (255, 0, 0),
-                    Color::Green => (0, 255, 0),
-                    Color::Yellow => (255, 255, 0),
-                    Color::Blue => (0, 0, 255),
-                    Color::Magenta => (255, 0, 255),
-                    Color::Cyan => (0, 255, 255),
-                    Color::White => (255, 255, 255),
-                }
-            }
+            ColorType::Use(color) => match color {
+                Color::Default => (128, 128, 128),
+                Color::Black => (0, 0, 0),
+                Color::Red => (255, 0, 0),
+                Color::Green => (0, 255, 0),
+                Color::Yellow => (255, 255, 0),
+                Color::Blue => (0, 0, 255),
+                Color::Magenta => (255, 0, 255),
+                Color::Cyan => (0, 255, 255),
+                Color::White => (255, 255, 255),
+            },
         }
     }
 
@@ -246,6 +285,11 @@ impl ColorContrast {
 
 /// Default implementation for ColorOutput with empty configuration.
 impl<'a> Default for ColorOutput<'a> {
+    /// Creates an empty output carrying the default color configuration.
+    ///
+    /// # Returns
+    ///
+    /// - `Self` - An empty output with default colors.
     #[inline(always)]
     fn default() -> Self {
         ColorOutput {
@@ -272,6 +316,11 @@ impl<'a> ColorOutput<'a> {
 
 /// Implementation of ColorOutputBuilder methods.
 impl<'a> Default for ColorOutputBuilder<'a> {
+    /// Creates a builder holding a default output configuration.
+    ///
+    /// # Returns
+    ///
+    /// - `Self` - A builder over a default output.
     #[inline(always)]
     fn default() -> Self {
         Self::new()
@@ -295,7 +344,7 @@ impl<'a> ColorOutputBuilder<'a> {
     ///
     /// # Arguments
     ///
-    /// - `ColorOutput` - The output configuration to initialize from
+    /// - `ColorOutput<'a>` - The output configuration to initialize from
     ///
     /// # Returns
     ///
@@ -309,7 +358,7 @@ impl<'a> ColorOutputBuilder<'a> {
     ///
     /// # Arguments
     ///
-    /// - `&str` - The text content to display
+    /// - `&'a str` - The text content to display
     ///
     /// # Returns
     ///
@@ -381,6 +430,10 @@ impl<'a> ColorOutputBuilder<'a> {
     }
 
     /// Builds the final ColorOutput.
+    ///
+    /// # Arguments
+    ///
+    /// - `&'_ self` - The builder whose configuration is cloned into the output.
     ///
     /// # Returns
     ///
@@ -464,6 +517,11 @@ impl<'a> ColorOutputList<'a> {
 }
 
 impl<'a> Default for ColorOutputListBuilder<'a> {
+    /// Creates a builder holding an empty output list.
+    ///
+    /// # Returns
+    ///
+    /// - `Self` - A builder over an empty output list.
     #[inline(always)]
     fn default() -> Self {
         Self::new()
@@ -487,7 +545,7 @@ impl<'a> ColorOutputListBuilder<'a> {
     ///
     /// # Arguments
     ///
-    /// - `Vec<ColorOutput>` - Collection of outputs to initialize with
+    /// - `Vec<ColorOutput<'a>>` - Collection of outputs to initialize with
     ///
     /// # Returns
     ///
@@ -501,7 +559,7 @@ impl<'a> ColorOutputListBuilder<'a> {
     ///
     /// # Arguments
     ///
-    /// - `ColorOutput` - The output configuration to add
+    /// - `ColorOutput<'a>` - The output configuration to add
     ///
     /// # Returns
     ///
@@ -514,14 +572,13 @@ impl<'a> ColorOutputListBuilder<'a> {
 
     /// Removes an output item from the list at the specified index.
     ///
-    /// # Parameters
-    /// - `&mut self` - A mutable reference to the current instance of `ColorOutputListBuilder`.
-    /// - `idx` - The index of the output item to be removed.
+    /// # Arguments
+    ///
+    /// - `usize` - The index of the output item to be removed.
     ///
     /// # Returns
-    /// - `&mut Self` - A mutable reference to the current instance, allowing for method chaining.
     ///
-    /// If the index is out of bounds, the list remains unchanged.
+    /// - `&mut Self` - A mutable reference to the current instance, allowing for method chaining.
     pub fn remove(&mut self, idx: usize) -> &mut Self {
         if idx >= self.get_output_list().len() {
             return self;
@@ -532,8 +589,6 @@ impl<'a> ColorOutputListBuilder<'a> {
 
     /// Clears all output items from the output list.
     ///
-    /// # Parameters
-    /// - `&mut self` - A mutable reference to the current instance of `ColorOutputListBuilder`.
     #[inline(always)]
     pub fn clear(&mut self) {
         self.get_mut_output_list().clear();
@@ -541,14 +596,9 @@ impl<'a> ColorOutputListBuilder<'a> {
 
     /// Runs all output items in the list, executing their output logic.
     ///
-    /// # Parameters
-    /// - `&mut self` - A mutable reference to the current instance of `ColorOutputListBuilder`.
-    ///
     /// # Returns
-    /// - `&mut Self` - A mutable reference to the current instance, allowing for method chaining.
     ///
-    /// The method clones the current output list, clears the original list, and executes
-    /// the output for each cloned item.
+    /// - `&mut Self` - A mutable reference to the current instance, allowing for method chaining.
     pub fn run(&mut self) -> &mut Self {
         let outputs: Vec<ColorOutput<'_>> = self.get_output_list().to_vec();
         self.clear();
@@ -558,11 +608,13 @@ impl<'a> ColorOutputListBuilder<'a> {
 
     /// Queries the output item at the specified index.
     ///
-    /// # Parameters
-    /// - `&self` - An immutable reference to the current instance of `ColorOutputListBuilder`.
-    /// - `idx` - The index of the output item to query.
+    /// # Arguments
+    ///
+    /// - `&'_ self` - An immutable reference to the current builder.
+    /// - `usize` - The index of the output item to query.
     ///
     /// # Returns
+    ///
     /// - `ColorOutput<'_>` - The output item at the specified index, or a default output if the index is out of bounds.
     pub fn query_idx(&'_ self, idx: usize) -> ColorOutput<'_> {
         if idx >= self.get_output_list().len() {
@@ -573,14 +625,13 @@ impl<'a> ColorOutputListBuilder<'a> {
 
     /// Runs the output item at the specified index.
     ///
-    /// # Parameters
-    /// - `&mut self` - A mutable reference to the current instance of `ColorOutputListBuilder`.
-    /// - `idx` - The index of the output item to run.
+    /// # Arguments
+    ///
+    /// - `usize` - The index of the output item to run.
     ///
     /// # Returns
-    /// - `&mut Self` - A mutable reference to the current instance, allowing for method chaining.
     ///
-    /// If the index is out of bounds, the list remains unchanged.
+    /// - `&mut Self` - A mutable reference to the current instance, allowing for method chaining.
     pub fn run_idx(&mut self, idx: usize) -> &mut Self {
         if idx >= self.get_output_list().len() {
             return self;

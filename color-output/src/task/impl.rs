@@ -2,6 +2,11 @@ use super::*;
 
 /// Default implementation for Task with empty text list.
 impl<'a> Default for Task<'a> {
+    /// Creates an empty task with no text entries.
+    ///
+    /// # Returns
+    ///
+    /// - `Self` - An empty task.
     #[inline(always)]
     fn default() -> Self {
         Self { text_list: vec![] }
@@ -14,7 +19,7 @@ impl<'a> Task<'a> {
     ///
     /// # Arguments
     ///
-    /// - `Text` - The text configuration to add
+    /// - `Text<'a>` - The text configuration to add
     ///
     /// # Returns
     ///
@@ -37,10 +42,6 @@ impl<'a> Task<'a> {
     }
 
     /// Runs all tasks in the list.
-    ///
-    /// # Arguments
-    ///
-    /// - `&mut Self` - The mutable task instance.
     ///
     /// # Returns
     ///
