@@ -31,7 +31,7 @@ pub struct JwtExtraJwtClaims {
 pub struct JwtToken {
     /// The encoded JWT token string.
     pub(super) token: String,
-    /// The token type (typically "Bearer").
+    /// The token type (typically the `Bearer` scheme).
     pub(super) token_type: String,
     /// Token expiration time in seconds.
     pub(super) expires_in: u64,

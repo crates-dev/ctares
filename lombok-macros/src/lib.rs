@@ -15,8 +15,8 @@ use {config::*, func::*, generate::*, parse::*, visibility::*};
 
 use {
     proc_macro::TokenStream,
-    proc_macro2::{Delimiter, token_stream::IntoIter},
-    quote::{ToTokens, format_ident, quote},
+    proc_macro2::{Delimiter, Span, token_stream::IntoIter},
+    quote::{ToTokens, quote},
     syn::{
         AngleBracketedGenericArguments, Data, DeriveInput, Field, Fields, GenericArgument,
         GenericParam, Generics, Ident, Index, Lifetime, PathArguments, Type, TypeArray, TypeGroup,
@@ -235,6 +235,13 @@ use std::{
 /// assert_eq!(*value_ref, 42);
 /// assert_eq!(owned_clone, 42);
 /// ```
+/// # Arguments
+///
+/// - `TokenStream` - The input token stream containing the struct or enum to derive getters for.
+///
+/// # Returns
+///
+/// - `TokenStream` - The expanded `impl` block containing the generated getters.
 #[proc_macro_derive(Getter, attributes(get))]
 pub fn getter(input: TokenStream) -> TokenStream {
     inner_lombok_data(input, true, false, false)
@@ -275,6 +282,13 @@ pub fn getter(input: TokenStream) -> TokenStream {
 /// list_reference.push("new_item".to_string());
 /// assert_eq!(*list_reference, vec!["hello".to_string(), "world".to_string(), "new_item".to_string()]);
 /// ```
+/// # Arguments
+///
+/// - `TokenStream` - The input token stream containing the struct or enum to derive mutable getters for.
+///
+/// # Returns
+///
+/// - `TokenStream` - The expanded `impl` block containing the generated mutable getters.
 #[proc_macro_derive(GetterMut, attributes(get_mut))]
 pub fn getter_mut(input: TokenStream) -> TokenStream {
     inner_lombok_data(input, false, true, false)
@@ -376,6 +390,13 @@ pub fn getter_mut(input: TokenStream) -> TokenStream {
 /// assert_eq!(tuple.0, "world");
 /// assert_eq!(tuple.1, 100);
 /// ```
+/// # Arguments
+///
+/// - `TokenStream` - The input token stream containing the struct or enum to derive setters for.
+///
+/// # Returns
+///
+/// - `TokenStream` - The expanded `impl` block containing the generated setters.
 #[proc_macro_derive(Setter, attributes(set))]
 pub fn setter(input: TokenStream) -> TokenStream {
     inner_lombok_data(input, false, false, true)
@@ -499,6 +520,13 @@ pub fn setter(input: TokenStream) -> TokenStream {
 /// let updated_y_coordinate: f64 = point.get_1();
 /// assert_eq!(updated_y_coordinate, 3.0);
 /// ```
+/// # Arguments
+///
+/// - `TokenStream` - The input token stream containing the struct to derive all accessors for.
+///
+/// # Returns
+///
+/// - `TokenStream` - The expanded `impl` block containing the generated accessors.
 #[proc_macro_derive(Data, attributes(get, get_mut, set))]
 pub fn data(input: TokenStream) -> TokenStream {
     let mut result: proc_macro2::TokenStream = proc_macro2::TokenStream::new();
@@ -520,7 +548,7 @@ pub fn data(input: TokenStream) -> TokenStream {
 /// the implementation with the standard debug format.
 ///
 /// # Arguments
-/// - `input` - The input token stream representing the Rust item (struct, enum, etc.)
+/// - `TokenStream` - The input token stream representing the Rust item (struct, enum, etc.)
 ///   for which the `Display` implementation will be generated.
 ///
 /// # Returns
@@ -539,7 +567,7 @@ pub fn display_debug(input: TokenStream) -> TokenStream {
 /// to generate the implementation with the detailed debug format.
 ///
 /// # Arguments
-/// - `input` - The input token stream representing the Rust item (struct, enum, etc.)
+/// - `TokenStream` - The input token stream representing the Rust item (struct, enum, etc.)
 ///   for which the `Display` implementation will be generated.
 ///
 /// # Returns
@@ -606,10 +634,12 @@ pub fn display_debug_format(input: TokenStream) -> TokenStream {
 /// ```
 ///
 /// # Arguments
-/// - `input` - The input token stream representing the Rust item (struct, enum, etc.)
+///
+/// - `TokenStream` - The input token stream representing the Rust item (struct, enum, etc.)
 ///   for which the Debug implementation will be generated.
 ///
 /// # Returns
+///
 /// - `TokenStream` - The generated `std::fmt::Debug` implementation for the type
 ///   that respects the `#[debug(skip)]` attribute.
 #[proc_macro_derive(CustomDebug, attributes(debug))]
@@ -716,7 +746,7 @@ pub fn custom_debug(input: TokenStream) -> TokenStream {
 /// ```
 ///
 /// # Arguments
-/// - `input` - The input token stream representing the struct for which to generate the constructor.
+/// - `TokenStream` - The input token stream representing the struct for which to generate the constructor.
 ///
 /// # Returns
 /// - `TokenStream` - The generated constructor implementation.

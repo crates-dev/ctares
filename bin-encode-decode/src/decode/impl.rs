@@ -36,7 +36,7 @@ impl Decode {
             }
         }
         let decode_res: String =
-            String::from_utf8(decoded.into_iter().filter(|&x| x != 0).collect())
+            String::from_utf8(decoded.into_iter().filter(|&x: &u8| x != 0).collect())
                 .unwrap_or_default();
         Ok(decode_res)
     }

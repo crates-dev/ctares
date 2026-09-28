@@ -2,15 +2,24 @@ use super::*;
 
 /// Provides display formatting for chunk strategy errors.
 impl fmt::Display for ChunkStrategyError {
+    /// Formats the chunk strategy error for display.
+    ///
+    /// # Arguments
+    ///
+    /// - `&mut fmt::Formatter<'_>` - Formatter for the output.
+    ///
+    /// # Returns
+    ///
+    /// - `fmt::Result` - Result of the formatting operation.
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let message: &str = match self {
-            ChunkStrategyError::MissingFileId => "Missing X-File-Id header",
-            ChunkStrategyError::InvalidChunkIndex => "Invalid X-Chunk-Index header",
-            ChunkStrategyError::MissingChunkIndex => "Missing X-Chunk-Index header",
-            ChunkStrategyError::InvalidTotalChunks => "Invalid X-Total-Chunks header",
-            ChunkStrategyError::MissingTotalChunks => "Missing X-Total-Chunks header",
-            ChunkStrategyError::MissingFileName => "Missing X-File-Name header",
-            ChunkStrategyError::EmptyChunkData => "Empty chunk data",
+            ChunkStrategyError::MissingFileId => MSG_MISSING_FILE_ID_HEADER,
+            ChunkStrategyError::InvalidChunkIndex => MSG_INVALID_CHUNK_INDEX_HEADER,
+            ChunkStrategyError::MissingChunkIndex => MSG_MISSING_CHUNK_INDEX_HEADER,
+            ChunkStrategyError::InvalidTotalChunks => MSG_INVALID_TOTAL_CHUNKS_HEADER,
+            ChunkStrategyError::MissingTotalChunks => MSG_MISSING_TOTAL_CHUNKS_HEADER,
+            ChunkStrategyError::MissingFileName => MSG_MISSING_FILE_NAME_HEADER,
+            ChunkStrategyError::EmptyChunkData => MSG_EMPTY_CHUNK_DATA,
             ChunkStrategyError::CreateDirectory(msg) => {
                 &format!("Failed to create directory: {msg}")
             }
@@ -25,7 +34,7 @@ impl fmt::Display for ChunkStrategyError {
             ChunkStrategyError::WriteOutput(msg) => {
                 &format!("Failed to write to output file: {msg}")
             }
-            ChunkStrategyError::Merge => "Failed to complete the file merge operation",
+            ChunkStrategyError::Merge => MSG_MERGE_FAILED,
             ChunkStrategyError::IndexOutOfBounds(chunk_index, total_chunks) => {
                 &format!("Index {chunk_index} out of bounds(total: {total_chunks})")
             }
@@ -41,6 +50,15 @@ impl std::error::Error for ChunkStrategyError {}
 ///
 /// Used for error responses in HTTP handlers.
 impl From<ChunkStrategyError> for Vec<u8> {
+    /// Converts the error into its byte representation.
+    ///
+    /// # Arguments
+    ///
+    /// - `ChunkStrategyError` - The error to convert.
+    ///
+    /// # Returns
+    ///
+    /// - `Self` - The UTF-8 bytes of the error message.
     fn from(error: ChunkStrategyError) -> Self {
         error.to_string().into_bytes()
     }
@@ -56,9 +74,9 @@ impl<'a> ChunkStrategy<'a> {
     /// # Arguments
     ///
     /// - `usize` - Starting chunk index (0-based)
-    /// - `&str` - Directory path for chunk storage
-    /// - `&str` - Unique file identifier
-    /// - `&str` - Original filename
+    /// - `&'a str` - Directory path for chunk storage
+    /// - `&'a str` - Unique file identifier
+    /// - `&'a str` - Original filename
     /// - `usize` - Total chunks count
     /// - `F` - Function implementing ChunkNaming trait
     ///
@@ -96,7 +114,7 @@ impl<'a> ChunkStrategy<'a> {
     ///
     /// # Arguments
     ///
-    /// - `&str` - File identifier
+    /// - `&'a str` - File identifier
     /// - `usize` - Chunk index (0-based)
     ///
     /// # Returns
@@ -111,7 +129,7 @@ impl<'a> ChunkStrategy<'a> {
     ///
     /// # Arguments
     ///
-    /// - `&str` - File identifier
+    /// - `&'a str` - File identifier
     /// - `usize` - Chunk index (0-based)
     ///
     /// # Returns
@@ -193,7 +211,7 @@ impl<'a> HandleStrategy<'a> for ChunkStrategy<'a> {
             .entry(self.get_file_id().to_string())
             .or_insert_with(|| RwLock::new(vec![false; *self.get_total_chunks()]));
         let mut chunks_status: RwLockWriteGuard<'_, Vec<bool>> = chunks_status.write().await;
-        let all_chunks_uploaded: bool = chunks_status.iter().all(|&status| status);
+        let all_chunks_uploaded: bool = chunks_status.iter().all(|&status: &bool| status);
         if !all_chunks_uploaded {
             return Err(ChunkStrategyError::Merge);
         }

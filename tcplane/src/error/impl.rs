@@ -5,6 +5,15 @@ impl std::error::Error for ServerError {}
 
 /// Implementation of `Display` for `ServerError`.
 impl Display for ServerError {
+    /// Formats the server error for display.
+    ///
+    /// # Arguments
+    ///
+    /// - `&mut fmt::Formatter<'_>` - Formatter for the output.
+    ///
+    /// # Returns
+    ///
+    /// - `fmt::Result` - Result of the formatting operation.
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::TcpBind(data) => write!(f, "Tcp bind error{COLON_SPACE}{data}"),
@@ -21,6 +30,15 @@ impl std::error::Error for ResponseError {}
 
 /// Implementation of `Display` for `ResponseError`.
 impl Display for ResponseError {
+    /// Formats the response error for display.
+    ///
+    /// # Arguments
+    ///
+    /// - `&mut fmt::Formatter<'_>` - Formatter for the output.
+    ///
+    /// # Returns
+    ///
+    /// - `fmt::Result` - Result of the formatting operation.
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::NotFoundStream => write!(f, "Stream not found"),

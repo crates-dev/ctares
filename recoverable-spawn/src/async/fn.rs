@@ -10,11 +10,11 @@ use super::*;
 ///
 /// - `AsyncSpawnResult` - The spawn operation result.
 pub async fn async_run_function<F: AsyncRecoverableFunction>(func: F) -> AsyncSpawnResult {
-    set_hook(Box::new(move |_| {}));
-    let func = async move {
+    set_hook(Box::new(move |_: &PanicHookInfo<'_>| {}));
+    tokio::spawn(async move {
         func.call().await;
-    };
-    tokio::spawn(func).await
+    })
+    .await
 }
 
 /// Executes an error-handling function within a panic-safe context.
@@ -31,11 +31,11 @@ pub async fn async_run_error_handle_function<E: AsyncErrorHandlerFunction>(
     func: E,
     error: Arc<String>,
 ) -> AsyncSpawnResult {
-    set_hook(Box::new(move |_| {}));
-    let func = async move {
+    set_hook(Box::new(move |_: &PanicHookInfo<'_>| {}));
+    tokio::spawn(async move {
         func.call(error.clone()).await;
-    };
-    tokio::spawn(func).await
+    })
+    .await
 }
 
 /// Converts a panic-captured error value into a string.

@@ -319,7 +319,7 @@ impl Context {
     pub async fn try_get_socket_addr_string(&self) -> Option<String> {
         self.try_get_socket_addr()
             .await
-            .map(|addr| addr.to_string())
+            .map(|addr: SocketAddr| addr.to_string())
     }
 
     /// Gets the socket address as a string.
@@ -341,7 +341,9 @@ impl Context {
     ///
     /// - `OptionSocketHost` - The socket host if available.
     pub async fn try_get_socket_host(&self) -> OptionSocketHost {
-        self.try_get_socket_addr().await.map(|addr| addr.ip())
+        self.try_get_socket_addr()
+            .await
+            .map(|addr: SocketAddr| addr.ip())
     }
 
     /// Gets the socket host.
@@ -363,7 +365,9 @@ impl Context {
     ///
     /// - `OptionSocketPort` - The socket port if available.
     pub async fn try_get_socket_port(&self) -> OptionSocketPort {
-        self.try_get_socket_addr().await.map(|addr| addr.port())
+        self.try_get_socket_addr()
+            .await
+            .map(|addr: SocketAddr| addr.port())
     }
 
     /// Gets the socket port.
@@ -419,7 +423,7 @@ impl Context {
             .await
             .attributes
             .get(key.as_ref())
-            .and_then(|arc| arc.downcast_ref::<V>())
+            .and_then(|arc: &Arc<dyn Any + Send + Sync>| arc.downcast_ref::<V>())
             .cloned()
     }
 

@@ -35,7 +35,7 @@ impl HandlerState {
     ///
     /// # Arguments
     ///
-    /// - `socket` - The network socket.
+    /// - `ArcRwLockUdpSocket` - The network socket.
     ///
     /// # Returns
     ///

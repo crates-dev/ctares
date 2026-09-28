@@ -32,13 +32,13 @@ pub(crate) fn set_item_string_preserving_decor(slot: &mut Item, new_string: &str
 ///   shared version (virtual workspace with per-member versions).
 fn read_root_version(doc: &DocumentMut) -> Option<String> {
     let workspace_version: Option<&str> = doc
-        .get("workspace")
-        .and_then(|workspace: &Item| workspace.get("package"))
-        .and_then(|package: &Item| package.get("version"))
+        .get(TOML_WORKSPACE)
+        .and_then(|workspace: &Item| workspace.get(TOML_PACKAGE))
+        .and_then(|package: &Item| package.get(TOML_VERSION))
         .and_then(|version_item: &Item| version_item.as_str());
     let package_version: Option<&str> = doc
-        .get("package")
-        .and_then(|package: &Item| package.get("version"))
+        .get(TOML_PACKAGE)
+        .and_then(|package: &Item| package.get(TOML_VERSION))
         .and_then(|version_item: &Item| version_item.as_str());
     workspace_version
         .or(package_version)
@@ -61,20 +61,20 @@ fn read_member_version(
     workspace_version: Option<&str>,
 ) -> Result<String, SyncError> {
     let version_item: &Item = member_doc
-        .get("package")
-        .and_then(|package: &Item| package.get("version"))
-        .ok_or_else(|| SyncError::MemberNameMissing("Cargo.toml".to_string()))?;
+        .get(TOML_PACKAGE)
+        .and_then(|package: &Item| package.get(TOML_VERSION))
+        .ok_or_else(|| SyncError::MemberNameMissing(CARGO_TOML.to_string()))?;
     if let Some(version) = version_item.as_str() {
         return Ok(version.to_string());
     }
     let inherits: bool = version_item
-        .get("workspace")
+        .get(TOML_WORKSPACE)
         .and_then(|workspace_item: &Item| workspace_item.as_bool())
         .unwrap_or(false);
     if inherits && let Some(version) = workspace_version {
         return Ok(version.to_string());
     }
-    Err(SyncError::WorkspaceVersionMissing("Cargo.toml".to_string()))
+    Err(SyncError::WorkspaceVersionMissing(CARGO_TOML.to_string()))
 }
 
 /// Read `[workspace.members]` list from a workspace manifest.
@@ -88,10 +88,10 @@ fn read_member_version(
 /// - `Result<Vec<String>, SyncError>` - Member path list, or an error.
 fn read_workspace_members(doc: &DocumentMut) -> Result<Vec<String>, SyncError> {
     let members: Vec<String> = doc
-        .get("workspace")
-        .and_then(|workspace: &Item| workspace.get("members"))
+        .get(TOML_WORKSPACE)
+        .and_then(|workspace: &Item| workspace.get(TOML_MEMBERS))
         .and_then(|members_item: &Item| members_item.as_array())
-        .ok_or_else(|| SyncError::WorkspaceMembersMissing("Cargo.toml".to_string()))?
+        .ok_or_else(|| SyncError::WorkspaceMembersMissing(CARGO_TOML.to_string()))?
         .iter()
         .filter_map(|member: &toml_edit::Value| member.as_str().map(|s: &str| s.to_string()))
         .collect();
@@ -109,10 +109,10 @@ fn read_workspace_members(doc: &DocumentMut) -> Result<Vec<String>, SyncError> {
 /// - `Result<String, SyncError>` - Crate name, or an error if missing.
 fn read_member_crate_name(doc: &DocumentMut) -> Result<String, SyncError> {
     let name: String = doc
-        .get("package")
-        .and_then(|package: &Item| package.get("name"))
+        .get(TOML_PACKAGE)
+        .and_then(|package: &Item| package.get(TOML_NAME))
         .and_then(|name_item: &Item| name_item.as_str())
-        .ok_or_else(|| SyncError::MemberNameMissing("Cargo.toml".to_string()))?
+        .ok_or_else(|| SyncError::MemberNameMissing(CARGO_TOML.to_string()))?
         .to_string();
     Ok(name)
 }
@@ -131,7 +131,7 @@ fn read_member_crate_name(doc: &DocumentMut) -> Result<String, SyncError> {
 fn find_dep_alias_for_member_path(deps: &dyn TableLike, member_path: &str) -> Option<String> {
     for (alias, entry) in deps.iter() {
         if let Some(path) = entry
-            .get("path")
+            .get(TOML_PATH)
             .and_then(|path_item: &Item| path_item.as_str())
             && path == member_path
         {
@@ -155,13 +155,13 @@ fn find_dep_alias_for_member_path(deps: &dyn TableLike, member_path: &str) -> Op
 ///   existing_version)` if an entry references `path = \"member_path\"`.
 fn scan_dep_entry(doc: &DocumentMut, member_path: &str) -> Option<(String, Option<String>)> {
     let deps: &dyn TableLike = doc
-        .get("workspace")
-        .and_then(|workspace: &Item| workspace.get("dependencies"))
+        .get(TOML_WORKSPACE)
+        .and_then(|workspace: &Item| workspace.get(TOML_DEPENDENCIES))
         .and_then(|deps_item: &Item| deps_item.as_table_like())?;
     let current_alias: String = find_dep_alias_for_member_path(deps, member_path)?;
     let existing_version: Option<String> = deps
         .get(&current_alias)
-        .and_then(|entry: &Item| entry.get("version"))
+        .and_then(|entry: &Item| entry.get(TOML_VERSION))
         .and_then(|version_item: &Item| version_item.as_str())
         .map(|version: &str| version.to_string());
     Some((current_alias, existing_version))
@@ -179,11 +179,11 @@ fn rewrite_entry_version(deps: &mut dyn TableLike, current_alias: &str, workspac
     let Some(entry) = deps.get_mut(current_alias) else {
         return;
     };
-    match entry.get_mut("version") {
+    match entry.get_mut(TOML_VERSION) {
         Some(version_slot) => set_item_string_preserving_decor(version_slot, workspace_version),
         None => {
             if let Some(entry_table) = entry.as_table_like_mut() {
-                entry_table.insert("version", value(workspace_version));
+                entry_table.insert(TOML_VERSION, value(workspace_version));
             }
         }
     }
@@ -209,7 +209,8 @@ fn rewrite_entry_version(deps: &mut dyn TableLike, current_alias: &str, workspac
 /// * Reads `[workspace.members]`. Errors out if it is missing.
 /// * When the root manifest also has `[package]` (monorepo with a root
 ///   package), the root package itself is processed first as member path
-///   `"."`, so a `path = "."` entry stays aligned too.
+///   the workspace root itself, so a `path` entry pointing at the root
+///   stays aligned too.
 /// * For each member path:
 ///     1. Opens `<member_path>/Cargo.toml` and reads its `[package].name`.
 ///     2. Locates the existing `[workspace.dependencies]` entry whose
@@ -228,7 +229,9 @@ fn rewrite_entry_version(deps: &mut dyn TableLike, current_alias: &str, workspac
 pub async fn execute_sync(manifest_path: &str) -> Result<SyncReport, SyncError> {
     let path: &Path = Path::new(manifest_path);
     let content: String = read_to_string(path).await?;
-    let mut doc: DocumentMut = content.parse().map_err(|_| SyncError::ManifestParseError)?;
+    let mut doc: DocumentMut = content
+        .parse()
+        .map_err(|_error: TomlError| SyncError::ManifestParseError)?;
     let workspace_version: Option<String> = read_root_version(&doc);
     let members: Vec<String> = read_workspace_members(&doc)?;
     if members.is_empty() {
@@ -247,7 +250,7 @@ pub async fn execute_sync(manifest_path: &str) -> Result<SyncReport, SyncError> 
     // itself be referenced as `path = "."` in `[workspace.dependencies]`;
     // include it so its entry stays aligned with the workspace version.
     let mut member_paths: Vec<String> = Vec::new();
-    if doc.get("package").is_some() {
+    if doc.get(TOML_PACKAGE).is_some() {
         member_paths.push(".".to_string());
     }
     member_paths.extend(members.iter().cloned());
@@ -256,7 +259,7 @@ pub async fn execute_sync(manifest_path: &str) -> Result<SyncReport, SyncError> 
             .parent()
             .unwrap_or_else(|| Path::new("."))
             .join(member_path)
-            .join("Cargo.toml");
+            .join(CARGO_TOML);
         if !member_manifest_path.exists() {
             return Err(SyncError::MemberManifestMissing(
                 member_manifest_path.display().to_string(),
@@ -265,7 +268,7 @@ pub async fn execute_sync(manifest_path: &str) -> Result<SyncReport, SyncError> 
         let member_content: String = read_to_string(&member_manifest_path).await?;
         let member_doc: DocumentMut = member_content
             .parse()
-            .map_err(|_| SyncError::ManifestParseError)?;
+            .map_err(|_error: TomlError| SyncError::ManifestParseError)?;
         let canonical_alias: String = read_member_crate_name(&member_doc)?;
         // Homogeneous workspaces (root version exists) align every entry to
         // the root version; heterogeneous virtual workspaces align each
@@ -293,8 +296,8 @@ pub async fn execute_sync(manifest_path: &str) -> Result<SyncReport, SyncError> 
         }
         needs_rewrite = true;
         let deps: &mut dyn TableLike = doc
-            .get_mut("workspace")
-            .and_then(|workspace: &mut Item| workspace.get_mut("dependencies"))
+            .get_mut(TOML_WORKSPACE)
+            .and_then(|workspace: &mut Item| workspace.get_mut(TOML_DEPENDENCIES))
             .and_then(|deps_item: &mut Item| deps_item.as_table_like_mut())
             .ok_or(SyncError::ManifestParseError)?;
         rewrite_entry_version(deps, &current_alias, &target_version);
@@ -320,7 +323,8 @@ pub async fn execute_sync(manifest_path: &str) -> Result<SyncReport, SyncError> 
         versioned_entries.push((member_path.clone(), canonical_alias));
     }
     let file_changed: bool = needs_rewrite;
-    let report_version: String = workspace_version.unwrap_or_else(|| "per-member".to_string());
+    let report_version: String =
+        workspace_version.unwrap_or_else(|| REPORT_PER_MEMBER_VERSION.to_string());
     if file_changed {
         write(path, doc.to_string()).await?;
         log::info!(

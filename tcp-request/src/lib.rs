@@ -19,6 +19,6 @@ use std::{
     fmt::{self, Display},
     io::{Read, Write},
     net::TcpStream,
-    sync::{Arc, RwLock, RwLockReadGuard},
+    sync::{Arc, PoisonError, RwLock, RwLockReadGuard, RwLockWriteGuard},
     time::Duration,
 };

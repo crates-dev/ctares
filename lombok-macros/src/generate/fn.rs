@@ -1,5 +1,57 @@
 use super::*;
 
+/// Builds an identifier by concatenating a constant prefix with an existing
+/// identifier, reusing the span of that identifier so hygiene is preserved.
+///
+/// # Arguments
+///
+/// - `&str` - The constant prefix to prepend.
+/// - `&Ident` - The identifier whose text is appended and whose span is inherited.
+///
+/// # Returns
+///
+/// - `Ident` - The prefixed identifier.
+fn prefixed_ident_from(prefix: &str, suffix: &Ident) -> Ident {
+    let mut name: String = String::from(prefix);
+    name.push_str(&suffix.to_string());
+    Ident::new(&name, suffix.span())
+}
+
+/// Builds an identifier by concatenating a constant prefix with a plain string.
+///
+/// # Arguments
+///
+/// - `&str` - The constant prefix to prepend.
+/// - `&str` - The suffix text to append.
+///
+/// # Returns
+///
+/// - `Ident` - The prefixed identifier, with a call-site span.
+fn prefixed_ident_from_str(prefix: &str, suffix: &str) -> Ident {
+    let mut name: String = String::from(prefix);
+    name.push_str(suffix);
+    Ident::new(&name, Span::call_site())
+}
+
+/// Builds an identifier by concatenating a constant prefix with a tuple index.
+///
+/// `format_ident!` requires a literal format string, so the index is rendered
+/// separately and the two halves are joined here instead.
+///
+/// # Arguments
+///
+/// - `&str` - The constant prefix to prepend.
+/// - `usize` - The tuple field index rendered as the suffix.
+///
+/// # Returns
+///
+/// - `Ident` - The prefixed identifier, with a call-site span.
+fn prefixed_ident_from_index(prefix: &str, index: usize) -> Ident {
+    let mut name: String = String::from(prefix);
+    name.push_str(&index.to_string());
+    Ident::new(&name, Span::call_site())
+}
+
 /// Cleans an attribute string by removing the "r#" prefix if present.
 ///
 /// # Arguments
@@ -103,15 +155,19 @@ fn extract_result_types(ty: &Type) -> Option<(Type, Type)> {
                 && segment.ident == RESULT_TYPE
                 && let PathArguments::AngleBracketed(args) = &segment.arguments
             {
-                let mut types = args.args.iter().filter_map(|arg| {
-                    if let GenericArgument::Type(inner_ty) = arg {
-                        Some(inner_ty.clone())
-                    } else {
-                        None
-                    }
-                });
-                if let (Some(ok_ty), Some(err_ty)) = (types.next(), types.next()) {
-                    return Some((ok_ty, err_ty));
+                let types: Vec<Type> = args
+                    .args
+                    .iter()
+                    .filter_map(|arg: &GenericArgument| {
+                        if let GenericArgument::Type(inner_ty) = arg {
+                            Some(inner_ty.clone())
+                        } else {
+                            None
+                        }
+                    })
+                    .collect();
+                if let (Some(ok_ty), Some(err_ty)) = (types.first(), types.get(1)) {
+                    return Some((ok_ty.clone(), err_ty.clone()));
                 }
             }
             None
@@ -220,7 +276,7 @@ fn generate_param_type(
             ParameterType::Custom(custom_tokens) => {
                 let custom_tokens_stream: proc_macro2::TokenStream = custom_tokens
                     .parse()
-                    .unwrap_or_else(|_| override_type.clone());
+                    .unwrap_or_else(|_: proc_macro2::LexError| override_type.clone());
                 if let Ok(parsed_type) = parse2::<Type>(custom_tokens_stream.clone()) {
                     quote! { impl #parsed_type }
                 } else {
@@ -238,7 +294,7 @@ fn generate_param_type(
 ///
 /// # Arguments
 ///
-/// - `ident` - The field identifier to assign to.
+/// - `&proc_macro2::Ident` - The field identifier to assign to.
 /// - `Option<&proc_macro2::TokenStream>` - Optional custom parameter type from attribute specification.
 ///
 /// # Returns
@@ -275,7 +331,7 @@ fn generate_assignment(
 ///
 /// # Arguments
 ///
-/// - `index` - The tuple field index to assign to.
+/// - `&Index` - The tuple field index to assign to.
 /// - `Option<&proc_macro2::TokenStream>` - Optional custom parameter type from attribute specification.
 ///
 /// # Returns
@@ -317,7 +373,7 @@ fn generate_assignment_tuple(
 /// type in a method return position (`-> &*mut dyn Trait`), Rust's elision
 /// rules instead bind the trait object to the enclosing `&self` lifetime,
 /// and the invariance of `*mut` turns that mismatch into a compile error
-/// ("lifetime may not live long enough"). Pinning bare trait objects to
+/// about the borrow not living long enough. Pinning bare trait objects to
 /// `+ 'static` — the same default the field declaration applied — makes
 /// the generated signatures type-check, which is what enables getter and
 /// setter generation for raw pointer fields such as `*mut dyn FnMut()`.
@@ -535,7 +591,7 @@ fn generate_return_type(field_type: &Type, return_type: ReturnType) -> proc_macr
 /// # Arguments
 ///
 /// - `bool` - Whether to generate a getter function.
-/// - `TokenStream2` - The visibility of the function.
+/// - `proc_macro2::TokenStream` - The visibility of the function.
 /// - `&Ident` - The name of the getter function.
 /// - `&Ident` - The name of the field.
 /// - `&Type` - The type of the field.
@@ -638,7 +694,7 @@ fn build_named_get_quote(
 /// # Arguments
 ///
 /// - `bool` - Whether to generate a try getter function.
-/// - `TokenStream2` - The visibility of the function.
+/// - `proc_macro2::TokenStream` - The visibility of the function.
 /// - `&Ident` - The name of the try getter function.
 /// - `&Ident` - The name of the field.
 /// - `&Type` - The type of the field.
@@ -660,7 +716,7 @@ fn build_named_try_get_quote(
     }
     let normalized_attr_ty: Type = normalize_signature_type(attr_ty);
     let attr_ty: &Type = &normalized_attr_ty;
-    let try_get_name: Ident = format_ident!("{}{}", TRY_GET_METHOD_PREFIX, get_name);
+    let try_get_name: Ident = prefixed_ident_from(TRY_GET_METHOD_PREFIX, get_name);
     match return_type {
         ReturnType::Reference => quote! {
             #[inline(always)]
@@ -713,7 +769,7 @@ fn build_named_try_get_quote(
 /// # Arguments
 ///
 /// - `bool` - Whether to generate a mutable getter function.
-/// - `TokenStream2` - The visibility of the function.
+/// - `proc_macro2::TokenStream` - The visibility of the function.
 /// - `&Ident` - The name of the mutable getter function.
 /// - `&Ident` - The name of the field.
 /// - `&Type` - The type of the field.
@@ -745,10 +801,12 @@ fn build_named_get_mut_quote(
 ///
 /// # Arguments
 ///
-/// - `&Field` - The field structure to generate for.
-/// - `bool` - Whether to generate a getter function.
-/// - `bool` - Whether to generate a mutable getter function.
 /// - `bool` - Whether to generate a setter function.
+/// - `proc_macro2::TokenStream` - The visibility of the function.
+/// - `&Ident` - The name of the setter function.
+/// - `&Ident` - The name of the field.
+/// - `&Type` - The type of the field.
+/// - `Option<&proc_macro2::TokenStream>` - Optional custom parameter type from attribute specification.
 ///
 /// # Returns
 ///
@@ -799,9 +857,9 @@ fn generate_named_getter_setter(
     let attr_name_ident: &Ident = field.ident.as_ref().expect(FIELD_SHOULD_HAVE_A_NAME);
     let attr_ty: &Type = &field.ty;
     let clean_attr_name: String = get_clean_attr_name(&attr_name_ident.to_string());
-    let get_name: Ident = format_ident!("{}{}", GET_METHOD_PREFIX, clean_attr_name);
-    let get_mut_name: Ident = format_ident!("{}{}", GET_MUT_METHOD_PREFIX, clean_attr_name);
-    let set_name: Ident = format_ident!("{}{}", SET_METHOD_PREFIX, clean_attr_name);
+    let get_name: Ident = prefixed_ident_from_str(GET_METHOD_PREFIX, &clean_attr_name);
+    let get_mut_name: Ident = prefixed_ident_from_str(GET_MUT_METHOD_PREFIX, &clean_attr_name);
+    let set_name: Ident = prefixed_ident_from_str(SET_METHOD_PREFIX, &clean_attr_name);
     let mut generated: proc_macro2::TokenStream = quote! {};
     let mut config_map: HashMap<String, Vec<Config>> = HashMap::new();
     let mut shared_config: Config = Config::default();
@@ -932,9 +990,9 @@ fn generate_named_getter_setter(
 /// # Arguments
 ///
 /// - `bool` - Whether to generate a getter function.
-/// - `TokenStream2` - The visibility of the function.
-/// - `&Ident,` - The name of the getter function.
-/// - `&Index,` - The index of the field in the tuple struct.
+/// - `proc_macro2::TokenStream` - The visibility of the function.
+/// - `&Ident` - The name of the getter function.
+/// - `&Index` - The index of the field in the tuple struct.
 /// - `&Type` - The type of the field.
 /// - `ReturnType` - The return type of the getter function.
 ///
@@ -1021,7 +1079,7 @@ fn build_tuple_get_quote(
 /// # Arguments
 ///
 /// - `bool` - Whether to generate a try getter function.
-/// - `TokenStream2` - The visibility of the function.
+/// - `proc_macro2::TokenStream` - The visibility of the function.
 /// - `&Ident` - The name of the try getter function.
 /// - `&Index` - The index of the field in the tuple struct.
 /// - `&Type` - The type of the field.
@@ -1043,7 +1101,7 @@ fn build_tuple_try_get_quote(
     }
     let normalized_attr_ty: Type = normalize_signature_type(attr_ty);
     let attr_ty: &Type = &normalized_attr_ty;
-    let try_get_name: Ident = format_ident!("{}{}", TRY_GET_METHOD_PREFIX, get_name);
+    let try_get_name: Ident = prefixed_ident_from(TRY_GET_METHOD_PREFIX, get_name);
     match return_type {
         ReturnType::Reference => quote! {
             #[inline(always)]
@@ -1096,7 +1154,7 @@ fn build_tuple_try_get_quote(
 /// # Arguments
 ///
 /// - `bool` - Whether to generate a mutable getter function.
-/// - `TokenStream2` - The visibility of the function.
+/// - `proc_macro2::TokenStream` - The visibility of the function.
 /// - `&Ident` - The name of the mutable getter function.
 /// - `&Index` - The index of the field in the tuple struct.
 /// - `&Type` - The type of the field.
@@ -1128,11 +1186,12 @@ fn build_tuple_get_mut_quote(
 ///
 /// # Arguments
 ///
-/// - `&Field` - The field structure to generate for.
-/// - `usize` - The index of the field in the tuple struct.
-/// - `bool` - Whether to generate a getter function.
-/// - `bool` - Whether to generate a mutable getter function.
 /// - `bool` - Whether to generate a setter function.
+/// - `proc_macro2::TokenStream` - The visibility of the function.
+/// - `&Ident` - The name of the setter function.
+/// - `&Index` - The index of the field in the tuple struct.
+/// - `&Type` - The type of the field.
+/// - `Option<&proc_macro2::TokenStream>` - Optional custom parameter type from attribute specification.
 ///
 /// # Returns
 ///
@@ -1183,9 +1242,9 @@ fn generate_tuple_getter_setter(
     need_setter: bool,
 ) -> proc_macro2::TokenStream {
     let attr_ty: &Type = &field.ty;
-    let get_name: Ident = format_ident!("{}{}", GET_METHOD_PREFIX, index);
-    let get_mut_name: Ident = format_ident!("{}{}", GET_MUT_METHOD_PREFIX, index);
-    let set_name: Ident = format_ident!("{}{}", SET_METHOD_PREFIX, index);
+    let get_name: Ident = prefixed_ident_from_index(GET_METHOD_PREFIX, index);
+    let get_mut_name: Ident = prefixed_ident_from_index(GET_MUT_METHOD_PREFIX, index);
+    let set_name: Ident = prefixed_ident_from_index(SET_METHOD_PREFIX, index);
     let field_index: Index = Index::from(index);
     let mut generated: proc_macro2::TokenStream = quote! {};
     let mut config_map: HashMap<String, Vec<Config>> = HashMap::new();
@@ -1363,7 +1422,7 @@ pub(crate) fn inner_lombok_data(
         .generics
         .params
         .iter()
-        .filter_map(|param| {
+        .filter_map(|param: &GenericParam| {
             if let GenericParam::Type(type_param) = param {
                 Some(type_param.clone())
             } else {
@@ -1375,7 +1434,7 @@ pub(crate) fn inner_lombok_data(
         .generics
         .params
         .iter()
-        .filter_map(|param| {
+        .filter_map(|param: &GenericParam| {
             if let GenericParam::Type(type_param) = param {
                 Some(type_param.ident.clone())
             } else {
@@ -1387,7 +1446,7 @@ pub(crate) fn inner_lombok_data(
         .generics
         .params
         .iter()
-        .filter_map(|param| {
+        .filter_map(|param: &GenericParam| {
             if let GenericParam::Lifetime(lifetime_param) = param {
                 Some(lifetime_param.lifetime.clone())
             } else {
@@ -1401,7 +1460,7 @@ pub(crate) fn inner_lombok_data(
             Fields::Named(_) => s
                 .fields
                 .iter()
-                .map(|field| {
+                .map(|field: &Field| {
                     generate_getter_setter(field, None, need_getter, need_getter_mut, need_setter)
                 })
                 .collect::<Vec<_>>(),
@@ -1409,7 +1468,7 @@ pub(crate) fn inner_lombok_data(
                 .fields
                 .iter()
                 .enumerate()
-                .map(|(index, field)| {
+                .map(|(index, field): (usize, &Field)| {
                     generate_getter_setter(
                         field,
                         Some(index),
@@ -1478,16 +1537,34 @@ pub(super) fn inner_display(input: TokenStream, is_format: bool) -> TokenStream 
     let expanded: proc_macro2::TokenStream = if is_format {
         quote! {
             impl #impl_generics std::fmt::Display for #name #ty_generics #where_clause {
+                /// Formats the value using the detailed debug format.
+                ///
+                /// # Arguments
+                ///
+                /// - `&mut std::fmt::Formatter<'_>` - The formatter to write the representation into.
+                ///
+                /// # Returns
+                ///
+                /// - `std::fmt::Result` - Success or failure of the formatting operation.
                 fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                    f.write_fmt(format_args!("{0:#?}", self))
+                    write!(f, "{0:#?}", self)
                 }
             }
         }
     } else {
         quote! {
             impl #impl_generics std::fmt::Display for #name #ty_generics #where_clause {
+                /// Formats the value using the standard debug format.
+                ///
+                /// # Arguments
+                ///
+                /// - `&mut std::fmt::Formatter<'_>` - The formatter to write the representation into.
+                ///
+                /// # Returns
+                ///
+                /// - `std::fmt::Result` - Success or failure of the formatting operation.
                 fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                    f.write_fmt(format_args!("{:?}", self))
+                    write!(f, "{:?}", self)
                 }
             }
         }
@@ -1567,6 +1644,15 @@ pub(crate) fn inner_custom_debug(input: TokenStream) -> TokenStream {
                     let struct_name_str: String = name.to_string();
                     let expanded: proc_macro2::TokenStream = quote! {
                         impl #impl_generics std::fmt::Debug for #name #ty_generics #where_clause {
+                            /// Formats the struct fields as a debug struct, skipping excluded fields.
+                            ///
+                            /// # Arguments
+                            ///
+                            /// - `&mut std::fmt::Formatter<'_>` - The formatter to write the representation into.
+                            ///
+                            /// # Returns
+                            ///
+                            /// - `std::fmt::Result` - Success or failure of the formatting operation.
                             fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                                 f.debug_struct(#struct_name_str)
                                     #(#debug_fields)*
@@ -1604,6 +1690,15 @@ pub(crate) fn inner_custom_debug(input: TokenStream) -> TokenStream {
                     let struct_name_str: String = name.to_string();
                     let expanded: proc_macro2::TokenStream = quote! {
                         impl #impl_generics std::fmt::Debug for #name #ty_generics #where_clause {
+                            /// Formats the tuple fields as a debug tuple, skipping excluded fields.
+                            ///
+                            /// # Arguments
+                            ///
+                            /// - `&mut std::fmt::Formatter<'_>` - The formatter to write the representation into.
+                            ///
+                            /// # Returns
+                            ///
+                            /// - `std::fmt::Result` - Success or failure of the formatting operation.
                             fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                                 f.debug_tuple(#struct_name_str)
                                     #(#debug_fields)*
@@ -1617,6 +1712,15 @@ pub(crate) fn inner_custom_debug(input: TokenStream) -> TokenStream {
                     let struct_name_str: String = name.to_string();
                     let expanded: proc_macro2::TokenStream = quote! {
                         impl #impl_generics std::fmt::Debug for #name #ty_generics #where_clause {
+                            /// Formats the unit struct as a debug struct with no fields.
+                            ///
+                            /// # Arguments
+                            ///
+                            /// - `&mut std::fmt::Formatter<'_>` - The formatter to write the representation into.
+                            ///
+                            /// # Returns
+                            ///
+                            /// - `std::fmt::Result` - Success or failure of the formatting operation.
                             fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                                 f.debug_struct(#struct_name_str).finish()
                             }
@@ -1683,7 +1787,8 @@ pub(crate) fn inner_custom_debug(input: TokenStream) -> TokenStream {
                                 .iter()
                                 .enumerate()
                                 .map(|(i, _): (usize, &Field)| {
-                                    let field_name: Ident = format_ident!("field_{}", i);
+                                    let field_name: Ident =
+                                        prefixed_ident_from_index(FIELD_NAME_PREFIX, i);
                                     quote! { #field_name }
                                 })
                                 .collect();
@@ -1706,7 +1811,8 @@ pub(crate) fn inner_custom_debug(input: TokenStream) -> TokenStream {
                                     if should_skip {
                                         None
                                     } else {
-                                        let field_name: Ident = format_ident!("field_{}", i);
+                                        let field_name: Ident =
+                                            prefixed_ident_from_index(FIELD_NAME_PREFIX, i);
                                         Some(quote! {
                                             .field(#field_name)
                                         })
@@ -1733,6 +1839,15 @@ pub(crate) fn inner_custom_debug(input: TokenStream) -> TokenStream {
                 .collect();
             let expanded: proc_macro2::TokenStream = quote! {
                 impl #impl_generics std::fmt::Debug for #name #ty_generics #where_clause {
+                    /// Formats each enum variant as a debug struct or tuple, skipping excluded fields.
+                    ///
+                    /// # Arguments
+                    ///
+                    /// - `&mut std::fmt::Formatter<'_>` - The formatter to write the representation into.
+                    ///
+                    /// # Returns
+                    ///
+                    /// - `std::fmt::Result` - Success or failure of the formatting operation.
                     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                         match self {
                             #(#variants)*
@@ -1802,7 +1917,7 @@ fn analyze_tuple_field_for_new(field: &Field, index: usize) -> Option<(Ident, Ty
         return None;
     }
     let field_type: &Type = &field.ty;
-    let param_name: Ident = format_ident!("field_{}", index);
+    let param_name: Ident = prefixed_ident_from_index(FIELD_NAME_PREFIX, index);
     Some((param_name, field_type.clone()))
 }
 
@@ -1831,7 +1946,9 @@ pub(crate) fn inner_new_constructor(input: &DeriveInput, visibility: Visibility)
                 .unnamed
                 .iter()
                 .enumerate()
-                .filter_map(|(index, field)| analyze_tuple_field_for_new(field, index))
+                .filter_map(|(index, field): (usize, &Field)| {
+                    analyze_tuple_field_for_new(field, index)
+                })
                 .collect(),
             Fields::Unit => Vec::new(),
         },
@@ -1843,9 +1960,9 @@ pub(crate) fn inner_new_constructor(input: &DeriveInput, visibility: Visibility)
                 .unnamed
                 .iter()
                 .enumerate()
-                .filter_map(|(index, field)| {
+                .filter_map(|(index, field): (usize, &Field)| {
                     if !should_skip_field_for_new(field) {
-                        let param_name: Ident = format_ident!("field_{}", index);
+                        let param_name: Ident = prefixed_ident_from_index(FIELD_NAME_PREFIX, index);
                         Some((Index::from(index), param_name))
                     } else {
                         None
@@ -1858,7 +1975,7 @@ pub(crate) fn inner_new_constructor(input: &DeriveInput, visibility: Visibility)
     };
     let params: Vec<proc_macro2::TokenStream> = fields_info
         .iter()
-        .map(|(field_name, field_type)| {
+        .map(|(field_name, field_type): &(Ident, Type)| {
             quote! { #field_name: #field_type }
         })
         .collect();
@@ -1868,7 +1985,7 @@ pub(crate) fn inner_new_constructor(input: &DeriveInput, visibility: Visibility)
                 let field_initializers: Vec<proc_macro2::TokenStream> = data_struct
                     .fields
                     .iter()
-                    .filter_map(|field| {
+                    .filter_map(|field: &Field| {
                         let original_name: &Ident = field.ident.as_ref()?;
                         if !should_skip_field_for_new(field) {
                             Some(quote! { #original_name: #original_name })
@@ -1884,12 +2001,12 @@ pub(crate) fn inner_new_constructor(input: &DeriveInput, visibility: Visibility)
                     .fields
                     .iter()
                     .enumerate()
-                    .map(|(index, field)| {
+                    .map(|(index, field): (usize, &Field)| {
                         let field_index: Index = Index::from(index);
                         if !should_skip_field_for_new(field) {
                             if let Some((_, param_name)) = tuple_field_mapping
                                 .iter()
-                                .find(|(idx, _)| *idx == field_index)
+                                .find(|entry: &&(Index, Ident)| entry.0 == field_index)
                             {
                                 quote! { #param_name }
                             } else {

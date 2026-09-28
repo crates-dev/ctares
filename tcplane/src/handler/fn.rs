@@ -4,8 +4,8 @@ use super::*;
 ///
 /// # Arguments
 ///
-/// - `Fn(Context) -> Fut + Send + Sync + 'static` - The async function to wrap.
-/// - `Future<Output = ()> + Send + 'static` - The future type returned by the function.
+/// - `F` - The async function to wrap, satisfying `Fn(Context) -> Fut` where
+///   `Fut: Future<Output = ()> + Send + 'static`.
 ///
 /// # Returns
 ///
@@ -15,7 +15,7 @@ where
     F: Fn(Context) -> Fut + Send + Sync + 'static,
     Fut: Future<Output = ()> + Send + 'static,
 {
-    Box::new(move |ctx| Box::pin(func(ctx)))
+    Box::new(move |ctx: Context| Box::pin(func(ctx)))
 }
 
 /// Implementation of server hook handler factory functions.

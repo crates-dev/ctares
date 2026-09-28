@@ -41,7 +41,7 @@ impl PanicData {
     ///
     /// # Arguments
     ///
-    /// - `JoinError` - The JoinError from a panicked task.
+    /// - `tokio::task::JoinError` - The JoinError from a panicked task.
     ///
     /// # Returns
     ///

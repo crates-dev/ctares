@@ -19,8 +19,8 @@ pub async fn async_move_file(src: &str, dest: &str) -> Result<(), Error> {
 ///
 /// # Arguments
 ///
-/// - `&str` - The source directory path.
-/// - `&str` - The destination directory path.
+/// - `&'a str` - The source directory path.
+/// - `&'a str` - The destination directory path.
 ///
 /// # Returns
 ///

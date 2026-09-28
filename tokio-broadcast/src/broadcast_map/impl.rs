@@ -52,7 +52,7 @@ impl<T: BroadcastMapTrait> BroadcastMap<T> {
     /// # Arguments
     ///
     /// - `K` - Key convertible to `str`.
-    /// - `capacity` - Maximum number of buffered messages.
+    /// - `Capacity` - Maximum number of buffered messages.
     ///
     /// # Returns
     ///
@@ -110,7 +110,7 @@ impl<T: BroadcastMapTrait> BroadcastMap<T> {
     /// # Arguments
     ///
     /// - `K` - Key convertible to `str`.
-    /// - `capacity` - Capacity for new channel if needed.
+    /// - `Capacity` - Capacity for new channel if needed.
     ///
     /// # Returns
     ///

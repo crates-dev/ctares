@@ -2,6 +2,7 @@ use crate_cli::*;
 
 use std::process::exit;
 
+/// Run the requested subcommand and exit non-zero on failure.
 #[tokio::main]
 async fn main() {
     Logger::init(log::LevelFilter::Info);
@@ -14,9 +15,8 @@ async fn main() {
             }
         }
         CommandType::Bump => {
-            let manifest_path: String = args
-                .manifest_path
-                .unwrap_or_else(|| "Cargo.toml".to_string());
+            let manifest_path: String =
+                args.manifest_path.unwrap_or_else(|| CARGO_TOML.to_string());
             let bump_type: BumpVersionType = args.bump_type.unwrap_or(BumpVersionType::Patch);
             match execute_bump(&manifest_path, &bump_type).await {
                 Ok(result) => {
@@ -29,9 +29,8 @@ async fn main() {
             }
         }
         CommandType::Publish => {
-            let manifest_path: String = args
-                .manifest_path
-                .unwrap_or_else(|| "Cargo.toml".to_string());
+            let manifest_path: String =
+                args.manifest_path.unwrap_or_else(|| CARGO_TOML.to_string());
             let max_retries: u32 = args.max_retries;
             match execute_publish(&manifest_path, max_retries).await {
                 Ok(results) => {
@@ -53,9 +52,8 @@ async fn main() {
             }
         }
         CommandType::Sync => {
-            let manifest_path: String = args
-                .manifest_path
-                .unwrap_or_else(|| "Cargo.toml".to_string());
+            let manifest_path: String =
+                args.manifest_path.unwrap_or_else(|| CARGO_TOML.to_string());
             match execute_sync(&manifest_path).await {
                 Ok(report) => {
                     log::info!(

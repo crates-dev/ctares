@@ -2,6 +2,11 @@ use super::*;
 
 /// Provides a default implementation for ServerData.
 impl Default for ServerData {
+    /// Creates a new ServerData instance with empty collections.
+    ///
+    /// # Returns
+    ///
+    /// - `Self` - A new instance with default values.
     fn default() -> Self {
         Self {
             server_config: ServerConfigData::default(),
@@ -14,6 +19,11 @@ impl Default for ServerData {
 
 /// Provides a default implementation for ServerControlHook.
 impl Default for ServerControlHook {
+    /// Creates no-op wait and shutdown hooks.
+    ///
+    /// # Returns
+    ///
+    /// - `Self` - A new instance with inert control hooks.
     fn default() -> Self {
         Self {
             wait_hook: Arc::new(|| Box::pin(async {})),
@@ -24,6 +34,11 @@ impl Default for ServerControlHook {
 
 /// Provides a default implementation for Server.
 impl Default for Server {
+    /// Creates a new Server instance with default settings.
+    ///
+    /// # Returns
+    ///
+    /// - `Self` - A new Server instance.
     fn default() -> Self {
         Self(Arc::new(RwLock::new(ServerData::default())))
     }
@@ -92,10 +107,6 @@ impl Server {
 
     /// Adds a typed hook to the server's hook list.
     ///
-    /// # Arguments
-    ///
-    /// - `ServerHook` - The hook type that implements `ServerHook`.
-    ///
     /// # Returns
     ///
     /// - `&Self` - Reference to self for method chaining.
@@ -112,10 +123,6 @@ impl Server {
 
     /// Adds a panic handler to the server's task panic handler list.
     ///
-    /// # Arguments
-    ///
-    /// - `ServerHook` - The handler type that implements `ServerHook`.
-    ///
     /// # Returns
     ///
     /// - `&Self` - Reference to self for method chaining.
@@ -131,10 +138,6 @@ impl Server {
     }
 
     /// Adds an error handler to the server's error handler list.
-    ///
-    /// # Arguments
-    ///
-    /// - `ServerHook` - The handler type that implements `ServerHook`.
     ///
     /// # Returns
     ///
@@ -291,7 +294,7 @@ impl Server {
     async fn read_error_handle(&self, error: String) {
         let error_handlers: ServerHookList = self.read().await.get_read_error().clone();
         let ctx: Context = Context::new();
-        ctx.set_data("error", error).await;
+        ctx.set_data(CONTEXT_ERROR_KEY, error).await;
         for handler in error_handlers.iter() {
             handler(ctx.clone()).await;
         }
@@ -326,19 +329,19 @@ impl Server {
             }
             let _: Result<(), tokio::sync::watch::error::SendError<()>> = wait_sender.send(());
         });
-        let wait_hook = Arc::new(move || {
-            let mut wait_receiver_clone = wait_receiver.clone();
+        let wait_hook: ServerControlHookFn = Arc::new(move || {
+            let mut wait_receiver_clone: Receiver<()> = wait_receiver.clone();
             Box::pin(async move {
                 let _: Result<(), tokio::sync::watch::error::RecvError> =
                     wait_receiver_clone.changed().await;
-            }) as Pin<Box<dyn Future<Output = ()> + Send + 'static>>
+            }) as ServerControlFuture
         });
-        let shutdown_hook = Arc::new(move || {
+        let shutdown_hook: ServerControlHookFn = Arc::new(move || {
             let shutdown_sender_clone: Sender<()> = shutdown_sender.clone();
             Box::pin(async move {
                 let _: Result<(), tokio::sync::watch::error::SendError<()>> =
                     shutdown_sender_clone.send(());
-            }) as Pin<Box<dyn Future<Output = ()> + Send + 'static>>
+            }) as ServerControlFuture
         });
         spawn(async move {
             let _: Result<(), JoinError> = accept_connections.await;

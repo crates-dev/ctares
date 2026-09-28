@@ -30,10 +30,6 @@ impl FromStr for FuncType {
 impl FuncType {
     /// Checks if the `FuncType` is `Get`.
     ///
-    /// # Arguments
-    ///
-    /// - `self` - The reference to the `FuncType` instance.
-    ///
     /// # Returns
     ///
     /// - `bool` - if the `FuncType` is `Get`; otherwise, `false`.
@@ -44,10 +40,8 @@ impl FuncType {
 
     /// Checks if the `FuncType` is `GetMut`.
     ///
-    /// # Arguments
-    /// - `self` - The reference to the `FuncType` instance.
-    ///
     /// # Returns
+    ///
     /// - `bool` - if the `FuncType` is `GetMut`; otherwise, `false`.
     #[inline(always)]
     pub(crate) fn is_get_mut(&self) -> bool {
@@ -56,10 +50,8 @@ impl FuncType {
 
     /// Checks if the `FuncType` is `Set`.
     ///
-    /// # Arguments
-    /// - `self` - The reference to the `FuncType` instance.
-    ///
     /// # Returns
+    ///
     /// - `bool` - if the `FuncType` is `Set`; otherwise, `false`.
     #[inline(always)]
     pub(crate) fn is_set(&self) -> bool {
@@ -68,10 +60,8 @@ impl FuncType {
 
     /// Checks if the `FuncType` is `Debug`.
     ///
-    /// # Arguments
-    /// - `self` - The reference to the `FuncType` instance.
-    ///
     /// # Returns
+    ///
     /// - `bool` - if the `FuncType` is `Debug`; otherwise, `false`.
     #[inline(always)]
     pub(crate) fn is_debug(&self) -> bool {
@@ -80,10 +70,8 @@ impl FuncType {
 
     /// Checks if the `FuncType` is `New`.
     ///
-    /// # Arguments
-    /// - `self` - The reference to the `FuncType` instance.
-    ///
     /// # Returns
+    ///
     /// - `bool` - if the `FuncType` is `New`; otherwise, `false`.
     #[inline(always)]
     pub(crate) fn is_new(&self) -> bool {
@@ -92,10 +80,8 @@ impl FuncType {
 
     /// Checks if the `FuncType` is `Unknown`.
     ///
-    /// # Arguments
-    /// - `self` - The reference to the `FuncType` instance.
-    ///
     /// # Returns
+    ///
     /// - `bool` - if the `FuncType` is `Unknown`; otherwise, `false`.
     #[inline(always)]
     pub(crate) fn is_unknown(&self) -> bool {
@@ -105,7 +91,8 @@ impl FuncType {
     /// Checks if the `FuncType` is `Unknown`.
     ///
     /// # Arguments
-    /// - `func_type_str` - The string slice representing the function type to check.
+    ///
+    /// - `&str` - The string slice representing the function type to check.
     ///
     /// # Returns
     /// - `bool` - if the `FuncType` parsed from the string is not `Unknown`; otherwise, `false`.

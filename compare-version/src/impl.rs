@@ -37,29 +37,27 @@ impl Version {
     pub(crate) fn parse(version: &str) -> Result<Self, VersionError> {
         let mut parts: Vec<&str> = version.split('.').collect();
         let (patch_part, pre_release) = if let Some(patch_with_prerelease) = parts.pop() {
-            let mut patch_parts = patch_with_prerelease.splitn(2, '-');
+            let mut patch_parts: std::str::SplitN<'_, char> = patch_with_prerelease.splitn(2, '-');
             (
                 patch_parts.next().unwrap_or(""),
                 patch_parts.next().map(|part: &str| part.to_string()),
             )
         } else {
-            return Err(VersionError::ParseError(
-                "Version format error, should be in the form 'x.y.z'.".to_string(),
-            ));
+            return Err(VersionError::ParseError(PARSE_ERROR_MSG.to_string()));
         };
         let major: u32 = parts
             .first()
             .unwrap_or(&"0")
             .parse::<u32>()
-            .map_err(|_| VersionError::MajorVersionError)?;
+            .map_err(|_: std::num::ParseIntError| VersionError::MajorVersionError)?;
         let minor: u32 = parts
             .get(1)
             .unwrap_or(&"0")
             .parse::<u32>()
-            .map_err(|_| VersionError::MinorVersionError)?;
+            .map_err(|_: std::num::ParseIntError| VersionError::MinorVersionError)?;
         let patch: u32 = patch_part
             .parse::<u32>()
-            .map_err(|_| VersionError::PatchVersionError)?;
+            .map_err(|_: std::num::ParseIntError| VersionError::PatchVersionError)?;
         Ok(Self {
             major,
             minor,
@@ -103,7 +101,7 @@ impl CompareVersion {
     pub fn matches_version_range(version: &str, range: &str) -> Result<bool, VersionError> {
         let target_version: Version = Version::parse(version)?;
         if let Some(stripped_range) = range.strip_prefix('^') {
-            let base_version = Version::parse(stripped_range)?;
+            let base_version: Version = Version::parse(stripped_range)?;
             // `^` indicates major version compatibility
             Ok(target_version.major == base_version.major
                 && (target_version.minor > base_version.minor

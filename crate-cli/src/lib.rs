@@ -7,6 +7,7 @@
 mod bump;
 mod command;
 mod config;
+mod r#const;
 mod fmt;
 mod help;
 mod logger;
@@ -15,7 +16,8 @@ mod sync;
 mod version;
 
 pub use {
-    bump::*, command::*, config::*, fmt::*, help::*, logger::*, publish::*, sync::*, version::*,
+    bump::*, command::*, config::*, r#const::*, fmt::*, help::*, logger::*, publish::*, sync::*,
+    version::*,
 };
 
 pub(crate) use std::{

@@ -31,6 +31,6 @@ where
 /// - `Option<u64>` - The file size in bytes if successful, None otherwise.
 pub fn get_file_size(file_path: &str) -> Option<u64> {
     std::fs::metadata(file_path)
-        .map(|metadata| Some(metadata.len()))
+        .map(|metadata: std::fs::Metadata| Some(metadata.len()))
         .unwrap_or(None)
 }

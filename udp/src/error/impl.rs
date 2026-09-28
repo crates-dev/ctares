@@ -9,7 +9,7 @@ impl Display for ServerError {
     ///
     /// # Arguments
     ///
-    /// - `&mut Formatter` - Formatter for the output.
+    /// - `&mut fmt::Formatter<'_>` - Formatter for the output.
     ///
     /// # Returns
     ///
@@ -33,7 +33,7 @@ impl Display for ResponseError {
     ///
     /// # Arguments
     ///
-    /// - `&mut Formatter` - Formatter for the output.
+    /// - `&mut fmt::Formatter<'_>` - Formatter for the output.
     ///
     /// # Returns
     ///
@@ -57,7 +57,7 @@ impl Display for RequestError {
     ///
     /// # Arguments
     ///
-    /// - `&mut Formatter` - Formatter for the output.
+    /// - `&mut fmt::Formatter<'_>` - Formatter for the output.
     ///
     /// # Returns
     ///

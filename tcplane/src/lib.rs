@@ -41,7 +41,10 @@ use {
         io::{AsyncReadExt, AsyncWriteExt},
         net::{TcpListener, TcpStream},
         spawn,
-        sync::{RwLock, RwLockReadGuard, RwLockWriteGuard, watch::Sender, watch::channel},
+        sync::{
+            RwLock, RwLockReadGuard, RwLockWriteGuard, watch::Receiver, watch::Sender,
+            watch::channel,
+        },
         task::{JoinError, JoinHandle},
     },
 };

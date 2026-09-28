@@ -19,7 +19,7 @@ pub fn write_to_file(file_path: &str, content: &[u8]) -> Result<(), Error> {
         .create(true)
         .truncate(true)
         .open(file_path)
-        .and_then(|mut file| std::io::Write::write_all(&mut file, content))
+        .and_then(|mut file: std::fs::File| std::io::Write::write_all(&mut file, content))
 }
 
 /// Appends content to a file.
@@ -40,5 +40,5 @@ pub fn append_to_file(file_path: &str, content: &[u8]) -> Result<(), Error> {
         .create(true)
         .append(true)
         .open(file_path)
-        .and_then(|mut file| std::io::Write::write_all(&mut file, content))
+        .and_then(|mut file: std::fs::File| std::io::Write::write_all(&mut file, content))
 }

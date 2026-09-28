@@ -41,3 +41,9 @@ pub type ServerHookHandler =
 
 /// A type alias for a list of server hook handlers.
 pub type ServerHookList = Vec<ServerHookHandler>;
+
+/// A type alias for the boxed future returned by a server control hook.
+pub type ServerControlFuture = Pin<Box<dyn Future<Output = ()> + Send + 'static>>;
+
+/// A type alias for a server control hook closure.
+pub type ServerControlHookFn = Arc<dyn Fn() -> ServerControlFuture + Send + Sync>;

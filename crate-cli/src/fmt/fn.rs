@@ -39,7 +39,7 @@ async fn format_derive_in_file(file_path: &Path) -> Result<bool, io::Error> {
     let mut new_content: String = String::new();
     for line in lines {
         let trimmed: &str = line.trim();
-        let new_line: String = if trimmed.starts_with("#[derive(") {
+        let new_line: String = if trimmed.starts_with(DERIVE_PREFIX) {
             if let Some(sorted) = sort_derive_in_line(line) {
                 if sorted != line {
                     modified = true;
@@ -78,8 +78,10 @@ async fn find_rust_files(manifest_path: &Path) -> Result<Vec<PathBuf>, io::Error
     }
     let content: String = read_to_string(manifest_path).await?;
     if let Ok(doc) = toml::from_str::<Value>(&content)
-        && let Some(workspace) = doc.get("workspace")
-        && let Some(members) = workspace.get("members").and_then(|m: &Value| m.as_array())
+        && let Some(workspace) = doc.get(TOML_WORKSPACE)
+        && let Some(members) = workspace
+            .get(TOML_MEMBERS)
+            .and_then(|m: &Value| m.as_array())
     {
         for member in members {
             if let Some(pattern) = member.as_str() {
@@ -157,7 +159,7 @@ async fn format_derive_attributes(manifest_path: &str) -> Result<(), io::Error> 
 ///
 /// - `bool` - True if cargo-clippy is available
 fn is_cargo_clippy_installed() -> bool {
-    which("cargo-clippy").is_ok()
+    which(CARGO_CLIPPY).is_ok()
 }
 
 /// Install cargo-clippy using rustup
@@ -167,10 +169,10 @@ fn is_cargo_clippy_installed() -> bool {
 /// - `Result<(), io::Error>` - Success or error
 async fn install_cargo_clippy() -> Result<(), io::Error> {
     log::warn!("cargo-clippy not found, installing...");
-    let output: std::process::Output = Command::new("rustup")
-        .arg("component")
+    let output: std::process::Output = Command::new(RUSTUP)
+        .arg(RUSTUP_COMPONENT)
         .arg("add")
-        .arg("clippy")
+        .arg(CLIPPY)
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
         .output()
@@ -200,7 +202,7 @@ async fn install_cargo_clippy() -> Result<(), io::Error> {
         }
     }
     if !output.status.success() {
-        return Err(io::Error::other("failed to install cargo-clippy"));
+        return Err(io::Error::other(ERROR_CLIPPY_INSTALL_FAILED));
     }
     Ok(())
 }
@@ -218,14 +220,14 @@ async fn execute_clippy_fix(args: &Args) -> Result<(), io::Error> {
     if !is_cargo_clippy_installed() {
         install_cargo_clippy().await?;
     }
-    let mut cmd: Command = Command::new("cargo");
-    cmd.arg("clippy")
-        .arg("--fix")
-        .arg("--workspace")
-        .arg("--all-targets")
-        .arg("--allow-dirty");
+    let mut cmd: Command = Command::new(CARGO);
+    cmd.arg(CLIPPY)
+        .arg(CLI_FLAG_FIX)
+        .arg(CLI_FLAG_WORKSPACE)
+        .arg(CLI_FLAG_ALL_TARGETS)
+        .arg(CLI_FLAG_ALLOW_DIRTY);
     if let Some(ref manifest_path) = args.manifest_path {
-        cmd.arg("--manifest-path").arg(manifest_path);
+        cmd.arg(CLI_FLAG_MANIFEST_PATH).arg(manifest_path);
     }
     cmd.stdout(Stdio::piped()).stderr(Stdio::piped());
     let output: std::process::Output = cmd.output().await?;
@@ -254,7 +256,7 @@ async fn execute_clippy_fix(args: &Args) -> Result<(), io::Error> {
         }
     }
     if !output.status.success() {
-        return Err(io::Error::other("cargo clippy --fix failed"));
+        return Err(io::Error::other(ERROR_CLIPPY_FIX_FAILED));
     }
     Ok(())
 }
@@ -272,17 +274,17 @@ pub async fn execute_fmt(args: &Args) -> Result<(), io::Error> {
     let manifest_path: String = args
         .manifest_path
         .clone()
-        .unwrap_or_else(|| "Cargo.toml".to_string());
+        .unwrap_or_else(|| CARGO_TOML.to_string());
     if !args.check {
         format_derive_attributes(&manifest_path).await?;
     }
-    let mut cmd: Command = Command::new("cargo");
-    cmd.arg("fmt");
+    let mut cmd: Command = Command::new(CARGO);
+    cmd.arg(CARGO_FMT);
     if args.check {
-        cmd.arg("--check");
+        cmd.arg(CLI_FLAG_CHECK);
     }
     if let Some(ref manifest_path) = args.manifest_path {
-        cmd.arg("--manifest-path").arg(manifest_path);
+        cmd.arg(CLI_FLAG_MANIFEST_PATH).arg(manifest_path);
     }
     cmd.stdout(Stdio::piped()).stderr(Stdio::piped());
     let output: std::process::Output = cmd.output().await?;
@@ -311,7 +313,7 @@ pub async fn execute_fmt(args: &Args) -> Result<(), io::Error> {
         }
     }
     if !output.status.success() {
-        return Err(io::Error::other("cargo fmt failed"));
+        return Err(io::Error::other(ERROR_FMT_FAILED));
     }
     if !args.check {
         execute_clippy_fix(args).await?;
@@ -329,8 +331,8 @@ pub async fn execute_fmt(args: &Args) -> Result<(), io::Error> {
 ///
 /// - `Result<(), io::Error>` - Success or error
 pub async fn format_path(path: &Path) -> Result<(), io::Error> {
-    let mut cmd: Command = Command::new("cargo");
-    cmd.arg("fmt").arg("--").arg(path);
+    let mut cmd: Command = Command::new(CARGO);
+    cmd.arg(CARGO_FMT).arg("--").arg(path);
     cmd.stdout(Stdio::null()).stderr(Stdio::null());
     cmd.status().await?;
     Ok(())
