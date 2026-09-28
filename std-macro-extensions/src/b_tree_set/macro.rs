@@ -13,7 +13,8 @@ macro_rules! b_tree_set {
         std::collections::BTreeSet::new()
     };
     ($($elem:expr),*) => {{
-        let mut set = std::collections::BTreeSet::new();
+        let mut set: std::collections::BTreeSet<_> =
+            std::collections::BTreeSet::new();
         $( set.insert($elem); )*
         set
     }};
