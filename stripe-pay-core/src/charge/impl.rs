@@ -89,15 +89,6 @@ impl Charge {
         }
     }
 
-    /// Return Stripe's identifier for this charge.
-    ///
-    /// # Returns
-    ///
-    /// - `&str` - the Charge identifier.
-    pub fn get_id(&self) -> &str {
-        &self.id
-    }
-
     /// Return the amount this charge captured.
     ///
     /// # Returns
@@ -109,24 +100,6 @@ impl Charge {
         Ok(Money::from_minor(self.amount, currency))
     }
 
-    /// Return whether the charge moved money.
-    ///
-    /// # Returns
-    ///
-    /// - `ChargeStatus` - the charge's settlement state.
-    pub fn get_status(&self) -> ChargeStatus {
-        self.status
-    }
-
-    /// Return how the customer paid.
-    ///
-    /// # Returns
-    ///
-    /// - `PaymentMethodKind` - the payment method family.
-    pub fn get_payment_method_kind(&self) -> PaymentMethodKind {
-        self.payment_method_kind
-    }
-
     /// Return whether the charge is under dispute.
     ///
     /// # Returns
@@ -134,25 +107,6 @@ impl Charge {
     /// - `bool` - `true` once a customer has challenged the charge.
     pub fn is_disputed(&self) -> bool {
         self.get_disputed()
-    }
-
-    /// Return the raw dispute flag Stripe sent.
-    ///
-    /// # Returns
-    ///
-    /// - `bool` - the value of the `disputed` response field.
-    pub fn get_disputed(&self) -> bool {
-        self.disputed
-    }
-
-    /// Return the PaymentIntent that created this charge.
-    ///
-    /// # Returns
-    ///
-    /// - `Option<&str>` - the PaymentIntent identifier, or `None` when
-    ///   the charge did not come from one.
-    pub fn get_payment_intent(&self) -> Option<&str> {
-        self.payment_intent.as_deref()
     }
 
     /// Return whether this charge actually moved the customer's money.

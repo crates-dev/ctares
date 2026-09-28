@@ -28,6 +28,8 @@ pub use rust_decimal::{
 pub use serde::{Deserialize, Serialize};
 pub use serde_json::{Value, json};
 
+pub use lombok_macros::*;
+
 use std::{
     fmt::{self, Display, Formatter},
     str::FromStr,

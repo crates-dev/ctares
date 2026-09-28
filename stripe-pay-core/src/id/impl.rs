@@ -116,24 +116,6 @@ impl StripeId {
         Err(StripeParseError::UnrecognisedId(String::from(raw)))
     }
 
-    /// Return the resource family this identifier addresses.
-    ///
-    /// # Returns
-    ///
-    /// - `StripeIdKind` - the identifier's resource family.
-    pub fn get_kind(&self) -> StripeIdKind {
-        self.kind
-    }
-
-    /// Return the full wire value including its type prefix.
-    ///
-    /// # Returns
-    ///
-    /// - `&str` - the identifier exactly as Stripe sent it.
-    pub fn get_raw(&self) -> &str {
-        &self.raw
-    }
-
     /// Return whether the wire value carries this identifier's prefix.
     ///
     /// # Returns

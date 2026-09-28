@@ -85,42 +85,6 @@ impl CardDetails {
         }
     }
 
-    /// Return the card network.
-    ///
-    /// # Returns
-    ///
-    /// - `CardBrand` - the brand Stripe reported.
-    pub fn get_brand(&self) -> CardBrand {
-        self.brand
-    }
-
-    /// Return the last four digits of the card number.
-    ///
-    /// # Returns
-    ///
-    /// - `&str` - the trailing digits, never the full number.
-    pub fn get_last4(&self) -> &str {
-        &self.last4
-    }
-
-    /// Return the expiry month.
-    ///
-    /// # Returns
-    ///
-    /// - `i64` - the month, 1 through 12.
-    pub fn get_exp_month(&self) -> i64 {
-        self.exp_month
-    }
-
-    /// Return the expiry year.
-    ///
-    /// # Returns
-    ///
-    /// - `i64` - the four-digit year.
-    pub fn get_exp_year(&self) -> i64 {
-        self.exp_year
-    }
-
     /// Return whether the last field holds exactly four digits.
     ///
     /// # Returns

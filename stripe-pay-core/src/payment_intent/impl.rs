@@ -147,19 +147,11 @@ impl PaymentIntent {
         }
     }
 
-    /// Return Stripe's identifier for this intent.
-    ///
-    /// # Returns
-    ///
-    /// - `&str` - the PaymentIntent identifier.
-    pub fn get_id(&self) -> &str {
-        &self.id
-    }
-
     /// Return the amount this intent will capture.
     ///
     /// The minor-unit count is paired with the currency recorded in
-    /// the response, so the two never drift apart.
+    /// the response, so the two never drift apart. The `amount` and
+    /// `currency` fields are not exposed separately for this reason.
     ///
     /// # Returns
     ///
@@ -168,44 +160,6 @@ impl PaymentIntent {
     pub fn get_amount(&self) -> Result<Money, StripeParseError> {
         let currency: Currency = self.currency.parse()?;
         Ok(Money::from_minor(self.amount, currency))
-    }
-
-    /// Return where the intent sits in its lifecycle.
-    ///
-    /// # Returns
-    ///
-    /// - `PaymentIntentStatus` - the intent's current state.
-    pub fn get_status(&self) -> PaymentIntentStatus {
-        self.status
-    }
-
-    /// Return what the customer must still do, if anything.
-    ///
-    /// # Returns
-    ///
-    /// - `PaymentIntentNextAction` - the pending client obligation.
-    pub fn get_next_action(&self) -> PaymentIntentNextAction {
-        self.next_action
-    }
-
-    /// Return the charge created when the payment settled.
-    ///
-    /// # Returns
-    ///
-    /// - `Option<&str>` - the charge identifier, or `None` while the
-    ///   intent has not settled.
-    pub fn get_latest_charge(&self) -> Option<&str> {
-        self.latest_charge.as_deref()
-    }
-
-    /// Return the customer this intent charges.
-    ///
-    /// # Returns
-    ///
-    /// - `Option<&str>` - the customer identifier, or `None` for an
-    ///   intent created without one.
-    pub fn get_customer(&self) -> Option<&str> {
-        self.customer.as_deref()
     }
 
     /// Return whether the payment has been captured.

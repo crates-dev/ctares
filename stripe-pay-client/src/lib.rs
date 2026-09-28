@@ -11,5 +11,7 @@ mod r#fn;
 
 pub use {r#const::*, r#element::*, r#enum::*, r#fn::*};
 
+pub use lombok_macros::*;
+
 pub use std::fmt::{self, Display, Formatter};
 pub use stripe_pay_core::*;

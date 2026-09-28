@@ -18,48 +18,21 @@ impl ElementConfig {
         }
     }
 
-    /// Return the client secret.
-    ///
-    /// # Returns
-    ///
-    /// - `&str` - the secret Stripe issued for the intent.
-    pub fn get_client_secret(&self) -> &str {
-        &self.client_secret
-    }
-
-    /// Return which element variant this configuration mounts.
-    ///
-    /// # Returns
-    ///
-    /// - `ElementKind` - the variant to render.
-    pub fn get_kind(&self) -> ElementKind {
-        self.kind
-    }
-
-    /// Return the requested locale.
-    ///
-    /// # Returns
-    ///
-    /// - `&str` - the locale, empty when the host page did not pick one.
-    pub fn get_locale(&self) -> &str {
-        &self.locale
-    }
-
-    /// Switch to a different element variant.
+    /// Return a copy of this configuration rendering the given variant.
     ///
     /// # Arguments
     ///
-    /// - `ElementKind` - the variant to render instead.
+    /// - `ElementKind` - the variant the page should mount.
     ///
     /// # Returns
     ///
-    /// - `Self` - the configuration with the new variant.
+    /// - `Self` - the configuration with the variant switched.
     pub fn with_kind(mut self, kind: ElementKind) -> Self {
         self.set_kind(kind);
         self
     }
 
-    /// Set the locale the element renders its labels in.
+    /// Return a copy of this configuration with an explicit locale.
     ///
     /// # Arguments
     ///
@@ -67,28 +40,10 @@ impl ElementConfig {
     ///
     /// # Returns
     ///
-    /// - `Self` - the configuration with the new locale.
+    /// - `Self` - the configuration with the locale set.
     pub fn with_locale(mut self, locale: String) -> Self {
         self.set_locale(locale);
         self
-    }
-
-    /// Switch the element variant in place.
-    ///
-    /// # Arguments
-    ///
-    /// - `ElementKind` - the variant to render.
-    pub fn set_kind(&mut self, kind: ElementKind) {
-        self.kind = kind;
-    }
-
-    /// Set the locale in place.
-    ///
-    /// # Arguments
-    ///
-    /// - `String` - the locale tag, such as `en` or `zh-CN`.
-    pub fn set_locale(&mut self, locale: String) {
-        self.locale = locale;
     }
 
     /// Return the locale actually sent to Stripe.js.

@@ -64,24 +64,6 @@ impl Refund {
         }
     }
 
-    /// Return Stripe's identifier for this refund.
-    ///
-    /// # Returns
-    ///
-    /// - `&str` - the Refund identifier.
-    pub fn get_id(&self) -> &str {
-        &self.id
-    }
-
-    /// Return the charge this refund belongs to.
-    ///
-    /// # Returns
-    ///
-    /// - `&str` - the Charge identifier being refunded.
-    pub fn get_charge(&self) -> &str {
-        &self.charge
-    }
-
     /// Return the amount this refund returns.
     ///
     /// # Returns
@@ -93,15 +75,6 @@ impl Refund {
         Ok(Money::from_minor(self.amount, currency))
     }
 
-    /// Return why the money was returned.
-    ///
-    /// # Returns
-    ///
-    /// - `RefundReason` - the reason recorded on the refund.
-    pub fn get_reason(&self) -> RefundReason {
-        self.reason
-    }
-
     /// Return whether Stripe has fully processed this refund.
     ///
     /// # Returns
@@ -109,15 +82,6 @@ impl Refund {
     /// - `bool` - `true` once the money is on its way back.
     pub fn is_succeeded(&self) -> bool {
         self.get_succeeded()
-    }
-
-    /// Return the raw settlement flag Stripe sent.
-    ///
-    /// # Returns
-    ///
-    /// - `bool` - the value of the `succeeded` response field.
-    pub fn get_succeeded(&self) -> bool {
-        self.succeeded
     }
 
     /// Return whether the merchant chose this reason themselves.

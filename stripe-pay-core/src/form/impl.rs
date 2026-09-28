@@ -14,24 +14,6 @@ impl FormField {
     pub const fn new(key: String, value: String) -> Self {
         Self { key, value }
     }
-
-    /// Return the bracketed parameter name.
-    ///
-    /// # Returns
-    ///
-    /// - `&str` - the field's key.
-    pub fn get_key(&self) -> &str {
-        &self.key
-    }
-
-    /// Return the field's value.
-    ///
-    /// # Returns
-    ///
-    /// - `&str` - the field's stringified value.
-    pub fn get_value(&self) -> &str {
-        &self.value
-    }
 }
 
 impl FormParams {
@@ -46,11 +28,30 @@ impl FormParams {
 
     /// Return the fields in insertion order.
     ///
+    /// `#[derive(Getter)]` cannot express this accessor: a `clone`
+    /// getter hands back an owned `Vec` whose borrow dies at the end
+    /// of the statement, and a `deref` getter breaks the matching
+    /// `GetterMut` signature. A slice is the only return type that lets
+    /// `encode` sort the fields in place.
+    ///
     /// # Returns
     ///
-    /// - `&[FormField]` - the parameters collected so far.
+    /// - `&[FormField]` - the fields, in insertion order.
     pub fn get_fields(&self) -> &[FormField] {
         &self.fields
+    }
+
+    /// Return a mutable view of the fields.
+    ///
+    /// Kept crate-private on purpose: the public `set` builder is the
+    /// only path that should add a field, because it is what preserves
+    /// the one-entry-per-key invariant.
+    ///
+    /// # Returns
+    ///
+    /// - `&mut Vec<FormField>` - the fields, for in-place maintenance.
+    fn get_mut_fields(&mut self) -> &mut Vec<FormField> {
+        &mut self.fields
     }
 
     /// Return the number of fields in the builder.
@@ -71,16 +72,6 @@ impl FormParams {
         self.get_fields().is_empty()
     }
 
-    /// Return a mutable reference to the fields in insertion order.
-    ///
-    /// # Returns
-    ///
-    /// - `&mut Vec<FormField>` - the builder's field storage, so a
-    ///   caller can insert or replace entries in place.
-    pub fn get_fields_mut(&mut self) -> &mut Vec<FormField> {
-        &mut self.fields
-    }
-
     /// Add a field, replacing any existing field with the same key.
     ///
     /// # Arguments
@@ -92,17 +83,16 @@ impl FormParams {
     ///
     /// - `&mut Self` - the builder with the field added or replaced.
     pub fn set(&mut self, key: String, value: String) -> &mut Self {
-        let existing: Option<usize> = self
-            .get_fields()
+        let fields: &mut Vec<FormField> = self.get_mut_fields();
+        let existing: Option<usize> = fields
             .iter()
-            .position(|field: &FormField| field.get_key() == key);
+            .position(|field: &FormField| *field.get_key() == key);
         match existing {
             Some(index) => {
-                let slot: &mut FormField = &mut self.get_fields_mut()[index];
-                *slot = FormField::new(key, value);
+                fields[index] = FormField::new(key, value);
             }
             None => {
-                self.get_fields_mut().push(FormField::new(key, value));
+                fields.push(FormField::new(key, value));
             }
         }
         self

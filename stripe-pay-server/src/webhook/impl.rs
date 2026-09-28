@@ -58,12 +58,12 @@ impl WebhookEvent {
         built
     }
 
-    /// Replace the signed payload.
+    /// Replace the signed payload during construction.
     ///
     /// # Arguments
     ///
     /// - `String` - the request body Stripe signed.
-    pub fn set_payload(&mut self, payload: String) {
+    fn set_payload(&mut self, payload: String) {
         self.payload = payload;
     }
 
@@ -72,7 +72,7 @@ impl WebhookEvent {
     /// # Arguments
     ///
     /// - `i64` - seconds since the Unix epoch.
-    pub fn set_timestamp(&mut self, timestamp: i64) {
+    fn set_timestamp(&mut self, timestamp: i64) {
         self.timestamp = timestamp;
     }
 
@@ -81,35 +81,8 @@ impl WebhookEvent {
     /// # Arguments
     ///
     /// - `String` - the hex digest without the `v1=` prefix.
-    pub fn set_signature(&mut self, signature: String) {
+    fn set_signature(&mut self, signature: String) {
         self.signature = signature;
-    }
-
-    /// Return the signed payload.
-    ///
-    /// # Returns
-    ///
-    /// - `&str` - the request body Stripe signed.
-    pub fn get_payload(&self) -> &str {
-        &self.payload
-    }
-
-    /// Return the signed timestamp.
-    ///
-    /// # Returns
-    ///
-    /// - `i64` - seconds since the Unix epoch.
-    pub fn get_timestamp(&self) -> i64 {
-        self.timestamp
-    }
-
-    /// Return the expected hex digest.
-    ///
-    /// # Returns
-    ///
-    /// - `&str` - the digest without the `v1=` prefix.
-    pub fn get_signature(&self) -> &str {
-        &self.signature
     }
 
     /// Sign the payload the way Stripe does.

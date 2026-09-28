@@ -12,6 +12,7 @@ repository.workspace = true
 exclude.workspace = true
 
 [dependencies]
+lombok-macros = { workspace = true }
 stripe-pay-core = { workspace = true }
 
 hex = { workspace = true }

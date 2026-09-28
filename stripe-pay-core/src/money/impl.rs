@@ -142,24 +142,6 @@ impl Money {
         }
     }
 
-    /// Return the amount in the currency's smallest denomination.
-    ///
-    /// # Returns
-    ///
-    /// - `i64` - the raw minor-unit count Stripe receives.
-    pub fn get_amount(&self) -> i64 {
-        self.amount
-    }
-
-    /// Return the currency this amount is denominated in.
-    ///
-    /// # Returns
-    ///
-    /// - `Currency` - the amount's currency.
-    pub fn get_currency(&self) -> Currency {
-        self.currency
-    }
-
     /// Return the ISO 4217 code Stripe expects for this amount.
     ///
     /// # Returns

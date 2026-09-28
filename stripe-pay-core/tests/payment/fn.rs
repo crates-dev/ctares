@@ -80,8 +80,8 @@ fn payment_intent_deserializes_a_stripe_response_body() {
     let intent: PaymentIntent = serde_json::from_str(body).unwrap();
     assert_eq!(intent.get_id(), "pi_3Abc123");
     assert_eq!(intent.get_status(), PaymentIntentStatus::Succeeded);
-    assert_eq!(intent.get_latest_charge(), Some("ch_1Def789"));
-    assert_eq!(intent.get_customer(), Some("cus_9Xyz456"));
+    assert_eq!(intent.get_latest_charge().as_deref(), Some("ch_1Def789"));
+    assert_eq!(intent.get_customer().as_deref(), Some("cus_9Xyz456"));
     assert_eq!(intent.get_amount().unwrap().get_amount(), 2_000);
 }
 
@@ -130,7 +130,7 @@ fn charge_deserializes_a_stripe_response_body() {
     let charge: Charge = serde_json::from_str(body).unwrap();
     assert_eq!(charge.get_status(), ChargeStatus::Succeeded);
     assert!(charge.is_disputed());
-    assert_eq!(charge.get_payment_intent(), Some("pi_3Abc123"));
+    assert_eq!(charge.get_payment_intent().as_deref(), Some("pi_3Abc123"));
 }
 
 #[test]
