@@ -1,0 +1,64 @@
+/// Seconds in a minute, used when converting a parsed timestamp.
+pub(crate) const SECONDS_PER_MINUTE: i64 = 60;
+
+/// Seconds in an hour, used when converting a parsed timestamp.
+pub(crate) const SECONDS_PER_HOUR: i64 = 60 * SECONDS_PER_MINUTE;
+
+/// Seconds in a day, used when converting a parsed timestamp.
+pub(crate) const SECONDS_PER_DAY: i64 = 24 * SECONDS_PER_HOUR;
+
+/// Separator between the fields of an RFC 2822 clock.
+pub(crate) const CLOCK_FIELD_SEPARATOR: char = ':';
+
+/// Trailing punctuation on a day-of-month token, as in `Tue, 29 Sep 2026`.
+pub(crate) const DAY_FIELD_SUFFIX: char = ',';
+
+/// Divisor rounding the March-based month position into a day of year.
+pub(crate) const MONTH_POSITION_DIVISOR: i64 = 5;
+
+/// Rounding term in the March-based day-of-year formula.
+pub(crate) const MONTH_POSITION_ROUNDING: i64 = 2;
+
+/// Days in a common year, before leap days are added back.
+pub(crate) const DAYS_PER_YEAR: i64 = 365;
+
+/// Years in the leap-year cycle.
+pub(crate) const LEAP_CYCLE_YEARS: i64 = 4;
+
+/// Years in a century, which the leap-year cycle skips.
+pub(crate) const CENTURY_YEARS: i64 = 100;
+
+/// Years in the 400-year era the civil-date algorithm counts in.
+pub(crate) const ERA_YEARS: i64 = 400;
+
+/// Days in the 400-year era, which carries 97 leap days.
+pub(crate) const ERA_DAYS: i64 = 146_097;
+
+/// Days between 0000-03-01 and 1970-01-01 in the era-based day count.
+pub(crate) const CIVIL_EPOCH_OFFSET_DAYS: i64 = 719_468;
+
+/// Multiplier carrying a month into its March-based position.
+pub(crate) const MONTH_POSITION_SCALE: i64 = 153;
+
+/// Floor applied to a rate-limit wait. A timestamp that fails to parse, or a
+/// deadline already in the past, degrades into this longer wait rather than
+/// into a shorter one: the registry refills its new-crate bucket about every
+/// ten minutes, so a shorter guess would only earn a second refusal.
+pub(crate) const RATE_LIMIT_FLOOR_SECS: u64 = 11 * SECONDS_PER_MINUTE as u64;
+
+/// Added to the wait crates.io asks for, absorbing clock skew between the
+/// publishing runner and the registry.
+pub(crate) const RATE_LIMIT_SKEW_SECS: u64 = 30;
+
+/// Ceiling on how many rate-limit deadlines a single package may wait out.
+///
+/// A limit that never lifts must fail the job rather than hold a runner
+/// until it is killed. The ceiling only matters while a workspace is
+/// publishing several new names in one run: each name costs the registry's
+/// refill interval, so this covers a large first release and still stops.
+pub(crate) const RATE_LIMIT_MAX_WAITS: u32 = 24;
+
+/// Month abbreviations in the RFC 2822 timestamp format crates.io emits.
+pub(crate) const MONTH_ABBREVIATIONS: [&str; 12] = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];

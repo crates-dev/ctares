@@ -345,7 +345,124 @@ pub fn is_already_published(stderr: &str) -> bool {
         || stderr.contains(STDERR_ALREADY_ON_INDEX)
 }
 
+/// Check whether `cargo publish` stderr reports a registry rate-limit
+/// refusal rather than a fault that retrying cannot fix.
+///
+/// crates.io meters **new** crate names on its own schedule: a small burst
+/// allowance, then roughly one name per ten minutes. Once a workspace
+/// publishes more new names than the burst allows, every further name is
+/// refused with a deadline embedded in the message. That deadline is
+/// already longer than any exponential backoff, so a retry that ignores it
+/// only spends the budget and fails again — this is the class of failure
+/// that must wait out the deadline the registry handed back.
+///
+/// # Arguments
+///
+/// - `&str` - cargo publish stderr output
+///
+/// # Returns
+///
+/// - `bool` - True when the output reports a registry rate limit
+pub fn is_rate_limited(stderr: &str) -> bool {
+    stderr.contains(STDERR_TOO_MANY_REQUESTS) || stderr.contains(STDERR_TOO_MANY_NEW_CRATES)
+}
+
+/// Convert a civil date to a day count since 1970-01-01.
+///
+/// Counts from 0000-03-01 so that a leap day lands at the end of a year
+/// and the month positions become a fixed-length stride.
+///
+/// # Arguments
+///
+/// - `i64` - Proleptic Gregorian year
+/// - `i64` - Month, 1 through 12
+/// - `i64` - Day of month
+///
+/// # Returns
+///
+/// - `i64` - Days since the Unix epoch
+fn civil_to_days(year: i64, month: i64, day: i64) -> i64 {
+    let shifted_year: i64 = if month <= 2 { year - 1 } else { year };
+    let era: i64 = shifted_year.div_euclid(ERA_YEARS);
+    let year_of_era: i64 = shifted_year.rem_euclid(ERA_YEARS);
+    let month_position: i64 = (month + 9) % 12;
+    let day_of_year: i64 = (MONTH_POSITION_SCALE * (month_position + 1) + MONTH_POSITION_ROUNDING)
+        / MONTH_POSITION_DIVISOR;
+    let day_of_era: i64 = year_of_era * DAYS_PER_YEAR + year_of_era.div_euclid(LEAP_CYCLE_YEARS)
+        - year_of_era.div_euclid(CENTURY_YEARS)
+        + day_of_year
+        + day
+        - 1;
+    era * ERA_DAYS + day_of_era - CIVIL_EPOCH_OFFSET_DAYS
+}
+
+/// Parse the RFC 2822 retry deadline crates.io embeds in a refusal.
+///
+/// The message reads `Please try again after Tue, 29 Sep 2026 04:55:57 GMT`,
+/// where the day-of-week prefix and the `GMT` suffix are noise. A timestamp
+/// that does not match that shape yields `None` so the caller falls back to
+/// the conservative floor instead of guessing a shorter wait.
+///
+/// # Arguments
+///
+/// - `&str` - cargo publish stderr output
+///
+/// # Returns
+///
+/// - `Option<u64>` - Seconds to wait, or `None` when no deadline is present
+pub fn parse_rate_limit_wait_secs(stderr: &str) -> Option<u64> {
+    let start: usize = stderr.find(STDERR_TRY_AGAIN_AFTER)? + STDERR_TRY_AGAIN_AFTER.len();
+    let end: usize = start + stderr[start..].find(STDERR_TRY_AGAIN_AFTER_END)?;
+    let timestamp: &str = stderr[start..end].trim();
+    let mut tokens: std::str::SplitWhitespace<'_> = timestamp.split_whitespace();
+    let _: &str = tokens.next()?;
+    let day: i64 = tokens
+        .next()?
+        .trim_end_matches(DAY_FIELD_SUFFIX)
+        .parse()
+        .ok()?;
+    let month_token: &str = tokens.next()?;
+    let month: i64 = MONTH_ABBREVIATIONS
+        .iter()
+        .position(|name: &&str| *name == month_token)? as i64
+        + 1;
+    let year: i64 = tokens.next()?.parse().ok()?;
+    let mut clock_fields: std::str::Split<'_, char> = tokens.next()?.split(CLOCK_FIELD_SEPARATOR);
+    let hour: i64 = clock_fields.next()?.parse().ok()?;
+    let minute: i64 = clock_fields.next()?.parse().ok()?;
+    let second: i64 = clock_fields.next()?.parse().ok()?;
+    let day_start: i64 = civil_to_days(year, month, day) * SECONDS_PER_DAY;
+    let deadline: i64 = day_start + hour * SECONDS_PER_HOUR + minute * SECONDS_PER_MINUTE + second;
+    let now: i64 = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .ok()?
+        .as_secs() as i64;
+    let remaining: i64 = deadline - now;
+    Some(remaining.max(RATE_LIMIT_FLOOR_SECS as i64) as u64 + RATE_LIMIT_SKEW_SECS)
+}
+
+/// Seconds to wait before retrying a refused publish.
+///
+/// # Arguments
+///
+/// - `&str` - cargo publish stderr output
+///
+/// # Returns
+///
+/// - `u64` - Wait bounded by the registry deadline when it carried one
+fn rate_limit_wait_secs(stderr: &str) -> u64 {
+    parse_rate_limit_wait_secs(stderr).unwrap_or(RATE_LIMIT_FLOOR_SECS + RATE_LIMIT_SKEW_SECS)
+}
+
 /// Publish a single package with retry logic
+///
+/// A registry rate limit is not a fault: the registry named a deadline, and
+/// retrying before it only spends the budget to be refused again. Those
+/// refusals wait out the deadline the registry itself reported and are not
+/// charged against `max_retries`, because the budget exists to survive
+/// transient errors — a metered limit is neither transient nor shorter than
+/// any backoff this loop could choose. Every other failure keeps the original
+/// exponential backoff and still counts.
 ///
 /// # Arguments
 ///
@@ -357,31 +474,46 @@ pub fn is_already_published(stderr: &str) -> bool {
 /// - `PublishResult` - Result with success status and retry count
 async fn publish_package_with_retry(package: &Package, max_retries: u32) -> PublishResult {
     let mut attempt: u32 = 0;
-    let mut last_error: Option<String> = None;
-    while attempt <= max_retries {
+    let mut last_error: String;
+    let mut rate_limited_attempts: u32 = 0;
+    loop {
         match publish_single_package(package).await {
             Ok(()) => {
                 return PublishResult {
                     package_name: package.name.clone(),
                     success: true,
                     error: None,
-                    retries: attempt,
+                    retries: attempt + rate_limited_attempts,
                 };
             }
             Err(error) => {
-                last_error = Some(error.to_string());
+                let stderr: String = error.to_string();
+                if is_rate_limited(&stderr) && rate_limited_attempts < RATE_LIMIT_MAX_WAITS {
+                    let wait: u64 = rate_limit_wait_secs(&stderr);
+                    log::info!(
+                        "{}: rate limited by the registry, waiting {}s for the deadline it reported",
+                        package.name,
+                        wait
+                    );
+                    rate_limited_attempts += 1;
+                    sleep(Duration::from_secs(wait)).await;
+                    continue;
+                }
                 attempt += 1;
+                last_error = stderr;
                 if attempt <= max_retries {
                     sleep(Duration::from_secs(2_u64.pow(attempt))).await;
+                    continue;
                 }
+                break;
             }
         }
     }
     PublishResult {
         package_name: package.name.clone(),
         success: false,
-        error: last_error,
-        retries: attempt - 1,
+        error: Some(last_error),
+        retries: attempt + rate_limited_attempts,
     }
 }
 

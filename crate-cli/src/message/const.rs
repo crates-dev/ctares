@@ -50,3 +50,16 @@ pub(crate) const STDERR_IS_ALREADY_PUBLISHED: &str = "is already published";
 
 /// `cargo publish` stderr fragment for a version already on the registry index.
 pub(crate) const STDERR_ALREADY_ON_INDEX: &str = "already exists on crates.io index";
+
+/// `cargo publish` stderr fragment for a registry rate-limit refusal.
+pub(crate) const STDERR_TOO_MANY_REQUESTS: &str = "429 Too Many Requests";
+
+/// `cargo publish` stderr fragment naming the new-crate rate limit.
+pub(crate) const STDERR_TOO_MANY_NEW_CRATES: &str =
+    "published too many new crates in a short period of time";
+
+/// `cargo publish` stderr fragment introducing the retry deadline.
+pub(crate) const STDERR_TRY_AGAIN_AFTER: &str = "Please try again after ";
+
+/// `cargo publish` stderr fragment ending the retry deadline sentence.
+pub(crate) const STDERR_TRY_AGAIN_AFTER_END: &str = " GMT";

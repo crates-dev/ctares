@@ -251,6 +251,39 @@ fn test_is_already_published() {
     assert!(!is_already_published(""));
 }
 
+#[test]
+fn test_is_rate_limited() {
+    assert!(is_rate_limited(
+        "error: failed to publish stripe-pay-core v10.2.2 to registry at https://crates.io\n\nCaused by:\n  the remote server responded with an error (status 429 Too Many Requests): You have published too many new crates in a short period of time. Please try again after Tue, 29 Sep 2026 04:55:57 GMT and see https://crates.io/docs/rate-limits for more details.\n"
+    ));
+    assert!(is_rate_limited(
+        "error: (status 429 Too Many Requests): try later"
+    ));
+    assert!(!is_rate_limited("error: failed to verify project tarball"));
+    assert!(!is_rate_limited(""));
+}
+
+#[test]
+fn test_parse_rate_limit_wait_secs_reads_registry_deadline() {
+    let stderr: &str = "error: failed to publish stripe-pay-core v10.2.2 to registry at https://crates.io\n\nCaused by:\n  the remote server responded with an error (status 429 Too Many Requests): You have published too many new crates in a short period of time. Please try again after Tue, 29 Sep 2026 04:55:57 GMT and see https://crates.io/docs/rate-limits for more details.\n";
+    let wait: u64 = parse_rate_limit_wait_secs(stderr).unwrap();
+    assert!(wait >= 11 * 60);
+}
+
+#[test]
+fn test_parse_rate_limit_wait_secs_absent_deadline() {
+    assert!(parse_rate_limit_wait_secs("error: status 429 Too Many Requests").is_none());
+    assert!(parse_rate_limit_wait_secs("").is_none());
+    assert!(parse_rate_limit_wait_secs("Please try again after not-a-timestamp GMT").is_none());
+}
+
+#[test]
+fn test_parse_rate_limit_wait_secs_never_shorter_than_floor() {
+    let stderr: &str = "Please try again after Tue, 29 Sep 2026 04:55:57 GMT";
+    let wait: u64 = parse_rate_limit_wait_secs(stderr).unwrap();
+    assert!(wait >= 11 * 60);
+}
+
 #[tokio::test]
 async fn test_resolve_publish_order_positions_root_before_dependents() {
     let temp_dir: PathBuf = temp_dir().join("crate_cli_test_order_root_middle");
