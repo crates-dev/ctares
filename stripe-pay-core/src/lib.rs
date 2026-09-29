@@ -4,7 +4,7 @@
 //! handling, typed Stripe identifiers, payment intents, charges,
 //! refunds, structured errors, and Stripe's bracketed form encoding.
 
-mod r#const;
+mod r#protocol;
 
 mod charge;
 mod error;
@@ -15,7 +15,7 @@ mod payment_intent;
 mod payment_method;
 mod refund;
 
-pub use r#const::*;
+pub use r#protocol::*;
 
 pub use {
     charge::*, error::*, form::*, id::*, money::*, payment_intent::*, payment_method::*, refund::*,

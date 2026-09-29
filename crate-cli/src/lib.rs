@@ -5,20 +5,25 @@
 //! members-ordered publish and code formatting.
 
 mod bump;
+mod cli;
 mod command;
 mod config;
-mod r#const;
 mod fmt;
 mod help;
 mod logger;
+mod manifest;
+mod message;
 mod publish;
 mod sync;
+mod tool;
 mod version;
 
 pub use {
-    bump::*, command::*, config::*, r#const::*, fmt::*, help::*, logger::*, publish::*, sync::*,
+    bump::*, command::*, config::*, fmt::*, help::*, logger::*, manifest::*, publish::*, sync::*,
     version::*,
 };
+
+pub(crate) use {cli::*, message::*, tool::*};
 
 pub(crate) use std::{
     collections::HashMap,
