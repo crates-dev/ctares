@@ -332,6 +332,14 @@ pub async fn resolve_publish_order(manifest_path: &str) -> Result<Vec<Package>, 
 /// already present on the registry (a success case for idempotent
 /// re-runs).
 ///
+/// A version that is already live is not a failure: the artifact the caller
+/// asked for is on the registry, so the release has achieved what it came
+/// for. Republishing a live version is refused by the registry rather than
+/// allowed to overwrite it, which makes a re-run fail on the 24 crates that
+/// shipped before the rate limit refused the remaining three. Treating the
+/// refusal as success is what lets a re-run converge on the whole workspace
+/// instead of stalling on work already done.
+///
 /// # Arguments
 ///
 /// - `&str` - cargo publish stderr output
@@ -340,9 +348,9 @@ pub async fn resolve_publish_order(manifest_path: &str) -> Result<Vec<Package>, 
 ///
 /// - `bool` - True when the output reports the version is already published
 pub fn is_already_published(stderr: &str) -> bool {
-    stderr.contains(STDERR_ALREADY_BEEN_UPLOADED)
+    stderr.contains(STDERR_ALREADY_EXISTS_ON)
+        || stderr.contains(STDERR_ALREADY_BEEN_UPLOADED)
         || stderr.contains(STDERR_IS_ALREADY_PUBLISHED)
-        || stderr.contains(STDERR_ALREADY_ON_INDEX)
 }
 
 /// Check whether `cargo publish` stderr reports a registry rate-limit

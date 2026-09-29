@@ -42,14 +42,27 @@ pub(crate) const REPORT_ZERO_WORKSPACE_MEMBERS: &str = "0 workspace members";
 /// Report placeholder used when no shared workspace version exists.
 pub(crate) const REPORT_PER_MEMBER_VERSION: &str = "per-member";
 
+/// `cargo publish` stderr fragment for a version already on the registry.
+///
+/// This is the live template in cargo: `crate {name}@{version} already
+/// exists on {registry}`. Matched on the shared clause rather than the
+/// registry name, because the clause survives both a renamed registry and a
+/// `sparse+` source replacement, and no other cargo message pairs these
+/// words in this order.
+pub(crate) const STDERR_ALREADY_EXISTS_ON: &str = "already exists on";
+
 /// `cargo publish` stderr fragment for an already uploaded package.
+///
+/// Retained from older toolchains. Cargo split the publish into an upload
+/// and a commit step, and the first reported this when the `.crate` file
+/// was already stored; the split no longer emits it.
 pub(crate) const STDERR_ALREADY_BEEN_UPLOADED: &str = "already been uploaded";
 
 /// `cargo publish` stderr fragment for an already published package.
+///
+/// Retained from older toolchains, which worded the duplicate case this way
+/// before the index check produced the message above.
 pub(crate) const STDERR_IS_ALREADY_PUBLISHED: &str = "is already published";
-
-/// `cargo publish` stderr fragment for a version already on the registry index.
-pub(crate) const STDERR_ALREADY_ON_INDEX: &str = "already exists on crates.io index";
 
 /// `cargo publish` stderr fragment for a registry rate-limit refusal.
 pub(crate) const STDERR_TOO_MANY_REQUESTS: &str = "429 Too Many Requests";
