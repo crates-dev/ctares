@@ -51,15 +51,15 @@ members = [
 ]
 
 [workspace.dependencies]
-system-time = { path = "system-time", version = "10.2.1" }
-color-output = { path = "color-output", version = "10.2.1" }
-lombok-macros = { path = "lombok-macros", version = "10.2.1" }
-file-operation = { path = "file-operation", version = "10.2.1" }
-stripe-pay-core = { path = "stripe-pay-core", version = "10.2.1" }
-tokio-broadcast = { path = "tokio-broadcast", version = "10.2.1" }
-recoverable-spawn = { path = "recoverable-spawn", version = "10.2.1" }
-stripe-pay-client = { path = "stripe-pay-client", version = "10.2.1" }
-stripe-pay-server = { path = "stripe-pay-server", version = "10.2.1" }
+system-time = { path = "system-time", version = "10.2.2" }
+color-output = { path = "color-output", version = "10.2.2" }
+lombok-macros = { path = "lombok-macros", version = "10.2.2" }
+file-operation = { path = "file-operation", version = "10.2.2" }
+stripe-pay-core = { path = "stripe-pay-core", version = "10.2.2" }
+tokio-broadcast = { path = "tokio-broadcast", version = "10.2.2" }
+recoverable-spawn = { path = "recoverable-spawn", version = "10.2.2" }
+stripe-pay-client = { path = "stripe-pay-client", version = "10.2.2" }
+stripe-pay-server = { path = "stripe-pay-server", version = "10.2.2" }
 
 hex = "0.4.3"
 syn = "3.0.6"
