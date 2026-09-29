@@ -4,11 +4,11 @@
 //! configuration the checkout page mounts, built over the shared
 //! `stripe-pay-core` request and response types.
 
-mod r#stripe_js;
 mod r#element;
+mod r#host;
 mod r#mount;
 
-pub use {r#stripe_js::*, r#element::*, r#mount::*};
+pub use {r#element::*, r#host::*, r#mount::*};
 
 pub use lombok_macros::*;
 
