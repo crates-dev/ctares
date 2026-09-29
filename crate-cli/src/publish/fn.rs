@@ -438,8 +438,12 @@ pub fn parse_rate_limit_wait_secs(stderr: &str) -> Option<u64> {
         .ok()?
         .as_secs() as i64;
     let remaining: i64 = deadline - now;
-    let clamped: u64 = remaining.max(RATE_LIMIT_FLOOR_SECS as i64) as u64;
-    Some(clamped.min(RATE_LIMIT_MAX_WAIT_SECS) + RATE_LIMIT_SKEW_SECS)
+    // A parsed deadline is honoured as given, in either direction: a window
+    // the registry says is shorter than the skew allowance is already open
+    // on arrival, and a guess would only extend a wait it priced precisely.
+    // The floor is for the unreadable message, handled by the caller.
+    let bounded: i64 = remaining.clamp(0, RATE_LIMIT_MAX_WAIT_SECS as i64);
+    Some(bounded as u64 + RATE_LIMIT_SKEW_SECS)
 }
 
 /// Seconds to wait before retrying a refused publish.

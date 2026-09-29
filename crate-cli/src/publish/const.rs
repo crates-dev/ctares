@@ -40,14 +40,21 @@ pub(crate) const CIVIL_EPOCH_OFFSET_DAYS: i64 = 719_468;
 /// Multiplier carrying a month into its March-based position.
 pub(crate) const MONTH_POSITION_SCALE: i64 = 153;
 
-/// Floor applied to a rate-limit wait. A timestamp that fails to parse, or a
-/// deadline already in the past, degrades into this longer wait rather than
-/// into a shorter one: the registry refills its new-crate bucket about every
-/// ten minutes, so a shorter guess would only earn a second refusal.
+/// Fallback wait when a rate limit carries no readable deadline.
+///
+/// Only used when the registry's message could not be parsed. A parsed
+/// deadline is honoured as given — see `RATE_LIMIT_SKEW_SECS` — so this
+/// never inflates a window the registry was precise about. Ten minutes is
+/// the registry's new-crate refill interval, so an unreadable refusal gets
+/// one full interval instead of a guess that would only earn a second one.
 pub(crate) const RATE_LIMIT_FLOOR_SECS: u64 = 11 * SECONDS_PER_MINUTE as u64;
 
 /// Added to the wait crates.io asks for, absorbing clock skew between the
 /// publishing runner and the registry.
+///
+/// This is also the shortest wait a refusal can produce. A named deadline
+/// is waited out exactly, so a registry that opens the window in thirty
+/// seconds costs thirty seconds rather than a guessed interval.
 pub(crate) const RATE_LIMIT_SKEW_SECS: u64 = 30;
 
 /// Ceiling on how many rate-limit deadlines a single package may wait out.
