@@ -268,6 +268,26 @@ fn test_parse_rate_limit_wait_secs_reads_registry_deadline() {
     let stderr: &str = "error: failed to publish stripe-pay-core v10.2.2 to registry at https://crates.io\n\nCaused by:\n  the remote server responded with an error (status 429 Too Many Requests): You have published too many new crates in a short period of time. Please try again after Tue, 29 Sep 2026 04:55:57 GMT and see https://crates.io/docs/rate-limits for more details.\n";
     let wait: u64 = parse_rate_limit_wait_secs(stderr).unwrap();
     assert!(wait >= 11 * 60);
+    assert!(wait <= 60 * 60);
+}
+
+#[test]
+fn test_parse_rate_limit_wait_secs_resolves_the_parsed_deadline() {
+    let stderr: &str = "Please try again after Tue, 29 Sep 2026 04:55:57 GMT";
+    let wait: u64 = parse_rate_limit_wait_secs(stderr).unwrap();
+    let ceiling: u64 = 5 * 3600 + 30;
+    assert!(
+        wait <= ceiling,
+        "wait {wait}s exceeds the single-wait ceiling, so the deadline was mis-parsed"
+    );
+}
+
+#[test]
+fn test_parse_rate_limit_wait_secs_clamps_a_far_future_deadline() {
+    let stderr: &str = "Please try again after Fri, 01 Jan 2027 00:00:00 GMT";
+    let wait: u64 = parse_rate_limit_wait_secs(stderr).unwrap();
+    assert!(wait <= 5 * 3600 + 30, "wait {wait}s was not clamped");
+    assert!(wait >= 11 * 60);
 }
 
 #[test]

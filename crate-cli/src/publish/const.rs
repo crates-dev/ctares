@@ -58,6 +58,17 @@ pub(crate) const RATE_LIMIT_SKEW_SECS: u64 = 30;
 /// refill interval, so this covers a large first release and still stops.
 pub(crate) const RATE_LIMIT_MAX_WAITS: u32 = 24;
 
+/// Ceiling on a single wait, in seconds.
+///
+/// The registry's own refill interval is about ten minutes, so no genuine
+/// deadline is anywhere near this bound. It exists because the wait is
+/// derived from a parsed timestamp: a mis-parsed or far-future deadline
+/// would otherwise sleep the runner for days, and a wrong parse must fail
+/// visibly rather than stall the release. Five hours still spans a
+/// generous outage, and a workspace that needs longer fails fast enough to
+/// be re-run.
+pub(crate) const RATE_LIMIT_MAX_WAIT_SECS: u64 = 5 * 60 * 60;
+
 /// Month abbreviations in the RFC 2822 timestamp format crates.io emits.
 pub(crate) const MONTH_ABBREVIATIONS: [&str; 12] = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",

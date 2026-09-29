@@ -386,8 +386,8 @@ fn civil_to_days(year: i64, month: i64, day: i64) -> i64 {
     let era: i64 = shifted_year.div_euclid(ERA_YEARS);
     let year_of_era: i64 = shifted_year.rem_euclid(ERA_YEARS);
     let month_position: i64 = (month + 9) % 12;
-    let day_of_year: i64 = (MONTH_POSITION_SCALE * (month_position + 1) + MONTH_POSITION_ROUNDING)
-        / MONTH_POSITION_DIVISOR;
+    let day_of_year: i64 =
+        (MONTH_POSITION_SCALE * month_position + MONTH_POSITION_ROUNDING) / MONTH_POSITION_DIVISOR;
     let day_of_era: i64 = year_of_era * DAYS_PER_YEAR + year_of_era.div_euclid(LEAP_CYCLE_YEARS)
         - year_of_era.div_euclid(CENTURY_YEARS)
         + day_of_year
@@ -438,7 +438,8 @@ pub fn parse_rate_limit_wait_secs(stderr: &str) -> Option<u64> {
         .ok()?
         .as_secs() as i64;
     let remaining: i64 = deadline - now;
-    Some(remaining.max(RATE_LIMIT_FLOOR_SECS as i64) as u64 + RATE_LIMIT_SKEW_SECS)
+    let clamped: u64 = remaining.max(RATE_LIMIT_FLOOR_SECS as i64) as u64;
+    Some(clamped.min(RATE_LIMIT_MAX_WAIT_SECS) + RATE_LIMIT_SKEW_SECS)
 }
 
 /// Seconds to wait before retrying a refused publish.
