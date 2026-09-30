@@ -7,7 +7,7 @@ authors.workspace = true
 license.workspace = true
 description = """Server-side transport for the Stripe payment SDK: signed webhook verification with constant-time comparison."""
 keywords = ["stripe", "payments", "webhook", "hmac", "server"]
-categories = ["web-programming::http", "cryptography"]
+categories = ["web-programming::http-server", "cryptography"]
 repository.workspace = true
 exclude.workspace = true
 

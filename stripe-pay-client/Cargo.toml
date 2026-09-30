@@ -7,7 +7,7 @@ authors.workspace = true
 license.workspace = true
 description = """WebAssembly client for the Stripe payment SDK: renders Stripe payment element configuration and forwards it to the server transport."""
 keywords = ["stripe", "payments", "wasm", "checkout", "payment-element"]
-categories = ["web-programming", "payment-processing", "wasm"]
+categories = ["web-programming::http-client", "wasm"]
 repository.workspace = true
 exclude.workspace = true
 

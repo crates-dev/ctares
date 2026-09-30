@@ -7,7 +7,7 @@ authors.workspace = true
 license.workspace = true
 description = """Shared Stripe domain types for the Stripe payment SDK: money, identifiers, payment intents, charges, refunds, and form encoding."""
 keywords = ["stripe", "payments", "sdk", "payment-intent", "money"]
-categories = ["web-programming::http", "payment-processing"]
+categories = ["web-programming::http-server", "cryptography"]
 repository.workspace = true
 exclude.workspace = true
 
