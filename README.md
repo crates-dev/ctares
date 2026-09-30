@@ -12,13 +12,14 @@ ctares/
 ├── LICENSE                    # MIT
 ├── README.md                  # this file
 ├── <crate>/ ...
-    ├── bin-encode-decode/         # ← git subtree from crates-dev/bin-encode-decode
+    ├── bin-encode-decode/
     ├── china_identification_card/
     ├── chunkify/
     ├── clonelicious/
     ├── color-log/
     ├── color-output/
     ├── compare-version/
+    ├── crate-cli/
     ├── file-operation/
     ├── future-fn/
     ├── hot-restart/
@@ -29,6 +30,9 @@ ctares/
     ├── recoverable-thread-pool/
     ├── server-manager/
     ├── std-macro-extensions/
+    ├── stripe-pay-client/
+    ├── stripe-pay-core/
+    ├── stripe-pay-server/
     ├── system-time/
     ├── tcp-request/
     ├── tcplane/
@@ -68,7 +72,7 @@ cargo fmt --all
 | `clonelicious`              | [![crates.io](https://img.shields.io/crates/v/clonelicious.svg)](https://crates.io/crates/clonelicious)                           | [![docs.rs](https://docs.rs/clonelicious/badge.svg)](https://docs.rs/clonelicious)                           |
 | `color-log`                 | [![crates.io](https://img.shields.io/crates/v/color-log.svg)](https://crates.io/crates/color-log)                                 | [![docs.rs](https://docs.rs/color-log/badge.svg)](https://docs.rs/color-log)                                 |
 | `color-output`              | [![crates.io](https://img.shields.io/crates/v/color-output.svg)](https://crates.io/crates/color-output)                           | [![docs.rs](https://docs.rs/color-output/badge.svg)](https://docs.rs/color-output)                           |
-| `compare-version`           | [![crates.io](https://img.shields.io/crates/v/compare-version.svg)](https://crates.io/crates/compare-version)                     | [![docs.rs](https://docs.rs/compare-version/badge.svg)](https://docs.rs/compare-version)                     |
+| `compare_version`           | [![crates.io](https://img.shields.io/crates/v/compare_version.svg)](https://crates.io/crates/compare_version)                     | [![docs.rs](https://docs.rs/compare_version/badge.svg)](https://docs.rs/compare_version)                     |
 | `crate-cli`                 | [![crates.io](https://img.shields.io/crates/v/crate-cli.svg)](https://crates.io/crates/crate-cli)                                 | [![docs.rs](https://docs.rs/crate-cli/badge.svg)](https://docs.rs/crate-cli)                                 |
 | `file-operation`            | [![crates.io](https://img.shields.io/crates/v/file-operation.svg)](https://crates.io/crates/file-operation)                       | [![docs.rs](https://docs.rs/file-operation/badge.svg)](https://docs.rs/file-operation)                       |
 | `future-fn`                 | [![crates.io](https://img.shields.io/crates/v/future-fn.svg)](https://crates.io/crates/future-fn)                                 | [![docs.rs](https://docs.rs/future-fn/badge.svg)](https://docs.rs/future-fn)                                 |
@@ -80,6 +84,9 @@ cargo fmt --all
 | `recoverable-thread-pool`   | [![crates.io](https://img.shields.io/crates/v/recoverable-thread-pool.svg)](https://crates.io/crates/recoverable-thread-pool)     | [![docs.rs](https://docs.rs/recoverable-thread-pool/badge.svg)](https://docs.rs/recoverable-thread-pool)     |
 | `server-manager`            | [![crates.io](https://img.shields.io/crates/v/server-manager.svg)](https://crates.io/crates/server-manager)                       | [![docs.rs](https://docs.rs/server-manager/badge.svg)](https://docs.rs/server-manager)                       |
 | `std-macro-extensions`      | [![crates.io](https://img.shields.io/crates/v/std-macro-extensions.svg)](https://crates.io/crates/std-macro-extensions)           | [![docs.rs](https://docs.rs/std-macro-extensions/badge.svg)](https://docs.rs/std-macro-extensions)           |
+| `stripe-pay-client`         | [![crates.io](https://img.shields.io/crates/v/stripe-pay-client.svg)](https://crates.io/crates/stripe-pay-client)                 | [![docs.rs](https://docs.rs/stripe-pay-client/badge.svg)](https://docs.rs/stripe-pay-client)                 |
+| `stripe-pay-core`           | [![crates.io](https://img.shields.io/crates/v/stripe-pay-core.svg)](https://crates.io/crates/stripe-pay-core)                     | [![docs.rs](https://docs.rs/stripe-pay-core/badge.svg)](https://docs.rs/stripe-pay-core)                     |
+| `stripe-pay-server`         | [![crates.io](https://img.shields.io/crates/v/stripe-pay-server.svg)](https://crates.io/crates/stripe-pay-server)                 | [![docs.rs](https://docs.rs/stripe-pay-server/badge.svg)](https://docs.rs/stripe-pay-server)                 |
 | `system-time`               | [![crates.io](https://img.shields.io/crates/v/system-time.svg)](https://crates.io/crates/system-time)                             | [![docs.rs](https://docs.rs/system-time/badge.svg)](https://docs.rs/system-time)                             |
 | `tcp-request`               | [![crates.io](https://img.shields.io/crates/v/tcp-request.svg)](https://crates.io/crates/tcp-request)                             | [![docs.rs](https://docs.rs/tcp-request/badge.svg)](https://docs.rs/tcp-request)                             |
 | `tcplane`                   | [![crates.io](https://img.shields.io/crates/v/tcplane.svg)](https://crates.io/crates/tcplane)                                     | [![docs.rs](https://docs.rs/tcplane/badge.svg)](https://docs.rs/tcplane)                                     |
@@ -97,7 +104,7 @@ cargo fmt --all
 | `clonelicious`              | https://github.com/crates-dev/clonelicious              |
 | `color-log`                 | https://github.com/crates-dev/color-log                 |
 | `color-output`              | https://github.com/crates-dev/color-output              |
-| `compare-version`           | https://github.com/crates-dev/compare-version           |
+| `compare_version`           | https://github.com/crates-dev/compare-version           |
 | `crate-cli`                 | native to this repository (not a subtree import)        |
 | `file-operation`            | https://github.com/crates-dev/file-operation            |
 | `future-fn`                 | https://github.com/crates-dev/future-fn                 |
@@ -109,6 +116,9 @@ cargo fmt --all
 | `recoverable-thread-pool`   | https://github.com/crates-dev/recoverable-thread-pool   |
 | `server-manager`            | https://github.com/crates-dev/server-manager            |
 | `std-macro-extensions`      | https://github.com/crates-dev/std-macro-extensions      |
+| `stripe-pay-client`         | native to this repository (not a subtree import)        |
+| `stripe-pay-core`           | native to this repository (not a subtree import)        |
+| `stripe-pay-server`         | native to this repository (not a subtree import)        |
 | `system-time`               | https://github.com/crates-dev/system-time               |
 | `tcp-request`               | https://github.com/crates-dev/tcp-request               |
 | `tcplane`                   | https://github.com/crates-dev/tcplane                   |
