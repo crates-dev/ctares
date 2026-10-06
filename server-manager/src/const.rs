@@ -1,3 +1,9 @@
+/// Environment variable name for daemon mode detection.
+pub const RUNNING_AS_DAEMON: &str = "RUNNING_AS_DAEMON";
+
+/// Value indicating the process is running in daemon mode.
+pub const RUNNING_AS_DAEMON_VALUE: &str = "1";
+
 #[cfg(not(windows))]
 /// Executable name of the Unix process termination utility.
 pub(crate) const KILL: &str = "kill";
@@ -15,14 +21,8 @@ pub(crate) const CARGO_WATCH: &str = "cargo-watch";
 /// Signal passed to the Unix `kill` utility for a graceful termination.
 pub(crate) const KILL_SIGNAL: &str = "-TERM";
 
-/// Environment variable name for daemon mode detection.
-pub const RUNNING_AS_DAEMON: &str = "RUNNING_AS_DAEMON";
-
 /// Arguments installing the named crate with cargo.
 pub(crate) const CARGO_INSTALL_ARGS: [&str; 2] = ["install", "cargo-watch"];
-
-/// Value indicating the process is running in daemon mode.
-pub const RUNNING_AS_DAEMON_VALUE: &str = "1";
 
 /// Message printed when cargo-watch is missing and an installation is attempted.
 pub(crate) const CARGO_WATCH_ABSENT_MESSAGE: &str =
