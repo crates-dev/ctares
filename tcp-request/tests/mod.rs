@@ -1,3 +1,3 @@
 mod request_builder;
 
-pub use tcp_request::*;
+use tcp_request::*;
