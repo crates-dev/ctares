@@ -1,7 +1,7 @@
 use super::*;
 
 #[tokio::test]
-pub async fn test_broadcast_map() {
+async fn test_broadcast_map() {
     let broadcast_map: BroadcastMap<u128> = BroadcastMap::new();
     broadcast_map.insert("test_key", 10);
     let mut rec1: BroadcastMapReceiver<u128> = broadcast_map.subscribe("test_key").unwrap();
@@ -16,7 +16,7 @@ pub async fn test_broadcast_map() {
 }
 
 #[tokio::test]
-pub async fn test_broadcast_map_unsubscribe() {
+async fn test_broadcast_map_unsubscribe() {
     let broadcast_map: BroadcastMap<u128> = BroadcastMap::new();
     broadcast_map.insert("test_key", 10);
     let mut rec1: BroadcastMapReceiver<u128> = broadcast_map.subscribe("test_key").unwrap();
@@ -36,7 +36,7 @@ pub async fn test_broadcast_map_unsubscribe() {
 }
 
 #[tokio::test]
-pub async fn test_broadcast_map_unsubscribe_and_reinsert() {
+async fn test_broadcast_map_unsubscribe_and_reinsert() {
     let broadcast_map: BroadcastMap<u128> = BroadcastMap::new();
     broadcast_map.insert("test_key", 10);
     broadcast_map.subscribe("test_key").unwrap();
@@ -49,7 +49,7 @@ pub async fn test_broadcast_map_unsubscribe_and_reinsert() {
 }
 
 #[tokio::test]
-pub async fn test_broadcast_map_unsubscribe_receiver_count() {
+async fn test_broadcast_map_unsubscribe_receiver_count() {
     let broadcast_map: BroadcastMap<String> = BroadcastMap::new();
     broadcast_map.insert("test_key", 10);
     let _rec1: BroadcastMapReceiver<String> = broadcast_map.subscribe("test_key").unwrap();
@@ -61,7 +61,7 @@ pub async fn test_broadcast_map_unsubscribe_receiver_count() {
 }
 
 #[tokio::test]
-pub async fn test_broadcast_map_send() {
+async fn test_broadcast_map_send() {
     let broadcast_map: BroadcastMap<u128> = BroadcastMap::new();
     broadcast_map.insert("test_key", 10);
     let mut rec1: BroadcastMapReceiver<u128> = broadcast_map.subscribe("test_key").unwrap();
