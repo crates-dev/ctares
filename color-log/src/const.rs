@@ -1,15 +1,3 @@
-/// Default directory path for storing log files.
-pub const DEFAULT_LOG_DIR: &str = "./logs";
-
-/// File extension for log files.
-pub const LOG_EXTENSION: &str = "log";
-
-/// Default starting index number for log files.
-pub const DEFAULT_LOG_FILE_START_IDX: usize = 1;
-
-/// Default maximum size limit for log files in bytes.
-pub const DEFAULT_LOG_FILE_SIZE: usize = 1_024_000_000;
-
 /// Special value indicating no size limit for log files.
 pub const DISABLE_LOG_FILE_SIZE: usize = 0;
 
@@ -27,6 +15,18 @@ pub const WARN_DIR: &str = "warn";
 
 /// Subdirectory name for error logs.
 pub const ERROR_DIR: &str = "error";
+
+/// Default directory path for storing log files.
+pub(crate) const DEFAULT_LOG_DIR: &str = "./logs";
+
+/// File extension for log files.
+pub(crate) const LOG_EXTENSION: &str = "log";
+
+/// Default starting index number for log files.
+pub(crate) const DEFAULT_LOG_FILE_START_IDX: usize = 1;
+
+/// Default maximum size limit for log files in bytes.
+pub(crate) const DEFAULT_LOG_FILE_SIZE: usize = 1_024_000_000;
 
 /// Root path symbol.
 pub(crate) const ROOT_PATH: &str = "/";

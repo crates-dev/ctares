@@ -19,4 +19,4 @@ pub const DEFAULT_BUFFER_SIZE: usize = 512_000;
 pub const DEFAULT_TIMEOUT: u64 = u64::MAX;
 
 /// The wildcard address every UDP socket binds to before connecting.
-pub const UDP_BIND_ADDR: &str = "0.0.0.0:0";
+pub(crate) const UDP_BIND_ADDR: &str = "0.0.0.0:0";

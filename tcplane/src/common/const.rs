@@ -13,14 +13,14 @@ pub const DEFAULT_BUFFER_SIZE: usize = 4096;
 pub const DEFAULT_SOCKET_ADDR: SocketAddr =
     SocketAddr::new(std::net::IpAddr::V4(std::net::Ipv4Addr::new(0, 0, 0, 0)), 0);
 
-/// Colon symbol used in address formatting.
-pub const COLON: &str = ":";
-
-/// Colon with space for display formatting.
-pub const COLON_SPACE: &str = ": ";
-
 /// Request separator bytes for detecting end of request.
 pub const SPLIT_REQUEST_BYTES: &[u8] = b"\r\n\r\n";
 
+/// Colon symbol used in address formatting.
+pub(crate) const COLON: &str = ":";
+
+/// Colon with space for display formatting.
+pub(crate) const COLON_SPACE: &str = ": ";
+
 /// Context attribute key holding the error message passed to read-error handlers.
-pub const CONTEXT_ERROR_KEY: &str = "error";
+pub(crate) const CONTEXT_ERROR_KEY: &str = "error";
