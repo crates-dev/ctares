@@ -40,8 +40,8 @@ preserved.
 
 ## Source
 
-| crate                       | source                                                                       |
-| --------------------------- | ---------------------------------------------------------------------------- |
+| crate                       | source                                                                     |
+| --------------------------- | -------------------------------------------------------------------------- |
 | `bin-encode-decode`         | https://github.com/crates-dev/ctares/tree/master/bin-encode-decode         |
 | `china_identification_card` | https://github.com/crates-dev/ctares/tree/master/china_identification_card |
 | `chunkify`                  | https://github.com/crates-dev/ctares/tree/master/chunkify                  |
