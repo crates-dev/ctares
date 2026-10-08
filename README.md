@@ -1,66 +1,10 @@
 # ctares
 
-A unified Cargo workspace that consolidates all 24 Rust crates from the
-[crates-dev](https://github.com/crates-dev) GitHub organization into a single
-repository, preserving full commit history for each crate.
-
-## Layout
-
-```
-ctares/
-├── Cargo.toml                 # workspace manifest
-├── LICENSE                    # MIT
-├── README.md                  # this file
-├── <crate>/ ...
-    ├── bin-encode-decode/
-    ├── china_identification_card/
-    ├── chunkify/
-    ├── clonelicious/
-    ├── color-log/
-    ├── color-output/
-    ├── compare-version/
-    ├── crate-cli/
-    ├── file-operation/
-    ├── future-fn/
-    ├── hot-restart/
-    ├── instrument-level/
-    ├── jwt-service/
-    ├── lombok-macros/
-    ├── recoverable-spawn/
-    ├── recoverable-thread-pool/
-    ├── server-manager/
-    ├── std-macro-extensions/
-    ├── stripe-pay-client/
-    ├── stripe-pay-core/
-    ├── stripe-pay-server/
-    ├── system-time/
-    ├── tcp-request/
-    ├── tcplane/
-    ├── tokio-broadcast/
-    ├── udp/
-    └── udp-request/
-```
-
-Each subdirectory in the repository root is a self-contained crate with its own
-`Cargo.toml`, `src/`, tests, and examples. They are stitched together into a
-single workspace via the root `Cargo.toml`.
-
-## Working with the workspace
-
-```bash
-# Build everything
-cargo build --workspace
-
-# Test everything
-cargo test --workspace
-
-# Build / test one crate
-cargo build -p jwt-service
-
-# Lint / format all
-cargo clippy --workspace --all-targets
-cargo fmt --all
-```
+A unified Cargo workspace holding 27 Rust crates under the
+[crates-dev](https://github.com/crates-dev) GitHub organization, each a
+self-contained directory with its own `Cargo.toml`, `src/`, tests, and examples,
+stitched together by the root `Cargo.toml`, with each crate's full commit history
+preserved.
 
 ## Packages
 
@@ -94,37 +38,37 @@ cargo fmt --all
 | `udp`                       | [![crates.io](https://img.shields.io/crates/v/udp.svg)](https://crates.io/crates/udp)                                             | [![docs.rs](https://docs.rs/udp/badge.svg)](https://docs.rs/udp)                                             |
 | `udp-request`               | [![crates.io](https://img.shields.io/crates/v/udp-request.svg)](https://crates.io/crates/udp-request)                             | [![docs.rs](https://docs.rs/udp-request/badge.svg)](https://docs.rs/udp-request)                             |
 
-## Crate origin
+## Source
 
-| crate                       | upstream                                                |
-| --------------------------- | ------------------------------------------------------- |
-| `bin-encode-decode`         | https://github.com/crates-dev/bin-encode-decode         |
-| `china_identification_card` | https://github.com/crates-dev/china_identification_card |
-| `chunkify`                  | https://github.com/crates-dev/chunkify                  |
-| `clonelicious`              | https://github.com/crates-dev/clonelicious              |
-| `color-log`                 | https://github.com/crates-dev/color-log                 |
-| `color-output`              | https://github.com/crates-dev/color-output              |
-| `compare_version`           | https://github.com/crates-dev/compare-version           |
-| `crate-cli`                 | native to this repository (not a subtree import)        |
-| `file-operation`            | https://github.com/crates-dev/file-operation            |
-| `future-fn`                 | https://github.com/crates-dev/future-fn                 |
-| `hot-restart`               | https://github.com/crates-dev/hot-restart               |
-| `instrument-level`          | https://github.com/crates-dev/instrument-level          |
-| `jwt-service`               | https://github.com/crates-dev/jwt-service               |
-| `lombok-macros`             | https://github.com/crates-dev/lombok-macros             |
-| `recoverable-spawn`         | https://github.com/crates-dev/recoverable-spawn         |
-| `recoverable-thread-pool`   | https://github.com/crates-dev/recoverable-thread-pool   |
-| `server-manager`            | https://github.com/crates-dev/server-manager            |
-| `std-macro-extensions`      | https://github.com/crates-dev/std-macro-extensions      |
-| `stripe-pay-client`         | native to this repository (not a subtree import)        |
-| `stripe-pay-core`           | native to this repository (not a subtree import)        |
-| `stripe-pay-server`         | native to this repository (not a subtree import)        |
-| `system-time`               | https://github.com/crates-dev/system-time               |
-| `tcp-request`               | https://github.com/crates-dev/tcp-request               |
-| `tcplane`                   | https://github.com/crates-dev/tcplane                   |
-| `tokio-broadcast`           | https://github.com/crates-dev/tokio-broadcast           |
-| `udp`                       | https://github.com/crates-dev/udp                       |
-| `udp-request`               | https://github.com/crates-dev/udp-request               |
+| crate                       | source                                                                       |
+| --------------------------- | ---------------------------------------------------------------------------- |
+| `bin-encode-decode`         | https://github.com/crates-dev/ctares/tree/master/bin-encode-decode         |
+| `china_identification_card` | https://github.com/crates-dev/ctares/tree/master/china_identification_card |
+| `chunkify`                  | https://github.com/crates-dev/ctares/tree/master/chunkify                  |
+| `clonelicious`              | https://github.com/crates-dev/ctares/tree/master/clonelicious              |
+| `color-log`                 | https://github.com/crates-dev/ctares/tree/master/color-log                 |
+| `color-output`              | https://github.com/crates-dev/ctares/tree/master/color-output              |
+| `compare_version`           | https://github.com/crates-dev/ctares/tree/master/compare-version           |
+| `crate-cli`                 | https://github.com/crates-dev/ctares/tree/master/crate-cli                 |
+| `file-operation`            | https://github.com/crates-dev/ctares/tree/master/file-operation            |
+| `future-fn`                 | https://github.com/crates-dev/ctares/tree/master/future-fn                 |
+| `hot-restart`               | https://github.com/crates-dev/ctares/tree/master/hot-restart               |
+| `instrument-level`          | https://github.com/crates-dev/ctares/tree/master/instrument-level          |
+| `jwt-service`               | https://github.com/crates-dev/ctares/tree/master/jwt-service               |
+| `lombok-macros`             | https://github.com/crates-dev/ctares/tree/master/lombok-macros             |
+| `recoverable-spawn`         | https://github.com/crates-dev/ctares/tree/master/recoverable-spawn         |
+| `recoverable-thread-pool`   | https://github.com/crates-dev/ctares/tree/master/recoverable-thread-pool   |
+| `server-manager`            | https://github.com/crates-dev/ctares/tree/master/server-manager            |
+| `std-macro-extensions`      | https://github.com/crates-dev/ctares/tree/master/std-macro-extensions      |
+| `stripe-pay-client`         | https://github.com/crates-dev/ctares/tree/master/stripe-pay-client         |
+| `stripe-pay-core`           | https://github.com/crates-dev/ctares/tree/master/stripe-pay-core           |
+| `stripe-pay-server`         | https://github.com/crates-dev/ctares/tree/master/stripe-pay-server         |
+| `system-time`               | https://github.com/crates-dev/ctares/tree/master/system-time               |
+| `tcp-request`               | https://github.com/crates-dev/ctares/tree/master/tcp-request               |
+| `tcplane`                   | https://github.com/crates-dev/ctares/tree/master/tcplane                   |
+| `tokio-broadcast`           | https://github.com/crates-dev/ctares/tree/master/tokio-broadcast           |
+| `udp`                       | https://github.com/crates-dev/ctares/tree/master/udp                       |
+| `udp-request`               | https://github.com/crates-dev/ctares/tree/master/udp-request               |
 
 ## License
 
