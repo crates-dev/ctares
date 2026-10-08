@@ -5,7 +5,7 @@
 [![](https://img.shields.io/crates/v/udp-request.svg)](https://crates.io/crates/udp-request)
 [![](https://img.shields.io/crates/d/udp-request.svg)](https://img.shields.io/crates/d/udp-request.svg)
 [![](https://docs.rs/udp-request/badge.svg)](https://docs.rs/udp-request)
-[![](https://github.com/crates-dev/udp-request/workflows/Rust/badge.svg)](https://github.com/crates-dev/udp-request/actions?query=workflow:Rust)
+[![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
 [![](https://img.shields.io/crates/l/udp-request.svg)](./LICENSE)
 
 </center>

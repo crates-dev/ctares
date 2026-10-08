@@ -5,7 +5,7 @@
 [![](https://img.shields.io/crates/v/clonelicious.svg)](https://crates.io/crates/clonelicious)
 [![](https://img.shields.io/crates/d/clonelicious.svg)](https://img.shields.io/crates/d/clonelicious.svg)
 [![](https://docs.rs/clonelicious/badge.svg)](https://docs.rs/clonelicious)
-[![](https://github.com/crates-dev/clonelicious/workflows/Rust/badge.svg)](https://github.com/crates-dev/clonelicious/actions?query=workflow:Rust)
+[![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
 [![](https://img.shields.io/crates/l/clonelicious.svg)](./LICENSE)
 
 </center>

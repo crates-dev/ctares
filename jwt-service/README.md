@@ -5,7 +5,7 @@
 [![](https://img.shields.io/crates/v/jwt-service.svg)](https://crates.io/crates/jwt-service)
 [![](https://img.shields.io/crates/d/jwt-service.svg)](https://img.shields.io/crates/d/jwt-service.svg)
 [![](https://docs.rs/jwt-service/badge.svg)](https://docs.rs/jwt-service)
-[![](https://github.com/crates-dev/jwt-service/workflows/Rust/badge.svg)](https://github.com/crates-dev/jwt-service/actions?query=workflow:Rust)
+[![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
 [![](https://img.shields.io/crates/l/jwt-service.svg)](./LICENSE)
 
 </center>

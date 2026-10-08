@@ -5,7 +5,7 @@
 [![](https://img.shields.io/crates/v/instrument-level.svg)](https://crates.io/crates/instrument-level)
 [![](https://img.shields.io/crates/d/instrument-level.svg)](https://img.shields.io/crates/d/instrument-level.svg)
 [![](https://docs.rs/instrument-level/badge.svg)](https://docs.rs/instrument-level)
-[![](https://github.com/crates-dev/instrument-level/workflows/Rust/badge.svg)](https://github.com/crates-dev/instrument-level/actions?query=workflow:Rust)
+[![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
 [![](https://img.shields.io/crates/l/instrument-level.svg)](./LICENSE)
 
 </center>

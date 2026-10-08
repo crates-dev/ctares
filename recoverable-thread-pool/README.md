@@ -5,7 +5,7 @@
 [![](https://img.shields.io/crates/v/recoverable-thread-pool.svg)](https://crates.io/crates/recoverable-thread-pool)
 [![](https://img.shields.io/crates/d/recoverable-thread-pool.svg)](https://img.shields.io/crates/d/recoverable-thread-pool.svg)
 [![](https://docs.rs/recoverable-thread-pool/badge.svg)](https://docs.rs/recoverable-thread-pool)
-[![](https://github.com/crates-dev/recoverable-thread-pool/workflows/Rust/badge.svg)](https://github.com/crates-dev/recoverable-thread-pool/actions?query=workflow:Rust)
+[![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
 [![](https://img.shields.io/crates/l/recoverable-thread-pool.svg)](./LICENSE)
 
 </center>

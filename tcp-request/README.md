@@ -5,7 +5,7 @@
 [![](https://img.shields.io/crates/v/tcp-request.svg)](https://crates.io/crates/tcp-request)
 [![](https://img.shields.io/crates/d/tcp-request.svg)](https://img.shields.io/crates/d/tcp-request.svg)
 [![](https://docs.rs/tcp-request/badge.svg)](https://docs.rs/tcp-request)
-[![](https://github.com/crates-dev/tcp-request/workflows/Rust/badge.svg)](https://github.com/crates-dev/tcp-request/actions?query=workflow:Rust)
+[![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
 [![](https://img.shields.io/crates/l/tcp-request.svg)](./LICENSE)
 
 </center>

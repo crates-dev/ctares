@@ -5,7 +5,7 @@
 [![](https://img.shields.io/crates/v/tcplane.svg)](https://crates.io/crates/tcplane)
 [![](https://img.shields.io/crates/d/tcplane.svg)](https://img.shields.io/crates/d/tcplane.svg)
 [![](https://docs.rs/tcplane/badge.svg)](https://docs.rs/tcplane)
-[![](https://github.com/crates-dev/tcplane/workflows/Rust/badge.svg)](https://github.com/crates-dev/tcplane/actions?query=workflow:Rust)
+[![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
 [![](https://img.shields.io/crates/l/tcplane.svg)](./LICENSE)
 
 </center>

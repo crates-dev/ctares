@@ -5,7 +5,7 @@
 [![](https://img.shields.io/crates/v/future-fn.svg)](https://crates.io/crates/future-fn)
 [![](https://img.shields.io/crates/d/future-fn.svg)](https://img.shields.io/crates/d/future-fn.svg)
 [![](https://docs.rs/future-fn/badge.svg)](https://docs.rs/future-fn)
-[![](https://github.com/crates-dev/future-fn/workflows/Rust/badge.svg)](https://github.com/crates-dev/future-fn/actions?query=workflow:Rust)
+[![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
 [![](https://img.shields.io/crates/l/future-fn.svg)](./LICENSE)
 
 </center>
