@@ -9,9 +9,7 @@ mod r#impl;
 
 pub use r#fn::*;
 
-pub use r#const::*;
-
-use r#enum::*;
+use {r#const::*, r#enum::*};
 
 use std::{
     env, fmt,
