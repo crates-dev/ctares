@@ -229,7 +229,7 @@ impl WebhookEvent {
     /// - `Result<String, WebhookError>` - the configured secret, or
     ///   `EmptySecret` when the variable is unset or blank.
     pub fn secret_from_env() -> Result<String, WebhookError> {
-        match std::env::var(SECRET_KEY) {
+        match var(SECRET_KEY) {
             Ok(value) if !value.is_empty() => Ok(value),
             _ => Err(WebhookError::EmptySecret),
         }

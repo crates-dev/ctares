@@ -60,7 +60,7 @@ impl ServerManager {
     #[cfg(not(windows))]
     pub async fn start_daemon(&self) -> ServerManagerResult {
         (self.get_start_hook())().await;
-        if std::env::var(RUNNING_AS_DAEMON).is_ok() {
+        if var(RUNNING_AS_DAEMON).is_ok() {
             self.write_pid_file()?;
             let rt: Runtime = Runtime::new()?;
             rt.block_on(async {
@@ -68,14 +68,14 @@ impl ServerManager {
             });
             return Ok(());
         }
-        let exe_path: PathBuf = std::env::current_exe()?;
+        let exe_path: PathBuf = current_exe()?;
         let mut cmd: Command = Command::new(exe_path);
         cmd.env(RUNNING_AS_DAEMON, RUNNING_AS_DAEMON_VALUE)
             .stdout(Stdio::null())
             .stderr(Stdio::null())
             .stdin(Stdio::null());
         cmd.spawn()
-            .map_err(|error: Error| Box::new(error) as Box<dyn std::error::Error>)?;
+            .map_err(|error: Error| Box::new(error) as Box<dyn error::Error>)?;
         Ok(())
     }
 
@@ -87,7 +87,7 @@ impl ServerManager {
     #[cfg(windows)]
     pub async fn start_daemon(&self) -> ServerManagerResult {
         (self.get_start_hook())().await;
-        if std::env::var(RUNNING_AS_DAEMON).is_ok() {
+        if var(RUNNING_AS_DAEMON).is_ok() {
             self.write_pid_file()?;
             let rt: Runtime = Runtime::new()?;
             rt.block_on(async {
@@ -95,7 +95,7 @@ impl ServerManager {
             });
             return Ok(());
         }
-        let exe_path: PathBuf = std::env::current_exe()?;
+        let exe_path: PathBuf = current_exe()?;
         let mut cmd: Command = Command::new(exe_path);
         cmd.env(RUNNING_AS_DAEMON, RUNNING_AS_DAEMON_VALUE)
             .stdout(Stdio::null())
@@ -103,7 +103,7 @@ impl ServerManager {
             .stdin(Stdio::null())
             .creation_flags(0x00000008);
         cmd.spawn()
-            .map_err(|error: Error| Box::new(error) as Box<dyn std::error::Error>)?;
+            .map_err(|error: Error| Box::new(error) as Box<dyn error::Error>)?;
         Ok(())
     }
 
@@ -111,8 +111,8 @@ impl ServerManager {
     ///
     /// # Returns
     ///
-    /// - `Result<i32, Box<dyn std::error::Error>>` - Process ID if successful.
-    fn read_pid_file(&self) -> Result<i32, Box<dyn std::error::Error>> {
+    /// - `Result<i32, Box<dyn error::Error>>` - Process ID if successful.
+    fn read_pid_file(&self) -> Result<i32, Box<dyn error::Error>> {
         let pid_str: String = fs::read_to_string(self.get_pid_file())?;
         let pid: i32 = pid_str.trim().parse::<i32>()?;
         Ok(pid)
@@ -281,11 +281,11 @@ impl ServerManager {
             .stdin(Stdio::inherit());
         let mut child: Child = command
             .spawn()
-            .map_err(|error: Error| Box::new(error) as Box<dyn std::error::Error>)?;
+            .map_err(|error: Error| Box::new(error) as Box<dyn error::Error>)?;
         if wait {
             child
                 .wait()
-                .map_err(|error: Error| Box::new(error) as Box<dyn std::error::Error>)?;
+                .map_err(|error: Error| Box::new(error) as Box<dyn error::Error>)?;
         }
         exit(0);
     }

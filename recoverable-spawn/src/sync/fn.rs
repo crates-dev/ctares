@@ -11,7 +11,7 @@ use super::*;
 /// - `SyncSpawnResult` - The spawn operation result.
 pub fn run_function<F: RecoverableFunction>(func: F) -> SyncSpawnResult {
     set_hook(Box::new(move |_: &PanicHookInfo<'_>| {}));
-    std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+    catch_unwind(AssertUnwindSafe(|| {
         func();
     }))
 }
@@ -28,7 +28,7 @@ pub fn run_function<F: RecoverableFunction>(func: F) -> SyncSpawnResult {
 /// - `SyncSpawnResult` - The spawn operation result.
 pub fn run_error_handle_function<E: ErrorHandlerFunction>(func: E, error: &str) -> SyncSpawnResult {
     set_hook(Box::new(move |_: &PanicHookInfo<'_>| {}));
-    std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+    catch_unwind(AssertUnwindSafe(|| {
         func(error);
     }))
 }

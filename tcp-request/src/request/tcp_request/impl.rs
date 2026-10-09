@@ -95,13 +95,13 @@ impl TcpRequest {
             });
         let timeout: Duration = Duration::from_millis(cfg_timeout);
         let tcp_stream: TcpStream = TcpStream::connect(host_port.clone())
-            .map_err(|_: std::io::Error| RequestError::TcpStreamConnectError)?;
+            .map_err(|_: io::Error| RequestError::TcpStreamConnectError)?;
         tcp_stream
             .set_read_timeout(Some(timeout))
-            .map_err(|_: std::io::Error| RequestError::SetReadTimeoutError)?;
+            .map_err(|_: io::Error| RequestError::SetReadTimeoutError)?;
         tcp_stream
             .set_write_timeout(Some(timeout))
-            .map_err(|_: std::io::Error| RequestError::SetWriteTimeoutError)?;
+            .map_err(|_: io::Error| RequestError::SetWriteTimeoutError)?;
         let stream: Result<TcpStream, RequestError> = Ok(tcp_stream);
         stream
     }

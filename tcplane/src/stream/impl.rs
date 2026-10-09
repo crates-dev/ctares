@@ -62,7 +62,7 @@ impl ArcRwLockStream {
         stream
             .write_all(data.as_ref())
             .await
-            .map_err(|error: std::io::Error| ResponseError::WriteError(error.to_string()))?;
+            .map_err(|error: io::Error| ResponseError::WriteError(error.to_string()))?;
         Ok(())
     }
 
@@ -92,7 +92,7 @@ impl ArcRwLockStream {
         stream
             .flush()
             .await
-            .map_err(|error: std::io::Error| ResponseError::FlushError(error.to_string()))?;
+            .map_err(|error: io::Error| ResponseError::FlushError(error.to_string()))?;
         Ok(())
     }
 
@@ -138,7 +138,7 @@ impl ArcRwLockStream {
         stream
             .shutdown()
             .await
-            .map_err(|error: std::io::Error| ResponseError::WriteError(error.to_string()))?;
+            .map_err(|error: io::Error| ResponseError::WriteError(error.to_string()))?;
         Ok(())
     }
 

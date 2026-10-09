@@ -26,7 +26,7 @@ impl log::Log for Logger {
         }
         let now_time: String = color_output::time();
         let level: log::Level = record.level();
-        let args: &std::fmt::Arguments<'_> = record.args();
+        let args: &Arguments<'_> = record.args();
         let file: Option<&str> = record.file();
         let module_path: Option<&str> = record.module_path();
         let target: &str = record.target();

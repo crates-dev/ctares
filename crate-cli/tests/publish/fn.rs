@@ -253,20 +253,10 @@ fn test_is_already_published() {
 
 #[test]
 fn test_is_already_published_matches_live_cargo_message() {
-    // Verbatim from cargo 1.98.1 — the template is
-    // `crate {name}@{version} already exists on {registry}` — which is the
-    // toolchain `dtolnay/rust-toolchain@stable` resolves to in CI. The other
-    // two markers are worded for older toolchains and no longer appear in
-    // this binary, so without this case a re-run fails on every crate that
-    // has already shipped.
     let default_registry: &str = "error: failed to publish stripe-pay-core v10.2.2 to registry at https://github.com/rust-lang/crates.io-index\n\nCaused by:\n  crate stripe-pay-core@10.2.2 already exists on crates.io\n";
     assert!(is_already_published(default_registry));
-    // The clause is matched, not the registry name, so a renamed registry or
-    // a sparse source replacement is covered by the same marker.
     let renamed_registry: &str = "error: failed to publish bin-encode-decode v10.2.2 to registry at sparse+https://index.crates.io/\n\nCaused by:\n  crate bin-encode-decode@10.2.2 already exists on registry `crates-io`\n";
     assert!(is_already_published(renamed_registry));
-    // Near-misses must not be swallowed: a dependency-source fault and a
-    // ban are real failures and have to keep reporting as ones.
     assert!(!is_already_published(
         "error: crates cannot be published to crates.io with dependencies sourced from other registries"
     ));
@@ -291,9 +281,6 @@ fn test_is_rate_limited() {
 fn test_parse_rate_limit_wait_secs_reads_registry_deadline() {
     let stderr: &str = "error: failed to publish stripe-pay-core v10.2.2 to registry at https://crates.io\n\nCaused by:\n  the remote server responded with an error (status 429 Too Many Requests): You have published too many new crates in a short period of time. Please try again after Tue, 29 Sep 2026 04:55:57 GMT and see https://crates.io/docs/rate-limits for more details.\n";
     let wait: u64 = parse_rate_limit_wait_secs(stderr).unwrap();
-    // The deadline is honoured, not replaced: this timestamp is in the past
-    // relative to a test run, so only the skew allowance remains. The
-    // interval is asserted by the near-deadline case, not forced here.
     assert!(wait <= 11 * 60);
     assert!(wait >= 30);
 }
@@ -319,10 +306,6 @@ fn test_parse_rate_limit_wait_secs_clamps_a_far_future_deadline() {
 
 #[test]
 fn test_parse_rate_limit_wait_secs_keeps_a_near_deadline_short() {
-    // The registry's own interval is about ten minutes, so a deadline in the
-    // past or a couple of seconds out is the case the fallback used to mask:
-    // the old floor stretched every parsed window up to eleven minutes. A
-    // deadline that has already passed must return only the skew allowance.
     let past: u64 =
         parse_rate_limit_wait_secs("Please try again after Tue, 29 Sep 2020 04:55:57 GMT").unwrap();
     assert_eq!(
@@ -340,9 +323,6 @@ fn test_parse_rate_limit_wait_secs_absent_deadline() {
 
 #[test]
 fn test_parse_rate_limit_wait_secs_honours_a_parsed_deadline() {
-    // An unparseable refusal has no deadline to honour, so the caller falls
-    // back to one full refill interval. The floor applies there and nowhere
-    // else: a parsed deadline shorter than it is still taken at face value.
     let readable: u64 =
         parse_rate_limit_wait_secs("Please try again after Tue, 29 Sep 2026 04:55:57 GMT").unwrap();
     assert!(readable <= 11 * 60);

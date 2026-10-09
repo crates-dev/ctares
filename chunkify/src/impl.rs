@@ -44,7 +44,7 @@ impl fmt::Display for ChunkStrategyError {
 }
 
 /// Marks ChunkStrategyError as a standard error type.
-impl std::error::Error for ChunkStrategyError {}
+impl error::Error for ChunkStrategyError {}
 
 /// Converts ChunkStrategyError to a byte vector.
 ///
@@ -231,7 +231,7 @@ impl<'a> HandleStrategy<'a> for ChunkStrategy<'a> {
         for i in *self.get_start_chunk_index()..*self.get_total_chunks() {
             let chunk_path: String = self.get_chunk_path(self.get_file_id(), i);
             let chunk_data: Vec<u8> = async_read_from_file(&chunk_path).await.map_err(
-                |error: Box<dyn std::error::Error>| {
+                |error: Box<dyn error::Error>| {
                     ChunkStrategyError::ReadChunk(format!(
                         "Failed to read chunk from {chunk_path}: {error}"
                     ))

@@ -1,6 +1,5 @@
 use super::*;
 
-use std::sync::Arc;
 #[test]
 fn test() {
     let thread_pool: ThreadPool = ThreadPool::new(1);

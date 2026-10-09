@@ -18,7 +18,7 @@ pub type HashMapArcAnySendSync = HashMap<String, Arc<dyn Any + Send + Sync>>;
 pub type OptionSocketAddr = Option<SocketAddr>;
 
 /// A type alias for an optional socket host (IP address).
-pub type OptionSocketHost = Option<std::net::IpAddr>;
+pub type OptionSocketHost = Option<IpAddr>;
 
 /// A type alias for an optional socket port.
 pub type OptionSocketPort = Option<u16>;

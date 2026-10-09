@@ -15,7 +15,7 @@ pub use {r#const::*, r#enum::*, r#struct::*, r#trait::*, r#type::*};
 use r#static::*;
 
 use std::{
-    fmt,
+    error, fmt,
     fs::{self, File, OpenOptions},
     hash::BuildHasherDefault,
     io::{BufWriter, Error, Write},

@@ -499,9 +499,9 @@ impl<'a> ColorOutputList<'a> {
     /// Provides an iterator over the elements in the internal `Vec<ColorOutput<'a>>`.
     ///
     /// # Returns
-    /// - `std::slice::Iter<'_, ColorOutput<'a>>` - An iterator over references to `ColorOutput` elements.
+    /// - `Iter<'_, ColorOutput<'a>>` - An iterator over references to `ColorOutput` elements.
     #[inline(always)]
-    pub fn iter(&self) -> std::slice::Iter<'_, ColorOutput<'a>> {
+    pub fn iter(&self) -> Iter<'_, ColorOutput<'a>> {
         self.0.iter()
     }
 

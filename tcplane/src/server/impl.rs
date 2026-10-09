@@ -165,7 +165,7 @@ impl Server {
         let addr: String = Self::get_bind_addr(&host, port);
         TcpListener::bind(&addr)
             .await
-            .map_err(|error: std::io::Error| ServerError::TcpBind(error.to_string()))
+            .map_err(|error: io::Error| ServerError::TcpBind(error.to_string()))
     }
 
     /// Spawns a new task to handle an incoming connection.

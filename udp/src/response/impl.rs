@@ -54,7 +54,7 @@ impl Response {
                 socket
                     .send_to(self.get_data(), addr)
                     .await
-                    .map_err(|error: std::io::Error| ResponseError::SendError(error.to_string()))?;
+                    .map_err(|error: io::Error| ResponseError::SendError(error.to_string()))?;
                 return Ok(());
             }
             return Err(ResponseError::AddressNotAvailable);

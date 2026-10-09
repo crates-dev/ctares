@@ -12,6 +12,8 @@ pub use {r#async::*, common::*, sync::*};
 
 use std::{
     any::Any,
+    panic::AssertUnwindSafe,
+    panic::catch_unwind,
     panic::{PanicHookInfo, set_hook},
     sync::Arc,
 };

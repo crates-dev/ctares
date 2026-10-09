@@ -24,7 +24,7 @@ pub async fn async_move_file(src: &str, dest: &str) -> Result<(), Error> {
 ///
 /// # Returns
 ///
-/// - `Pin<Box<dyn Future<Output` - A pinned boxed future that resolves to the move operation result.
+/// - `Pin<Box<dyn Future<Output = Result<(), Error>> + 'a>>` - A pinned boxed future that resolves to the move operation result.
 pub fn async_move_dir<'a>(
     src_dir: &'a str,
     dest_dir: &'a str,

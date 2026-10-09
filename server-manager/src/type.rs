@@ -1,7 +1,7 @@
 use super::*;
 
 /// Error type for server management operations.
-pub type ServerManagerError = Box<dyn std::error::Error>;
+pub type ServerManagerError = Box<dyn error::Error>;
 
 /// Result type for server management operations.
 pub type ServerManagerResult = Result<(), ServerManagerError>;

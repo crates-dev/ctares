@@ -111,7 +111,7 @@ impl ExtraJwtClaims {
 }
 
 /// Display implementation for JwtValidationError.
-impl std::fmt::Display for JwtValidationError {
+impl Display for JwtValidationError {
     /// Formats the validation error for display.
     ///
     /// # Arguments
@@ -135,7 +135,7 @@ impl std::fmt::Display for JwtValidationError {
 }
 
 /// Error trait implementation for JwtValidationError.
-impl std::error::Error for JwtValidationError {}
+impl Error for JwtValidationError {}
 
 /// Conversion from jsonwebtoken errors to JwtValidationError.
 ///

@@ -19,6 +19,8 @@ use std::{
     borrow::Cow,
     fmt::{self, Display},
     io::Write,
+    io::stdout,
     ops::Deref,
     slice::Iter,
+    str::Lines,
 };

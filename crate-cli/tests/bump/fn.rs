@@ -51,7 +51,7 @@ version = "0.1.0"
 edition = "2024"
 "#;
     write(&manifest_path, content).await.unwrap();
-    let result: Result<String, Box<dyn std::error::Error>> =
+    let result: Result<String, Box<dyn error::Error>> =
         execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Patch).await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), "0.1.1");
@@ -70,7 +70,7 @@ version = "0.1.0"
 edition = "2024"
 "#;
     write(&manifest_path, content).await.unwrap();
-    let result: Result<String, Box<dyn std::error::Error>> =
+    let result: Result<String, Box<dyn error::Error>> =
         execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Minor).await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), "0.2.0");
@@ -87,7 +87,7 @@ version = "0.1.0"
 edition = "2024"
 "#;
     write(&manifest_path, content).await.unwrap();
-    let result: Result<String, Box<dyn std::error::Error>> =
+    let result: Result<String, Box<dyn error::Error>> =
         execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Major).await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), "1.0.0");
@@ -104,7 +104,7 @@ version = "0.1.0"
 edition = "2024"
 "#;
     write(&manifest_path, content).await.unwrap();
-    let result: Result<String, Box<dyn std::error::Error>> =
+    let result: Result<String, Box<dyn error::Error>> =
         execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Alpha).await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), "0.1.0-alpha");
@@ -121,7 +121,7 @@ version = "0.1.0-alpha.2"
 edition = "2024"
 "#;
     write(&manifest_path, content).await.unwrap();
-    let result: Result<String, Box<dyn std::error::Error>> =
+    let result: Result<String, Box<dyn error::Error>> =
         execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Beta).await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), "0.1.0-beta.1");
@@ -138,7 +138,7 @@ version = "0.1.0-beta.1"
 edition = "2024"
 "#;
     write(&manifest_path, content).await.unwrap();
-    let result: Result<String, Box<dyn std::error::Error>> =
+    let result: Result<String, Box<dyn error::Error>> =
         execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Rc).await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), "0.1.0-rc.1");
@@ -155,7 +155,7 @@ version = "0.1.0-alpha"
 edition = "2024"
 "#;
     write(&manifest_path, content).await.unwrap();
-    let result: Result<String, Box<dyn std::error::Error>> =
+    let result: Result<String, Box<dyn error::Error>> =
         execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Release).await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), "0.1.0");
@@ -171,7 +171,7 @@ name = "test-package"
 edition = "2024"
 "#;
     write(&manifest_path, content).await.unwrap();
-    let result: Result<String, Box<dyn std::error::Error>> =
+    let result: Result<String, Box<dyn error::Error>> =
         execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Patch).await;
     assert!(result.is_err());
 }
@@ -214,7 +214,7 @@ serde = { version = "1.0.229", features = ["derive"] }
 opt-level = 3
 "#;
     write(&manifest_path, content).await.unwrap();
-    let result: Result<String, Box<dyn std::error::Error>> =
+    let result: Result<String, Box<dyn error::Error>> =
         execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Patch).await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), "21.5.3");
@@ -259,7 +259,7 @@ edition = "2024"
     write(tmp_dir.join("beta/Cargo.toml"), beta_content)
         .await
         .unwrap();
-    let result: Result<String, Box<dyn std::error::Error>> =
+    let result: Result<String, Box<dyn error::Error>> =
         execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Minor).await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), "2 workspace members");
@@ -327,7 +327,7 @@ members = ["crates/*"]
             .await
             .unwrap();
     }
-    let result: Result<String, Box<dyn std::error::Error>> = execute_bump(
+    let result: Result<String, Box<dyn error::Error>> = execute_bump(
         tmp_dir.join("Cargo.toml").to_str().unwrap(),
         &BumpVersionType::Patch,
     )
@@ -365,7 +365,7 @@ edition.workspace = true
     write(tmp_dir.join("core/Cargo.toml"), core_content)
         .await
         .unwrap();
-    let result: Result<String, Box<dyn std::error::Error>> =
+    let result: Result<String, Box<dyn error::Error>> =
         execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Patch).await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), "21.7.1");
@@ -399,7 +399,7 @@ edition = "2024"
     write(tmp_dir.join("b/Cargo.toml"), b_content)
         .await
         .unwrap();
-    let result: Result<String, Box<dyn std::error::Error>> = execute_bump(
+    let result: Result<String, Box<dyn error::Error>> = execute_bump(
         tmp_dir.join("Cargo.toml").to_str().unwrap(),
         &BumpVersionType::Patch,
     )
@@ -420,7 +420,7 @@ async fn test_execute_bump_empty_workspace_without_package_errors() {
     write(&manifest_path, "[workspace]\nmembers = []\n")
         .await
         .unwrap();
-    let result: Result<String, Box<dyn std::error::Error>> =
+    let result: Result<String, Box<dyn error::Error>> =
         execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Patch).await;
     assert!(result.is_err());
 }
@@ -441,7 +441,7 @@ async fn test_execute_bump_virtual_workspace_prerelease_members() {
     )
     .await
     .unwrap();
-    let result: Result<String, Box<dyn std::error::Error>> = execute_bump(
+    let result: Result<String, Box<dyn error::Error>> = execute_bump(
         tmp_dir.join("Cargo.toml").to_str().unwrap(),
         &BumpVersionType::Alpha,
     )

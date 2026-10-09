@@ -179,7 +179,7 @@ impl Server {
         let addr: String = format!("{host}:{port}");
         UdpSocket::bind(&addr)
             .await
-            .map_err(|error: std::io::Error| ServerError::UdpBind(error.to_string()))
+            .map_err(|error: io::Error| ServerError::UdpBind(error.to_string()))
     }
 
     /// Spawns a new asynchronous task to handle a single client request.

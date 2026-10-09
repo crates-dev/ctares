@@ -350,12 +350,12 @@ impl Context {
     ///
     /// # Returns
     ///
-    /// - `std::net::IpAddr` - The socket host.
+    /// - `IpAddr` - The socket host.
     ///
     /// # Panics
     ///
     /// Panics if the socket host is not available.
-    pub async fn get_socket_host(&self) -> std::net::IpAddr {
+    pub async fn get_socket_host(&self) -> IpAddr {
         self.try_get_socket_host().await.unwrap()
     }
 

@@ -30,4 +30,5 @@ use std::{
 #[cfg(windows)]
 use std::{ffi::c_void, os::windows::process::CommandExt};
 
+use std::{env::current_exe, env::var, error};
 use {lombok_macros::*, tokio::runtime::Runtime};

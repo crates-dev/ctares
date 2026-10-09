@@ -9,6 +9,7 @@ use crate_cli::*;
 
 use std::{
     env::temp_dir,
+    error,
     io::{self, Error},
     path::{Path, PathBuf},
 };

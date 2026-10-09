@@ -39,7 +39,7 @@ impl Display for Visibility {
 
 /// Implementation of FromStr trait for Visibility enum.
 /// This allows parsing string representations back into Visibility variants.
-impl std::str::FromStr for Visibility {
+impl FromStr for Visibility {
     type Err = String;
 
     /// Parses a string into a `Visibility` enum variant.

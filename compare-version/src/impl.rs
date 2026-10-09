@@ -37,7 +37,7 @@ impl Version {
     pub(crate) fn parse(version: &str) -> Result<Self, VersionError> {
         let mut parts: Vec<&str> = version.split('.').collect();
         let (patch_part, pre_release) = if let Some(patch_with_prerelease) = parts.pop() {
-            let mut patch_parts: std::str::SplitN<'_, char> = patch_with_prerelease.splitn(2, '-');
+            let mut patch_parts: SplitN<'_, char> = patch_with_prerelease.splitn(2, '-');
             (
                 patch_parts.next().unwrap_or(""),
                 patch_parts.next().map(|part: &str| part.to_string()),
@@ -49,15 +49,15 @@ impl Version {
             .first()
             .unwrap_or(&"0")
             .parse::<u32>()
-            .map_err(|_: std::num::ParseIntError| VersionError::MajorVersionError)?;
+            .map_err(|_: ParseIntError| VersionError::MajorVersionError)?;
         let minor: u32 = parts
             .get(1)
             .unwrap_or(&"0")
             .parse::<u32>()
-            .map_err(|_: std::num::ParseIntError| VersionError::MinorVersionError)?;
+            .map_err(|_: ParseIntError| VersionError::MinorVersionError)?;
         let patch: u32 = patch_part
             .parse::<u32>()
-            .map_err(|_: std::num::ParseIntError| VersionError::PatchVersionError)?;
+            .map_err(|_: ParseIntError| VersionError::PatchVersionError)?;
         Ok(Self {
             major,
             minor,
@@ -82,9 +82,9 @@ impl CompareVersion {
         let v1: Version = Version::parse(version1)?;
         let v2: Version = Version::parse(version2)?;
         match v1.cmp(&v2) {
-            std::cmp::Ordering::Greater => Ok(VersionLevel::Greater),
-            std::cmp::Ordering::Less => Ok(VersionLevel::Less),
-            std::cmp::Ordering::Equal => Ok(VersionLevel::Equal),
+            Ordering::Greater => Ok(VersionLevel::Greater),
+            Ordering::Less => Ok(VersionLevel::Less),
+            Ordering::Equal => Ok(VersionLevel::Equal),
         }
     }
 

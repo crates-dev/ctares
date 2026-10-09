@@ -422,7 +422,7 @@ pub fn parse_rate_limit_wait_secs(stderr: &str) -> Option<u64> {
     let start: usize = stderr.find(STDERR_TRY_AGAIN_AFTER)? + STDERR_TRY_AGAIN_AFTER.len();
     let end: usize = start + stderr[start..].find(STDERR_TRY_AGAIN_AFTER_END)?;
     let timestamp: &str = stderr[start..end].trim();
-    let mut tokens: std::str::SplitWhitespace<'_> = timestamp.split_whitespace();
+    let mut tokens: SplitWhitespace<'_> = timestamp.split_whitespace();
     let _: &str = tokens.next()?;
     let day: i64 = tokens
         .next()?
@@ -435,16 +435,13 @@ pub fn parse_rate_limit_wait_secs(stderr: &str) -> Option<u64> {
         .position(|name: &&str| *name == month_token)? as i64
         + 1;
     let year: i64 = tokens.next()?.parse().ok()?;
-    let mut clock_fields: std::str::Split<'_, char> = tokens.next()?.split(CLOCK_FIELD_SEPARATOR);
+    let mut clock_fields: Split<'_, char> = tokens.next()?.split(CLOCK_FIELD_SEPARATOR);
     let hour: i64 = clock_fields.next()?.parse().ok()?;
     let minute: i64 = clock_fields.next()?.parse().ok()?;
     let second: i64 = clock_fields.next()?.parse().ok()?;
     let day_start: i64 = civil_to_days(year, month, day) * SECONDS_PER_DAY;
     let deadline: i64 = day_start + hour * SECONDS_PER_HOUR + minute * SECONDS_PER_MINUTE + second;
-    let now: i64 = std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .ok()?
-        .as_secs() as i64;
+    let now: i64 = SystemTime::now().duration_since(UNIX_EPOCH).ok()?.as_secs() as i64;
     let remaining: i64 = deadline - now;
     // A parsed deadline is honoured as given, in either direction: a window
     // the registry says is shorter than the skew allowance is already open
@@ -538,9 +535,9 @@ async fn publish_package_with_retry(package: &Package, max_retries: u32) -> Publ
 ///
 /// # Returns
 ///
-/// - `Result<(), Box<dyn std::error::Error>>` - Success or error
-async fn publish_single_package(package: &Package) -> Result<(), Box<dyn std::error::Error>> {
-    let output: std::process::Output = Command::new(CARGO)
+/// - `Result<(), Box<dyn Error>>` - Success or error
+async fn publish_single_package(package: &Package) -> Result<(), Box<dyn Error>> {
+    let output: Output = Command::new(CARGO)
         .arg(CARGO_PUBLISH)
         .arg(CLI_FLAG_ALLOW_DIRTY)
         .arg(CLI_FLAG_NO_VERIFY)

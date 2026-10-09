@@ -8,8 +8,8 @@ use super::*;
 ///
 /// # Returns
 ///
-/// - `Result<T, Box<dyn std::error::Error>>` - The converted file content or an error.
-pub async fn async_read_from_file<T>(file_path: &str) -> Result<T, Box<dyn std::error::Error>>
+/// - `Result<T, Box<dyn error::Error>>` - The converted file content or an error.
+pub async fn async_read_from_file<T>(file_path: &str) -> Result<T, Box<dyn error::Error>>
 where
     T: From<Vec<u8>>,
 {
@@ -32,6 +32,6 @@ where
 pub async fn async_get_file_size(file_path: &str) -> Option<u64> {
     tokio::fs::metadata(file_path)
         .await
-        .map(|metadata: std::fs::Metadata| Some(metadata.len()))
+        .map(|metadata: Metadata| Some(metadata.len()))
         .unwrap_or(None)
 }
