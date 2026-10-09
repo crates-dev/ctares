@@ -1,0 +1,13 @@
+pub_const_exempt = [
+    "color-log/src/const.rs",
+    "tcp-request/src/common/const.rs",
+    "stripe-pay-core/src/protocol/const.rs",
+    "stripe-pay-server/src/signature/const.rs",
+    "udp-request/src/common/const.rs",
+    "tcplane/src/common/const.rs",
+    "udp/src/config/const.rs",
+    "tokio-broadcast/src/broadcast/const.rs",
+    "stripe-pay-client/src/host/const.rs",
+    "chunkify/src/const.rs",
+    "crate-cli/src/manifest/const.rs",
+]
