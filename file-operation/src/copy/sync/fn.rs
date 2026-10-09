@@ -11,7 +11,7 @@ use super::*;
 ///
 /// - `Result<(), Error>` - Ok if the file was copied successfully, Err with error details otherwise.
 pub fn copy_file(src: &str, dest: &str) -> Result<(), Error> {
-    std::fs::copy(src, dest)?;
+    copy(src, dest)?;
     Ok(())
 }
 
@@ -38,8 +38,8 @@ pub fn copy_dir_files(src_dir: &str, dest_dir: &str) -> Result<(), Error> {
             delete_dir(dest_path_str)?;
         }
     }
-    std::fs::create_dir_all(dest_path)?;
-    for entry in std::fs::read_dir(src_path)? {
+    create_dir_all(dest_path)?;
+    for entry in read_dir(src_path)? {
         let entry: DirEntry = entry?;
         let file_name: OsString = entry.file_name();
         let src_file_path: PathBuf = entry.path();
@@ -51,7 +51,7 @@ pub fn copy_dir_files(src_dir: &str, dest_dir: &str) -> Result<(), Error> {
                 dest_file_path.to_str().unwrap(),
             )?;
         } else if src_file_path.is_file() {
-            std::fs::copy(&src_file_path, &dest_file_path)?;
+            copy(&src_file_path, &dest_file_path)?;
         }
     }
     Ok(())

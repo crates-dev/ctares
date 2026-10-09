@@ -7,7 +7,7 @@ pub type OptionArcRwLockUdpSocket = Option<ArcRwLockUdpSocket>;
 pub type OptionSocketAddr = Option<SocketAddr>;
 
 /// Optional socket host IP address.
-pub type OptionSocketHost = Option<std::net::IpAddr>;
+pub type OptionSocketHost = Option<IpAddr>;
 
 /// Optional socket port number.
 pub type OptionSocketPort = Option<u16>;

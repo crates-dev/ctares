@@ -54,7 +54,7 @@ impl<'a> Task<'a> {
             output_str.push_str(&Text::new_from(text).get_display_str_cow());
         }
         print!("{output_str}");
-        std::io::stdout().flush().unwrap();
+        stdout().flush().unwrap();
         self
     }
 }

@@ -34,7 +34,7 @@ fn sort_derive_in_line(line: &str) -> Option<String> {
 /// - `Result<bool, io::Error>` - True if file was modified, false otherwise
 async fn format_derive_in_file(file_path: &Path) -> Result<bool, io::Error> {
     let content: String = read_to_string(file_path).await?;
-    let lines: std::str::Lines<'_> = content.lines();
+    let lines: Lines<'_> = content.lines();
     let mut modified: bool = false;
     let mut new_content: String = String::new();
     for line in lines {
@@ -169,7 +169,7 @@ fn is_cargo_clippy_installed() -> bool {
 /// - `Result<(), io::Error>` - Success or error
 async fn install_cargo_clippy() -> Result<(), io::Error> {
     log::warn!("cargo-clippy not found, installing...");
-    let output: std::process::Output = Command::new(RUSTUP)
+    let output: Output = Command::new(RUSTUP)
         .arg(RUSTUP_COMPONENT)
         .arg("add")
         .arg(CLIPPY)
@@ -230,7 +230,7 @@ async fn execute_clippy_fix(args: &Args) -> Result<(), io::Error> {
         cmd.arg(CLI_FLAG_MANIFEST_PATH).arg(manifest_path);
     }
     cmd.stdout(Stdio::piped()).stderr(Stdio::piped());
-    let output: std::process::Output = cmd.output().await?;
+    let output: Output = cmd.output().await?;
     let stdout: String = String::from_utf8_lossy(&output.stdout).trim().to_string();
     let stderr: String = String::from_utf8_lossy(&output.stderr).trim().to_string();
     if !stdout.is_empty() {
@@ -287,7 +287,7 @@ pub async fn execute_fmt(args: &Args) -> Result<(), io::Error> {
         cmd.arg(CLI_FLAG_MANIFEST_PATH).arg(manifest_path);
     }
     cmd.stdout(Stdio::piped()).stderr(Stdio::piped());
-    let output: std::process::Output = cmd.output().await?;
+    let output: Output = cmd.output().await?;
     let stdout: String = String::from_utf8_lossy(&output.stdout).trim().to_string();
     let stderr: String = String::from_utf8_lossy(&output.stderr).trim().to_string();
     if !stdout.is_empty() {

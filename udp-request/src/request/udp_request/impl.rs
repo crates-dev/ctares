@@ -35,7 +35,7 @@ impl UdpRequest {
     ) -> Result<BoxResponseTrait, RequestError> {
         socket
             .send(data)
-            .map_err(|err: std::io::Error| RequestError::SendResponseError(err.to_string()))?;
+            .map_err(|err: io::Error| RequestError::SendResponseError(err.to_string()))?;
         self.read_response(socket)
     }
 
@@ -89,16 +89,16 @@ impl UdpRequest {
             });
         let timeout: Duration = Duration::from_millis(cfg_timeout);
         let socket: UdpSocket = UdpSocket::bind(UDP_BIND_ADDR)
-            .map_err(|_: std::io::Error| RequestError::UdpSocketCreateError)?;
+            .map_err(|_: io::Error| RequestError::UdpSocketCreateError)?;
         socket
             .connect(host_port)
-            .map_err(|_: std::io::Error| RequestError::UdpSocketConnectError)?;
+            .map_err(|_: io::Error| RequestError::UdpSocketConnectError)?;
         socket
             .set_read_timeout(Some(timeout))
-            .map_err(|_: std::io::Error| RequestError::SetReadTimeoutError)?;
+            .map_err(|_: io::Error| RequestError::SetReadTimeoutError)?;
         socket
             .set_write_timeout(Some(timeout))
-            .map_err(|_: std::io::Error| RequestError::SetWriteTimeoutError)?;
+            .map_err(|_: io::Error| RequestError::SetWriteTimeoutError)?;
         let socket_result: Result<UdpSocket, RequestError> = Ok(socket);
         socket_result
     }

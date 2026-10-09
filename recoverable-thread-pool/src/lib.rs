@@ -14,7 +14,7 @@ use std::{
         Arc, Mutex,
         mpsc::{self, Receiver, SendError, Sender},
     },
-    thread::spawn,
+    thread::{self, spawn},
 };
 
 use {lombok_macros::*, recoverable_spawn::*, tokio::runtime::Builder};

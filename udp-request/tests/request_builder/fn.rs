@@ -48,13 +48,13 @@ fn test_thread_request() {
             let start_time: Instant = Instant::now();
             match request_builder.send("test".as_bytes()) {
                 Ok(response) => {
-                    let duration: std::time::Duration = start_time.elapsed();
+                    let duration: Duration = start_time.elapsed();
                     println!("{duration:?}");
                     let response_text = response.text();
                     println!("ResponseTrait => {response_text}");
                 }
                 Err(e) => {
-                    let duration: std::time::Duration = start_time.elapsed();
+                    let duration: Duration = start_time.elapsed();
                     println!("{duration:?}");
                     println!("Error => {e}");
                 }

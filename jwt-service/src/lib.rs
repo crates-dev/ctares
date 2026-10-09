@@ -16,6 +16,8 @@ use r#const::*;
 
 use std::{
     collections::HashMap,
+    error::Error,
+    fmt::Display,
     time::{SystemTime, UNIX_EPOCH},
 };
 

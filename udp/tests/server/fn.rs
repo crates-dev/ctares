@@ -29,7 +29,7 @@ async fn test_context_creation() {
     let socket: tokio::net::UdpSocket = tokio::net::UdpSocket::bind("127.0.0.1:0").await.unwrap();
     let socket: ArcRwLockUdpSocket = ArcRwLockUdpSocket::from_socket(socket);
     let request: Request = vec![1, 2, 3, 4];
-    let client_addr: std::net::SocketAddr = std::net::SocketAddr::from(([127, 0, 0, 1], 12345));
+    let client_addr: SocketAddr = SocketAddr::from(([127, 0, 0, 1], 12345));
     let ctx: Context = Context::new(&socket, &request, client_addr);
     assert_eq!(ctx.get_request().await, request);
     assert_eq!(ctx.get_client_addr().await, client_addr);
@@ -60,7 +60,7 @@ async fn test_server_run_and_shutdown() {
     let server_control_hook_1: ServerControlHook = server.run().await.unwrap_or_default();
     let server_control_hook_2: ServerControlHook = server_control_hook_1.clone();
     tokio::spawn(async move {
-        tokio::time::sleep(std::time::Duration::from_secs(60)).await;
+        tokio::time::sleep(Duration::from_secs(60)).await;
         server_control_hook_2.shutdown().await;
     });
     server_control_hook_1.wait().await;

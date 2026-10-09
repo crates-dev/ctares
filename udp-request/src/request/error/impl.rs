@@ -1,7 +1,7 @@
 use super::*;
 
 /// Implements the `StdError` trait for `RequestError`.
-impl std::error::Error for RequestError {}
+impl Error for RequestError {}
 
 /// Implements the `Display` trait for `RequestError`.
 impl Display for RequestError {

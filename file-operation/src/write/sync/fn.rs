@@ -11,15 +11,15 @@ use super::*;
 ///
 /// - `Result<(), Error>` - Ok if successful, Err with error details otherwise.
 pub fn write_to_file(file_path: &str, content: &[u8]) -> Result<(), Error> {
-    if let Some(parent_dir) = std::path::Path::new(file_path).parent() {
-        std::fs::create_dir_all(parent_dir)?;
+    if let Some(parent_dir) = Path::new(file_path).parent() {
+        create_dir_all(parent_dir)?;
     }
-    std::fs::OpenOptions::new()
+    OpenOptions::new()
         .write(true)
         .create(true)
         .truncate(true)
         .open(file_path)
-        .and_then(|mut file: std::fs::File| std::io::Write::write_all(&mut file, content))
+        .and_then(|mut file: File| Write::write_all(&mut file, content))
 }
 
 /// Appends content to a file.
@@ -33,12 +33,12 @@ pub fn write_to_file(file_path: &str, content: &[u8]) -> Result<(), Error> {
 ///
 /// - `Result<(), Error>` - Ok if successful, Err with error details otherwise.
 pub fn append_to_file(file_path: &str, content: &[u8]) -> Result<(), Error> {
-    if let Some(parent_dir) = std::path::Path::new(file_path).parent() {
-        std::fs::create_dir_all(parent_dir)?;
+    if let Some(parent_dir) = Path::new(file_path).parent() {
+        create_dir_all(parent_dir)?;
     }
-    std::fs::OpenOptions::new()
+    OpenOptions::new()
         .create(true)
         .append(true)
         .open(file_path)
-        .and_then(|mut file: std::fs::File| std::io::Write::write_all(&mut file, content))
+        .and_then(|mut file: File| Write::write_all(&mut file, content))
 }

@@ -116,7 +116,8 @@ pub(crate) const METADATA_VALUE_MAX_CHARS: usize = 500;
 pub(crate) const METADATA_KEY_LIMIT_MESSAGE: &str = "metadata key must be 1 to 40 characters";
 
 /// Diagnostic for a metadata value outside Stripe's documented limit.
-pub(crate) const METADATA_VALUE_LIMIT_MESSAGE: &str = "metadata value must be at most 500 characters";
+pub(crate) const METADATA_VALUE_LIMIT_MESSAGE: &str =
+    "metadata value must be at most 500 characters";
 
 /// Byte of the hyphen form encoding passes through unescaped.
 pub(crate) const UNRESERVED_DASH: u8 = b'-';

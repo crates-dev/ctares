@@ -15,8 +15,10 @@ use common::*;
 use lombok_macros::*;
 
 use std::{
+    error::Error,
     fmt::Debug,
     fmt::{self, Display},
+    io,
     io::{Read, Write},
     net::TcpStream,
     sync::{Arc, PoisonError, RwLock, RwLockReadGuard, RwLockWriteGuard},

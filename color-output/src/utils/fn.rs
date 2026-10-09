@@ -17,7 +17,7 @@ pub fn __println_text(color: ColorType, bg_color: ColorType, text: &str) {
         .color(color)
         .bg_color(bg_color)
         .build();
-    let lines: std::str::Lines<'_> = text.lines();
+    let lines: Lines<'_> = text.lines();
     for line in lines {
         let mut output_list_builder: ColorOutputListBuilder<'_> = ColorOutputListBuilder::new();
         output_list_builder.add(time_output);

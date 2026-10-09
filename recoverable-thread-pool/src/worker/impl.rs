@@ -14,12 +14,12 @@ impl Worker {
     /// - `Option<Worker>` - The new worker instance.
     pub fn new(id: usize, receiver: Arc<Mutex<Receiver<ThreadPoolJob>>>) -> Option<Worker> {
         spawn(|| {
-            let _: std::thread::Result<()> = recoverable_spawn(move || {
+            let _: thread::Result<()> = recoverable_spawn(move || {
                 loop {
                     if let Ok(receiver_lock) = receiver.lock()
                         && let Ok(job) = receiver_lock.recv()
                     {
-                        let _: std::thread::Result<()> = recoverable_spawn(job);
+                        let _: thread::Result<()> = recoverable_spawn(job);
                     }
                 }
             });

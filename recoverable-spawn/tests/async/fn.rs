@@ -1,7 +1,5 @@
 use super::*;
 
-use std::sync::Arc;
-
 #[tokio::test]
 async fn test_async_recoverable_spawn() {
     let msg: &str = "test";

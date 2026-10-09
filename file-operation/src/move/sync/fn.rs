@@ -11,7 +11,7 @@ use super::*;
 ///
 /// - `Result<(), Error>` - Ok if the file was moved successfully, Err with error details otherwise.
 pub fn move_file(src: &str, dest: &str) -> Result<(), Error> {
-    std::fs::rename(src, dest)?;
+    rename(src, dest)?;
     Ok(())
 }
 
@@ -29,11 +29,11 @@ pub fn move_dir(src_dir: &str, dest_dir: &str) -> Result<(), Error> {
     let src_path: &Path = Path::new(src_dir);
     let dest_path: &Path = Path::new(dest_dir);
     if dest_path.exists() {
-        std::fs::remove_dir_all(dest_path)?;
+        remove_dir_all(dest_path)?;
     }
-    std::fs::create_dir_all(dest_path)?;
-    for entry in std::fs::read_dir(src_path)? {
-        let entry: std::fs::DirEntry = entry?;
+    create_dir_all(dest_path)?;
+    for entry in read_dir(src_path)? {
+        let entry: DirEntry = entry?;
         let file_name: OsString = entry.file_name();
         let src_file_path: PathBuf = entry.path();
         let mut dest_file_path: PathBuf = PathBuf::from(dest_path);
@@ -44,9 +44,9 @@ pub fn move_dir(src_dir: &str, dest_dir: &str) -> Result<(), Error> {
                 dest_file_path.to_str().unwrap(),
             )?;
         } else if src_file_path.is_file() {
-            std::fs::rename(&src_file_path, &dest_file_path)?;
+            rename(&src_file_path, &dest_file_path)?;
         }
     }
-    std::fs::remove_dir(src_path)?;
+    remove_dir(src_path)?;
     Ok(())
 }

@@ -12,4 +12,4 @@ pub use {r#enum::*, r#struct::*};
 
 use r#const::*;
 
-use std::fmt;
+use std::{cmp::Ordering, fmt, num::ParseIntError, str::SplitN};

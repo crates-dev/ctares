@@ -13,3 +13,5 @@ pub use lombok_macros::*;
 pub use sha2::{Digest, Sha256};
 pub use std::fmt::{self, Display, Formatter};
 pub use stripe_pay_core::*;
+
+use std::env::var;

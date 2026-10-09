@@ -190,7 +190,7 @@ fn expand_member_entry(root_dir: &Path, entry: &str) -> Vec<PathBuf> {
     match entry.strip_suffix("/*") {
         Some(prefix) => {
             let mut dirs: Vec<PathBuf> = Vec::new();
-            if let Ok(entries) = std::fs::read_dir(root_dir.join(prefix)) {
+            if let Ok(entries) = fs::read_dir(root_dir.join(prefix)) {
                 for entry in entries.flatten() {
                     let path: PathBuf = entry.path();
                     if path.is_dir() && path.join(CARGO_TOML).exists() {
@@ -270,12 +270,12 @@ fn realign_dep_versions(
 ///
 /// # Returns
 ///
-/// - `Result<(), Box<dyn std::error::Error>>` - Success or error
+/// - `Result<(), Box<dyn Error>>` - Success or error
 async fn realign_member_manifest(
     member_dir: &Path,
     member_manifest_path: &Path,
     bumped: &[(PathBuf, String)],
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<(), Box<dyn Error>> {
     let member_content: String = read_to_string(member_manifest_path).await?;
     let mut member_doc: DocumentMut = member_content.parse().map_err(|e: TomlError| {
         format!("failed to parse {}: {}", member_manifest_path.display(), e)
@@ -344,12 +344,12 @@ async fn realign_member_manifest(
 ///
 /// # Returns
 ///
-/// - `Result<String, Box<dyn std::error::Error>>` - Summary string
+/// - `Result<String, Box<dyn Error>>` - Summary string
 async fn bump_workspace_members(
     root_path: &Path,
     doc: &mut DocumentMut,
     bump_type: &BumpVersionType,
-) -> Result<String, Box<dyn std::error::Error>> {
+) -> Result<String, Box<dyn Error>> {
     let root_dir: &Path = root_path.parent().unwrap_or_else(|| Path::new("."));
     let member_entries: Vec<String> = doc
         .get(TOML_WORKSPACE)
@@ -387,7 +387,7 @@ async fn bump_workspace_members(
         let version_slot: &mut Item = member_doc
             .get_mut(TOML_PACKAGE)
             .and_then(|package: &mut Item| package.get_mut(TOML_VERSION))
-            .ok_or_else(|| -> Box<dyn std::error::Error> {
+            .ok_or_else(|| -> Box<dyn Error> {
                 format!(
                     "package.version not found in {}",
                     member_manifest_path.display()
@@ -397,11 +397,10 @@ async fn bump_workspace_members(
         let Some(old_version) = version_slot.as_str().map(|s: &str| s.to_string()) else {
             continue;
         };
-        let new_version: String = bump_version_str(&old_version, bump_type).ok_or_else(
-            || -> Box<dyn std::error::Error> {
+        let new_version: String =
+            bump_version_str(&old_version, bump_type).ok_or_else(|| -> Box<dyn Error> {
                 format!("failed to parse version: {}", old_version).into()
-            },
-        )?;
+            })?;
         set_item_string_preserving_decor(version_slot, &new_version);
         write(&member_manifest_path, member_doc.to_string()).await?;
         log::info!(
@@ -451,12 +450,12 @@ async fn bump_workspace_members(
 ///
 /// # Returns
 ///
-/// - `Result<String, Box<dyn std::error::Error>>` - The new version string, a
+/// - `Result<String, Box<dyn Error>>` - The new version string, a
 ///   workspace bump summary, or an error
 pub async fn execute_bump(
     manifest_path: &str,
     bump_type: &BumpVersionType,
-) -> Result<String, Box<dyn std::error::Error>> {
+) -> Result<String, Box<dyn Error>> {
     let path: &Path = Path::new(manifest_path);
     let content: String = read_to_string(path).await?;
     let mut doc: DocumentMut = content
@@ -480,24 +479,21 @@ pub async fn execute_bump(
         doc.get_mut(TOML_WORKSPACE)
             .and_then(|workspace: &mut Item| workspace.get_mut(TOML_PACKAGE))
             .and_then(|package: &mut Item| package.get_mut(TOML_VERSION))
-            .ok_or_else(|| -> Box<dyn std::error::Error> {
-                ERROR_WORKSPACE_PACKAGE_VERSION_MISSING.into()
-            })?
+            .ok_or_else(|| -> Box<dyn Error> { ERROR_WORKSPACE_PACKAGE_VERSION_MISSING.into() })?
     } else if has_root_package {
         doc.get_mut(TOML_PACKAGE)
             .and_then(|package: &mut Item| package.get_mut(TOML_VERSION))
-            .ok_or_else(|| -> Box<dyn std::error::Error> { ERROR_PACKAGE_VERSION_MISSING.into() })?
+            .ok_or_else(|| -> Box<dyn Error> { ERROR_PACKAGE_VERSION_MISSING.into() })?
     } else {
         return Err(ERROR_NO_VERSION_SLOT.into());
     };
     let version_str: String = version_slot
         .as_str()
-        .ok_or_else(|| -> Box<dyn std::error::Error> { ERROR_VERSION_NOT_STRING.into() })?
+        .ok_or_else(|| -> Box<dyn Error> { ERROR_VERSION_NOT_STRING.into() })?
         .to_string();
-    let version: Version =
-        parse_version(&version_str).ok_or_else(|| -> Box<dyn std::error::Error> {
-            format!("failed to parse version: {}", version_str).into()
-        })?;
+    let version: Version = parse_version(&version_str).ok_or_else(|| -> Box<dyn Error> {
+        format!("failed to parse version: {}", version_str).into()
+    })?;
     let bumped: Version = bump_version(&version, bump_type);
     let version_string: String = version_to_string(&bumped);
     set_item_string_preserving_decor(version_slot, &version_string);

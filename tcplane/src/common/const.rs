@@ -11,7 +11,7 @@ pub const DEFAULT_BUFFER_SIZE: usize = 4096;
 
 /// Default socket address.
 pub const DEFAULT_SOCKET_ADDR: SocketAddr =
-    SocketAddr::new(std::net::IpAddr::V4(std::net::Ipv4Addr::new(0, 0, 0, 0)), 0);
+    SocketAddr::new(IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0)), 0);
 
 /// Request separator bytes for detecting end of request.
 pub const SPLIT_REQUEST_BYTES: &[u8] = b"\r\n\r\n";
