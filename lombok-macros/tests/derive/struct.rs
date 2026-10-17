@@ -1,4 +1,5 @@
-#[derive(Clone, lombok_macros::Data, Debug, lombok_macros::New)]
+use super::*;
+#[derive(Clone, Data, Debug, New)]
 pub struct Skipped {
     pub name: String,
     #[new(skip)]
@@ -6,7 +7,7 @@ pub struct Skipped {
     pub schema: u8,
 }
 
-#[derive(Clone, lombok_macros::Data, Debug, lombok_macros::New)]
+#[derive(Clone, Data, Debug, New)]
 pub struct NoSkip {
     pub name: String,
     #[get(type(copy))]
