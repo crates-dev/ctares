@@ -1988,7 +1988,7 @@ pub(crate) fn inner_new_constructor(input: &DeriveInput, visibility: Visibility)
                     .filter_map(|field: &Field| {
                         let original_name: &Ident = field.ident.as_ref()?;
                         if !should_skip_field_for_new(field) {
-                            Some(quote! { #original_name: #original_name })
+                            Some(quote! { #original_name })
                         } else {
                             Some(quote! { #original_name: Default::default() })
                         }
