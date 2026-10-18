@@ -4,50 +4,55 @@ use super::*;
 #[derive(Clone, Data, Debug, Default, Deserialize, Serialize)]
 pub struct JwtConfig {
     /// The secret key used for signing JWT tokens.
-    pub(super) secret: String,
+    pub secret: String,
     /// Token expiration time in seconds.
-    pub(super) expiration_seconds: u64,
+    #[get(type(copy))]
+    pub expiration_seconds: u64,
     /// The issuer of the JWT token.
-    pub(super) issuer: String,
+    pub issuer: String,
 }
 
 /// Standard JWT claims struct with common fields.
 #[derive(Clone, Data, Debug, Default, Deserialize, Serialize)]
 pub struct JwtExtraJwtClaims {
     /// The subject (user identifier) of the token.
-    pub(super) sub: String,
+    pub sub: String,
     /// The issuer of the token.
-    pub(super) iss: String,
+    pub iss: String,
     /// Expiration time as a Unix timestamp.
-    pub(super) exp: usize,
+    #[get(type(copy))]
+    pub exp: usize,
     /// Issued at time as a Unix timestamp.
-    pub(super) iat: usize,
+    #[get(type(copy))]
+    pub iat: usize,
     /// Not before time as a Unix timestamp.
-    pub(super) nbf: usize,
+    #[get(type(copy))]
+    pub nbf: usize,
 }
 
 /// JWT token response struct containing the token and metadata.
 #[derive(Clone, Data, Debug, Default, Deserialize, Serialize)]
 pub struct JwtToken {
     /// The encoded JWT token string.
-    pub(super) token: String,
+    pub token: String,
     /// The token type (typically the `Bearer` scheme).
-    pub(super) token_type: String,
+    pub token_type: String,
     /// Token expiration time in seconds.
-    pub(super) expires_in: u64,
+    #[get(type(copy))]
+    pub expires_in: u64,
 }
 
 /// JWT service struct providing token generation and validation functionality.
 #[derive(Clone, Data, Debug)]
 pub struct JwtService {
     /// The JWT configuration.
-    pub(super) config: JwtConfig,
+    pub config: JwtConfig,
     /// The encoding key for signing tokens.
-    pub(super) encoding_key: EncodingKey,
+    pub encoding_key: EncodingKey,
     /// The decoding key for verifying tokens.
-    pub(super) decoding_key: DecodingKey,
+    pub decoding_key: DecodingKey,
     /// The validation settings for token verification.
-    pub(super) validation: Validation,
+    pub validation: Validation,
 }
 
 /// Generic JWT claims struct that supports custom payload data.
@@ -55,28 +60,32 @@ pub struct JwtService {
 pub struct CustomExtraJwtClaims<T: Default> {
     /// The custom payload data.
     #[serde(flatten)]
-    pub(super) custom: T,
+    pub custom: T,
     /// The subject (user identifier) of the token.
-    pub(super) sub: String,
+    pub sub: String,
     /// The issuer of the token.
-    pub(super) iss: String,
+    pub iss: String,
     /// Expiration time as a Unix timestamp.
-    pub(super) exp: usize,
+    #[get(type(copy))]
+    pub exp: usize,
     /// Issued at time as a Unix timestamp.
-    pub(super) iat: usize,
+    #[get(type(copy))]
+    pub iat: usize,
 }
 
 /// Extended JWT claims struct with support for custom extra fields.
 #[derive(Clone, Data, Debug, Default, Deserialize, Serialize)]
 pub struct ExtraJwtClaims {
     /// The subject (user identifier) of the token.
-    pub(super) sub: String,
+    pub sub: String,
     /// The issuer of the token.
-    pub(super) iss: String,
+    pub iss: String,
     /// Expiration time as a Unix timestamp.
-    pub(super) exp: usize,
+    #[get(type(copy))]
+    pub exp: usize,
     /// Issued at time as a Unix timestamp.
-    pub(super) iat: usize,
+    #[get(type(copy))]
+    pub iat: usize,
     /// Additional custom claims.
     #[serde(flatten)]
     pub(super) extra: HashMap<String, Value>,

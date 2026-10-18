@@ -15,7 +15,7 @@ pub struct ThreadPool {
     /// # Returns
     ///
     /// - `Vec<Worker>` - The collection of worker threads.
-    pub(crate) workers: Vec<Worker>,
+    pub workers: Vec<Worker>,
     /// The sender channel for submitting jobs to workers.
     ///
     /// # Returns

@@ -13,19 +13,19 @@ pub struct ServerData {
     /// Stores the server's configuration settings, such as address, port, and buffer size.
     #[get_mut(pub(crate))]
     #[set(pub(crate))]
-    pub(crate) server_config: ServerConfigData,
+    pub server_config: ServerConfigData,
     /// A collection of request hooks that are invoked for each incoming connection.
     #[get_mut(pub(crate))]
     #[set(pub(crate))]
-    pub(crate) hook: ServerHookList,
+    pub hook: ServerHookList,
     /// A collection of task panic handlers that are invoked when a panic occurs during connection processing.
     #[get_mut(pub(crate))]
     #[set(pub(crate))]
-    pub(crate) task_panic: ServerHookList,
+    pub task_panic: ServerHookList,
     /// The error handlers for server operations.
     #[get_mut(pub(crate))]
     #[set(pub(crate))]
-    pub(crate) read_error: ServerHookList,
+    pub read_error: ServerHookList,
 }
 
 /// The primary server structure that provides a thread-safe interface to the server's state.

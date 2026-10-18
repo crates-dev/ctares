@@ -44,7 +44,7 @@ impl<'a> Text<'a> {
     /// - `Cow<'a, str>` - An owned copy of the formatted string.
     pub fn get_display_str_cow(&self) -> Cow<'a, str> {
         let text: &str = self.get_text();
-        let bold: bool = *self.get_bold();
+        let bold: bool = self.get_bold();
         let adjusted_color: ColorType =
             if matches!(*self.get_color(), ColorType::Use(Color::Default)) {
                 ColorContrast::ensure_sufficient_contrast(self.get_color(), self.get_bg_color())
@@ -58,7 +58,7 @@ impl<'a> Text<'a> {
         } else {
             format!("{CSI}{bg_color}{SEMICOLON}{color}{SGR}{text}{SGR_RESET}")
         };
-        if *self.get_endl() {
+        if self.get_endl() {
             colored_text.push(LINE_FEED);
         }
         Cow::Owned(colored_text)

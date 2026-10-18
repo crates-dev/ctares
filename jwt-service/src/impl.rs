@@ -1,5 +1,6 @@
 use super::*;
 
+/// Inherent implementation of [`JwtConfig`].
 impl JwtConfig {
     /// Creates a new JwtConfig instance.
     ///
@@ -24,6 +25,7 @@ impl JwtConfig {
     }
 }
 
+/// Inherent implementation of [`JwtExtraJwtClaims`].
 impl JwtExtraJwtClaims {
     /// Creates a new JwtExtraJwtClaims instance.
     ///
@@ -52,6 +54,7 @@ impl JwtExtraJwtClaims {
     }
 }
 
+/// Inherent implementation of [`JwtService`].
 impl JwtService {
     /// Creates a new JwtService instance.
     ///
@@ -80,6 +83,7 @@ impl JwtService {
     }
 }
 
+/// Inherent implementation of [`ExtraJwtClaims`].
 impl ExtraJwtClaims {
     /// Creates a new ExtraJwtClaims instance.
     ///
@@ -238,7 +242,7 @@ impl JwtService {
             .duration_since(UNIX_EPOCH)
             .unwrap_or_default()
             .as_secs() as usize;
-        let exp: usize = now + *self.get_config().get_expiration_seconds() as usize;
+        let exp: usize = now + self.get_config().get_expiration_seconds() as usize;
         let claims: JwtExtraJwtClaims = JwtExtraJwtClaims::new(
             subject.as_ref().to_string(),
             self.get_config().get_issuer().clone(),
@@ -256,7 +260,7 @@ impl JwtService {
         jwt_token
             .set_token(token)
             .set_token_type(BEARER.to_string())
-            .set_expires_in(*self.get_config().get_expiration_seconds());
+            .set_expires_in(self.get_config().get_expiration_seconds());
         Ok(jwt_token)
     }
 
@@ -323,7 +327,7 @@ impl JwtService {
                     .duration_since(UNIX_EPOCH)
                     .unwrap_or_default()
                     .as_secs() as usize;
-                Ok(*token_data.claims.get_exp() < now)
+                Ok(token_data.claims.get_exp() < now)
             }
             Err(error) => Err(error.to_string()),
         }
@@ -360,7 +364,7 @@ impl JwtService {
             .set_custom(claims)
             .set_sub(subject.as_ref().to_string())
             .set_iss(self.get_config().get_issuer().clone())
-            .set_exp(now + *self.get_config().get_expiration_seconds() as usize)
+            .set_exp(now + self.get_config().get_expiration_seconds() as usize)
             .set_iat(now);
         let token: String = encode(
             &Header::new(Algorithm::HS256),
@@ -371,7 +375,7 @@ impl JwtService {
         let mut jwt_token: JwtToken = JwtToken::default();
         jwt_token.set_token(token);
         jwt_token.set_token_type(BEARER.to_string());
-        jwt_token.set_expires_in(*self.get_config().get_expiration_seconds());
+        jwt_token.set_expires_in(self.get_config().get_expiration_seconds());
         Ok(jwt_token)
     }
 
@@ -425,7 +429,7 @@ impl JwtService {
         let mut claims: ExtraJwtClaims = ExtraJwtClaims::new(
             subject.as_ref().to_string(),
             self.get_config().get_issuer().clone(),
-            now + *self.get_config().get_expiration_seconds() as usize,
+            now + self.get_config().get_expiration_seconds() as usize,
         );
         claims.set_extra(extra);
         let token: String = encode(
@@ -437,7 +441,7 @@ impl JwtService {
         let mut jwt_token: JwtToken = JwtToken::default();
         jwt_token.set_token(token);
         jwt_token.set_token_type(BEARER.to_string());
-        jwt_token.set_expires_in(*self.get_config().get_expiration_seconds());
+        jwt_token.set_expires_in(self.get_config().get_expiration_seconds());
         Ok(jwt_token)
     }
 

@@ -8,7 +8,7 @@ use super::*;
 #[derive(Clone, Debug, Eq, Getter, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Charge {
     /// Stripe's identifier for this charge.
-    pub(super) id: String,
+    pub id: String,
     /// The amount captured, in minor units.
     #[get(skip)]
     pub(super) amount: i64,
@@ -17,14 +17,14 @@ pub struct Charge {
     pub(super) currency: String,
     /// Whether the charge moved money.
     #[get(type(copy))]
-    pub(super) status: ChargeStatus,
+    pub status: ChargeStatus,
     /// How the customer paid.
     #[get(type(copy))]
-    pub(super) payment_method_kind: PaymentMethodKind,
+    pub payment_method_kind: PaymentMethodKind,
     /// Whether Stripe considers the charge under dispute.
     #[get(type(copy))]
-    pub(super) disputed: bool,
+    pub disputed: bool,
     /// The PaymentIntent that created this charge.
     #[get(type(clone))]
-    pub(super) payment_intent: Option<String>,
+    pub payment_intent: Option<String>,
 }

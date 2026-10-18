@@ -12,7 +12,9 @@ pub struct Text<'a> {
     /// The background color of the text.
     pub bg_color: ColorType,
     /// Whether the text should be bold.
+    #[get(type(copy))]
     pub bold: bool,
     /// Whether to add newline after the text
+    #[get(type(copy))]
     pub endl: bool,
 }

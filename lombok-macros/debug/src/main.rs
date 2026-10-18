@@ -1,6 +1,6 @@
 mod r#const;
 
-pub use r#const::*;
+pub(crate) use r#const::*;
 
 use lombok_macros::*;
 use std::{f64::consts::PI, fmt::Debug};
@@ -113,6 +113,7 @@ struct TuplePoint(f64, #[new(skip)] f64, f64);
 #[derive(Clone, Data, Debug)]
 struct NestedStruct {
     name: String,
+    #[get(type(copy))]
     _value: i32,
 }
 
@@ -172,6 +173,7 @@ struct CopyTest {
 
 #[derive(Data)]
 struct UnitGetSet {
+    #[get(type(copy))]
     flag: bool,
 }
 
@@ -365,8 +367,8 @@ fn main() {
     assert!(!edge_case.get_bool_false());
     assert!(edge_case.try_get_option_none().is_none());
     let unit_get: UnitGetSet = UnitGetSet { flag: true };
-    let flag_ref: &bool = unit_get.get_flag();
-    assert!(*flag_ref);
+    let flag_copy: bool = unit_get.get_flag();
+    assert!(flag_copy);
     let constructed: AllSkipped = AllSkipped::new();
     assert_eq!(constructed.skipped1, "");
     assert_eq!(constructed.skipped2, 0);

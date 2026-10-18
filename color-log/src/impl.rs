@@ -31,6 +31,7 @@ impl Default for FileLogger {
     }
 }
 
+/// Inherent implementation of [`FileLogger`].
 impl FileLogger {
     /// Creates new FileLogger configuration with specified parameters.
     ///
@@ -62,7 +63,7 @@ impl FileLogger {
     /// - `bool` - True if logging is enabled.
     #[inline(always)]
     pub fn is_enable(&self) -> bool {
-        *self.get_limit_file_size() != DISABLE_LOG_FILE_SIZE
+        self.get_limit_file_size() != DISABLE_LOG_FILE_SIZE
     }
 
     /// Checks if logging is disabled.
@@ -95,7 +96,7 @@ impl FileLogger {
             return self;
         }
         let out: String = func(data);
-        let path: String = get_log_path(dir, self.get_path(), self.get_limit_file_size());
+        let path: String = get_log_path(dir, self.get_path(), &self.get_limit_file_size());
         let _: Result<(), Error> = append_to_file(&path, out.as_bytes());
         self
     }
@@ -120,7 +121,7 @@ impl FileLogger {
             return self;
         }
         let out: String = func(data);
-        let path: String = get_log_path(dir, self.get_path(), self.get_limit_file_size());
+        let path: String = get_log_path(dir, self.get_path(), &self.get_limit_file_size());
         let _: Result<(), Error> = async_append_to_file(&path, out.as_bytes()).await;
         self
     }

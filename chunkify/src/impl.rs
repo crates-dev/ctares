@@ -186,15 +186,15 @@ impl<'a> HandleStrategy<'a> for ChunkStrategy<'a> {
         self.save_chunk(&chunk_path, chunk_data).await?;
         let chunks_status: RefMut<'_, String, RwLock<Vec<bool>>> = UPLOADING_FILES
             .entry(self.get_file_id().to_string())
-            .or_insert_with(|| RwLock::new(vec![false; *self.get_total_chunks()]));
+            .or_insert_with(|| RwLock::new(vec![false; self.get_total_chunks()]));
         let mut chunks_status: RwLockWriteGuard<'_, Vec<bool>> = chunks_status.write().await;
-        if chunks_status.len() != *self.get_total_chunks() {
-            *chunks_status = vec![false; *self.get_total_chunks()];
+        if chunks_status.len() != self.get_total_chunks() {
+            *chunks_status = vec![false; self.get_total_chunks()];
         }
         if chunk_index >= chunks_status.len() {
             return Err(ChunkStrategyError::IndexOutOfBounds(
                 chunk_index,
-                *self.get_total_chunks(),
+                self.get_total_chunks(),
             ));
         }
         chunks_status[chunk_index] = true;
@@ -209,7 +209,7 @@ impl<'a> HandleStrategy<'a> for ChunkStrategy<'a> {
     async fn merge_chunks(&self) -> ChunkStrategyResult {
         let chunks_status: RefMut<'_, String, RwLock<Vec<bool>>> = UPLOADING_FILES
             .entry(self.get_file_id().to_string())
-            .or_insert_with(|| RwLock::new(vec![false; *self.get_total_chunks()]));
+            .or_insert_with(|| RwLock::new(vec![false; self.get_total_chunks()]));
         let mut chunks_status: RwLockWriteGuard<'_, Vec<bool>> = chunks_status.write().await;
         let all_chunks_uploaded: bool = chunks_status.iter().all(|&status: &bool| status);
         if !all_chunks_uploaded {
@@ -228,7 +228,7 @@ impl<'a> HandleStrategy<'a> for ChunkStrategy<'a> {
             .open(&final_path)
             .map_err(|error: Error| ChunkStrategyError::CreateOutputFile(error.to_string()))?;
         let mut writer: BufWriter<File> = BufWriter::new(output_file);
-        for i in *self.get_start_chunk_index()..*self.get_total_chunks() {
+        for i in self.get_start_chunk_index()..self.get_total_chunks() {
             let chunk_path: String = self.get_chunk_path(self.get_file_id(), i);
             let chunk_data: Vec<u8> = async_read_from_file(&chunk_path).await.map_err(
                 |error: Box<dyn error::Error>| {

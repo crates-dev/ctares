@@ -6,7 +6,7 @@ use super::*;
 #[derive(Data)]
 pub struct ChunkStrategy<'a> {
     /// The starting index for chunking operations.
-    #[get(pub(crate))]
+    #[get(pub(crate), type(copy))]
     #[get_mut(pub(crate))]
     #[set(pub(crate))]
     pub(crate) start_chunk_index: usize,
@@ -31,7 +31,7 @@ pub struct ChunkStrategy<'a> {
     #[set(pub(crate))]
     pub(crate) file_name: &'a str,
     /// Total number of chunks to create.
-    #[get(pub(crate))]
+    #[get(pub(crate), type(copy))]
     #[get_mut(pub(crate))]
     #[set(pub(crate))]
     pub(crate) total_chunks: usize,

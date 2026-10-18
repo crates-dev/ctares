@@ -10,13 +10,13 @@ use super::*;
 pub struct CardDetails {
     /// The card network the card belongs to.
     #[get(type(copy))]
-    pub(super) brand: CardBrand,
+    pub brand: CardBrand,
     /// The last four digits of the card number.
-    pub(super) last4: String,
+    pub last4: String,
     /// The expiry month, 1 through 12.
     #[get(type(copy))]
-    pub(super) exp_month: i64,
+    pub exp_month: i64,
     /// The four-digit expiry year.
     #[get(type(copy))]
-    pub(super) exp_year: i64,
+    pub exp_year: i64,
 }

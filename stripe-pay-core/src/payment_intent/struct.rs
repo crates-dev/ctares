@@ -15,7 +15,7 @@ use super::*;
 #[derive(Clone, Debug, Eq, Getter, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct PaymentIntent {
     /// Stripe's identifier for this intent.
-    pub(super) id: String,
+    pub id: String,
     /// The amount Stripe will capture, in minor units.
     #[get(skip)]
     pub(super) amount: i64,
@@ -24,14 +24,14 @@ pub struct PaymentIntent {
     pub(super) currency: String,
     /// Where the intent sits in its lifecycle.
     #[get(type(copy))]
-    pub(super) status: PaymentIntentStatus,
+    pub status: PaymentIntentStatus,
     /// What the customer must still do, if anything.
     #[get(type(copy))]
-    pub(super) next_action: PaymentIntentNextAction,
+    pub next_action: PaymentIntentNextAction,
     /// The charge created when the payment settled, when there is one.
     #[get(type(clone))]
-    pub(super) latest_charge: Option<String>,
+    pub latest_charge: Option<String>,
     /// The customer this intent charges, when one was supplied.
     #[get(type(clone))]
-    pub(super) customer: Option<String>,
+    pub customer: Option<String>,
 }

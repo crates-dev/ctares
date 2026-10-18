@@ -15,8 +15,8 @@ use super::*;
 pub struct Money {
     /// Amount in the currency's smallest denomination.
     #[get(type(copy))]
-    pub(super) amount: i64,
+    pub amount: i64,
     /// The currency the amount is denominated in.
     #[get(type(copy))]
-    pub(super) currency: Currency,
+    pub currency: Currency,
 }
