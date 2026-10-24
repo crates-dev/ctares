@@ -1,0 +1,15 @@
+[package]
+name = "signal-watcher"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = """A library that waits for the signal that asks a process to stop. It turns the interrupt and the terminate signal of the operating system into a call of a handler, so a server can shut down in an orderly way."""
+keywords = ["signal", "shutdown", "terminate", "watch"]
+repository.workspace = true
+categories = ["network-programming", "web-programming", "development-tools"]
+exclude.workspace = true
+
+[dependencies]
+tokio = { workspace = true }

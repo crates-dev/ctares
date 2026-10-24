@@ -48,6 +48,10 @@ members = [
     "stripe-pay-core",
     "stripe-pay-server",
     "stripe-pay-client",
+    "encoding-negotiator",
+    "cors-policy",
+    "signal-watcher",
+    "static-file-resolver",
 ]
 
 [workspace.dependencies]

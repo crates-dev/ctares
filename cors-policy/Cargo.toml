@@ -1,0 +1,15 @@
+[package]
+name = "cors-policy"
+version.workspace = true
+readme.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = """A library that decides the cross origin policy of an HTTP answer. It tells whether an origin is allowed and builds the cross origin headers of the answer."""
+keywords = ["http", "cors", "origin", "policy"]
+repository.workspace = true
+categories = ["network-programming", "web-programming"]
+exclude.workspace = true
+
+[dependencies]
+lombok-macros = { workspace = true }

@@ -1,6 +1,6 @@
 # ctares
 
-A unified Cargo workspace holding 27 Rust crates under the
+A unified Cargo workspace holding 31 Rust crates under the
 [crates-dev](https://github.com/crates-dev) GitHub organization, each a
 self-contained directory with its own `Cargo.toml`, `src/`, tests, and examples,
 stitched together by the root `Cargo.toml`, with each crate's full commit history
@@ -17,7 +17,9 @@ preserved.
 | `color-log`                 | [![crates.io](https://img.shields.io/crates/v/color-log.svg)](https://crates.io/crates/color-log)                                 | [![docs.rs](https://docs.rs/color-log/badge.svg)](https://docs.rs/color-log)                                 |
 | `color-output`              | [![crates.io](https://img.shields.io/crates/v/color-output.svg)](https://crates.io/crates/color-output)                           | [![docs.rs](https://docs.rs/color-output/badge.svg)](https://docs.rs/color-output)                           |
 | `compare_version`           | [![crates.io](https://img.shields.io/crates/v/compare_version.svg)](https://crates.io/crates/compare_version)                     | [![docs.rs](https://docs.rs/compare_version/badge.svg)](https://docs.rs/compare_version)                     |
+| `cors-policy`               | [![crates.io](https://img.shields.io/crates/v/cors-policy.svg)](https://crates.io/crates/cors-policy)                             | [![docs.rs](https://docs.rs/cors-policy/badge.svg)](https://docs.rs/cors-policy)                             |
 | `crate-cli`                 | [![crates.io](https://img.shields.io/crates/v/crate-cli.svg)](https://crates.io/crates/crate-cli)                                 | [![docs.rs](https://docs.rs/crate-cli/badge.svg)](https://docs.rs/crate-cli)                                 |
+| `encoding-negotiator`       | [![crates.io](https://img.shields.io/crates/v/encoding-negotiator.svg)](https://crates.io/crates/encoding-negotiator)             | [![docs.rs](https://docs.rs/encoding-negotiator/badge.svg)](https://docs.rs/encoding-negotiator)             |
 | `file-operation`            | [![crates.io](https://img.shields.io/crates/v/file-operation.svg)](https://crates.io/crates/file-operation)                       | [![docs.rs](https://docs.rs/file-operation/badge.svg)](https://docs.rs/file-operation)                       |
 | `future-fn`                 | [![crates.io](https://img.shields.io/crates/v/future-fn.svg)](https://crates.io/crates/future-fn)                                 | [![docs.rs](https://docs.rs/future-fn/badge.svg)](https://docs.rs/future-fn)                                 |
 | `hot-restart`               | [![crates.io](https://img.shields.io/crates/v/hot-restart.svg)](https://crates.io/crates/hot-restart)                             | [![docs.rs](https://docs.rs/hot-restart/badge.svg)](https://docs.rs/hot-restart)                             |
@@ -27,6 +29,8 @@ preserved.
 | `recoverable-spawn`         | [![crates.io](https://img.shields.io/crates/v/recoverable-spawn.svg)](https://crates.io/crates/recoverable-spawn)                 | [![docs.rs](https://docs.rs/recoverable-spawn/badge.svg)](https://docs.rs/recoverable-spawn)                 |
 | `recoverable-thread-pool`   | [![crates.io](https://img.shields.io/crates/v/recoverable-thread-pool.svg)](https://crates.io/crates/recoverable-thread-pool)     | [![docs.rs](https://docs.rs/recoverable-thread-pool/badge.svg)](https://docs.rs/recoverable-thread-pool)     |
 | `server-manager`            | [![crates.io](https://img.shields.io/crates/v/server-manager.svg)](https://crates.io/crates/server-manager)                       | [![docs.rs](https://docs.rs/server-manager/badge.svg)](https://docs.rs/server-manager)                       |
+| `signal-watcher`            | [![crates.io](https://img.shields.io/crates/v/signal-watcher.svg)](https://crates.io/crates/signal-watcher)                       | [![docs.rs](https://docs.rs/signal-watcher/badge.svg)](https://docs.rs/signal-watcher)                       |
+| `static-file-resolver`      | [![crates.io](https://img.shields.io/crates/v/static-file-resolver.svg)](https://crates.io/crates/static-file-resolver)           | [![docs.rs](https://docs.rs/static-file-resolver/badge.svg)](https://docs.rs/static-file-resolver)           |
 | `std-macro-extensions`      | [![crates.io](https://img.shields.io/crates/v/std-macro-extensions.svg)](https://crates.io/crates/std-macro-extensions)           | [![docs.rs](https://docs.rs/std-macro-extensions/badge.svg)](https://docs.rs/std-macro-extensions)           |
 | `stripe-pay-client`         | [![crates.io](https://img.shields.io/crates/v/stripe-pay-client.svg)](https://crates.io/crates/stripe-pay-client)                 | [![docs.rs](https://docs.rs/stripe-pay-client/badge.svg)](https://docs.rs/stripe-pay-client)                 |
 | `stripe-pay-core`           | [![crates.io](https://img.shields.io/crates/v/stripe-pay-core.svg)](https://crates.io/crates/stripe-pay-core)                     | [![docs.rs](https://docs.rs/stripe-pay-core/badge.svg)](https://docs.rs/stripe-pay-core)                     |
@@ -49,7 +53,9 @@ preserved.
 | `color-log`                 | https://github.com/crates-dev/ctares/tree/master/color-log                 |
 | `color-output`              | https://github.com/crates-dev/ctares/tree/master/color-output              |
 | `compare_version`           | https://github.com/crates-dev/ctares/tree/master/compare-version           |
+| `cors-policy`               | https://github.com/crates-dev/ctares/tree/master/cors-policy               |
 | `crate-cli`                 | https://github.com/crates-dev/ctares/tree/master/crate-cli                 |
+| `encoding-negotiator`       | https://github.com/crates-dev/ctares/tree/master/encoding-negotiator       |
 | `file-operation`            | https://github.com/crates-dev/ctares/tree/master/file-operation            |
 | `future-fn`                 | https://github.com/crates-dev/ctares/tree/master/future-fn                 |
 | `hot-restart`               | https://github.com/crates-dev/ctares/tree/master/hot-restart               |
@@ -59,6 +65,8 @@ preserved.
 | `recoverable-spawn`         | https://github.com/crates-dev/ctares/tree/master/recoverable-spawn         |
 | `recoverable-thread-pool`   | https://github.com/crates-dev/ctares/tree/master/recoverable-thread-pool   |
 | `server-manager`            | https://github.com/crates-dev/ctares/tree/master/server-manager            |
+| `signal-watcher`            | https://github.com/crates-dev/ctares/tree/master/signal-watcher            |
+| `static-file-resolver`      | https://github.com/crates-dev/ctares/tree/master/static-file-resolver      |
 | `std-macro-extensions`      | https://github.com/crates-dev/ctares/tree/master/std-macro-extensions      |
 | `stripe-pay-client`         | https://github.com/crates-dev/ctares/tree/master/stripe-pay-client         |
 | `stripe-pay-core`           | https://github.com/crates-dev/ctares/tree/master/stripe-pay-core           |
