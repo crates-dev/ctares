@@ -13,9 +13,9 @@ exclude.workspace = true
 
 [dependencies]
 lombok-macros = { workspace = true }
-file-operation = { workspace = true }
 
 tokio = { workspace = true }
 dashmap = { workspace = true }
 once_cell = { workspace = true }
 twox-hash = { workspace = true }
+file-operation = { workspace = true }

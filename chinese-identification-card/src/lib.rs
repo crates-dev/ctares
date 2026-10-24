@@ -1,4 +1,4 @@
-//! china_identification_card
+//! chinese-identification-card
 //!
 //! A Rust library for validating Chinese identification card numbers based on official rules and checksums.
 

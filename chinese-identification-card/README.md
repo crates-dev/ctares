@@ -1,16 +1,16 @@
 <center>
 
-# china_identification_card
+# chinese-identification-card
 
-[![](https://img.shields.io/crates/v/china_identification_card.svg)](https://crates.io/crates/china_identification_card)
-[![](https://img.shields.io/crates/d/china_identification_card.svg)](https://img.shields.io/crates/d/china_identification_card.svg)
-[![](https://docs.rs/china_identification_card/badge.svg)](https://docs.rs/china_identification_card)
+[![](https://img.shields.io/crates/v/chinese-identification-card.svg)](https://crates.io/crates/chinese-identification-card)
+[![](https://img.shields.io/crates/d/chinese-identification-card.svg)](https://img.shields.io/crates/d/chinese-identification-card.svg)
+[![](https://docs.rs/chinese-identification-card/badge.svg)](https://docs.rs/chinese-identification-card)
 [![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
-[![](https://img.shields.io/crates/l/china_identification_card.svg)](./LICENSE)
+[![](https://img.shields.io/crates/l/chinese-identification-card.svg)](./LICENSE)
 
 </center>
 
-[Api Docs](https://docs.rs/china_identification_card/latest/)
+[Api Docs](https://docs.rs/chinese-identification-card/latest/)
 
 > A Rust library for validating Chinese identification card numbers based on official rules and checksums.
 
@@ -25,7 +25,7 @@
 To use this crate, you can run cmd:
 
 ```shell
-cargo add china_identification_card
+cargo add chinese-identification-card
 ```
 
 ## License

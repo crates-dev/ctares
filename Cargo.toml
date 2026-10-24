@@ -22,17 +22,14 @@ exclude = [
 resolver = "2"
 members = [
     "bin-encode-decode",
-    "china_identification_card",
+    "chinese-identification-card",
     "clonelicious",
     "compare-version",
-    "file-operation",
     "future-fn",
-    "hot-restart",
     "instrument-level",
     "lombok-macros",
     "jwt-service",
     "recoverable-spawn",
-    "server-manager",
     "std-macro-extensions",
     "tcp-request",
     "tcplane",
@@ -54,7 +51,6 @@ members = [
 system-time = { path = "system-time", version = "10.3.0" }
 color-output = { path = "color-output", version = "10.3.0" }
 lombok-macros = { path = "lombok-macros", version = "10.3.0" }
-file-operation = { path = "file-operation", version = "10.3.0" }
 stripe-pay-core = { path = "stripe-pay-core", version = "10.3.0" }
 tokio-broadcast = { path = "tokio-broadcast", version = "10.3.0" }
 recoverable-spawn = { path = "recoverable-spawn", version = "10.3.0" }
@@ -84,6 +80,7 @@ rust_decimal = "1.43.0"
 wasm-bindgen = "0.2.129"
 serde-wasm-bindgen = "0.6.5"
 wasm-bindgen-futures = "0.4.79"
+file-operation = { version = "10.3.0" }
 tokio = { version = "1.53.3", features = ["full"] }
 serde = { version = "1.0.229", features = ["derive"] }
 jsonwebtoken = { version = "11.1.0", features = ["rust_crypto"] }
