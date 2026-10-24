@@ -97,7 +97,14 @@ impl FileLogger {
         }
         let out: String = func(data);
         let path: String = get_log_path(dir, self.get_path(), &self.get_limit_file_size());
-        let _: Result<(), Error> = append_to_file(&path, out.as_bytes());
+        if let Some(parent_dir) = Path::new(&path).parent() {
+            let _: Result<(), Error> = create_dir_all(parent_dir);
+        }
+        let _: Result<(), Error> = OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(&path)
+            .and_then(|mut file: File| Write::write_all(&mut file, out.as_bytes()));
         self
     }
 
@@ -122,7 +129,18 @@ impl FileLogger {
         }
         let out: String = func(data);
         let path: String = get_log_path(dir, self.get_path(), &self.get_limit_file_size());
-        let _: Result<(), Error> = async_append_to_file(&path, out.as_bytes()).await;
+        if let Some(parent_dir) = Path::new(&path).parent() {
+            let _: Result<(), Error> = fs::create_dir_all(parent_dir).await;
+        }
+        if let Ok(mut file) = fs::OpenOptions::new()
+            .write(true)
+            .create(true)
+            .append(true)
+            .open(&path)
+            .await
+        {
+            let _: Result<(), Error> = AsyncWriteExt::write_all(&mut file, out.as_bytes()).await;
+        }
         self
     }
 

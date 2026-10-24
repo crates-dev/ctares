@@ -16,7 +16,3 @@ system-time = { workspace = true }
 lombok-macros = { workspace = true }
 
 tokio = { workspace = true }
-file-operation = { workspace = true }
-
-[dev-dependencies]
-tokio = { workspace = true }

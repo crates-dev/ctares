@@ -154,7 +154,27 @@ impl<'a> ChunkStrategy<'a> {
     ///
     /// - `ChunkStrategyResult` - Result of save operation.
     async fn save_chunk(&self, chunk_path: &str, chunk_data: &[u8]) -> ChunkStrategyResult {
-        async_write_to_file(chunk_path, chunk_data)
+        if let Some(parent_dir) = Path::new(chunk_path).parent() {
+            fs::create_dir_all(parent_dir)
+                .await
+                .map_err(|error: Error| {
+                    ChunkStrategyError::WriteChunk(format!(
+                        "Failed to write chunk to {chunk_path}: {error}"
+                    ))
+                })?;
+        }
+        let mut file: fs::File = fs::OpenOptions::new()
+            .write(true)
+            .create(true)
+            .truncate(true)
+            .open(chunk_path)
+            .await
+            .map_err(|error: Error| {
+                ChunkStrategyError::WriteChunk(format!(
+                    "Failed to write chunk to {chunk_path}: {error}"
+                ))
+            })?;
+        AsyncWriteExt::write_all(&mut file, chunk_data)
             .await
             .map_err(|error: Error| {
                 ChunkStrategyError::WriteChunk(format!(
@@ -179,7 +199,7 @@ impl<'a> HandleStrategy<'a> for ChunkStrategy<'a> {
     /// - `ChunkStrategyResult` - Result of save operation.
     async fn save_chunk(&self, chunk_data: &'a [u8], chunk_index: usize) -> ChunkStrategyResult {
         if !Path::new(self.get_upload_dir()).exists() {
-            fs::create_dir_all(self.get_upload_dir())
+            create_dir_all(self.get_upload_dir())
                 .map_err(|error: Error| ChunkStrategyError::CreateDirectory(error.to_string()))?;
         }
         let chunk_path: String = self.get_chunk_path(self.get_file_id(), chunk_index);
@@ -230,17 +250,24 @@ impl<'a> HandleStrategy<'a> for ChunkStrategy<'a> {
         let mut writer: BufWriter<File> = BufWriter::new(output_file);
         for i in self.get_start_chunk_index()..self.get_total_chunks() {
             let chunk_path: String = self.get_chunk_path(self.get_file_id(), i);
-            let chunk_data: Vec<u8> = async_read_from_file(&chunk_path).await.map_err(
-                |error: Box<dyn error::Error>| {
+            let mut chunk_file: fs::File =
+                fs::File::open(&chunk_path).await.map_err(|error: Error| {
                     ChunkStrategyError::ReadChunk(format!(
                         "Failed to read chunk from {chunk_path}: {error}"
                     ))
-                },
-            )?;
+                })?;
+            let mut chunk_data: Vec<u8> = Vec::new();
+            AsyncReadExt::read_to_end(&mut chunk_file, &mut chunk_data)
+                .await
+                .map_err(|error: Error| {
+                    ChunkStrategyError::ReadChunk(format!(
+                        "Failed to read chunk from {chunk_path}: {error}"
+                    ))
+                })?;
             writer
                 .write_all(&chunk_data)
                 .map_err(|error: Error| ChunkStrategyError::WriteOutput(error.to_string()))?;
-            let _: Result<(), Error> = fs::remove_file(&chunk_path);
+            let _: Result<(), Error> = remove_file(&chunk_path);
         }
         Ok(())
     }

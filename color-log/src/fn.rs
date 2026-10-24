@@ -82,7 +82,9 @@ pub(crate) fn get_log_path(system_dir: &str, base_path: &str, limit_file_size: &
     let idx: usize = get_second_element_from_filename(&combined_path);
     let mut combined_path_clone: String = combined_path.clone();
     combined_path.push_str(&get_file_name(idx));
-    let file_size: usize = get_file_size(&combined_path).unwrap_or_default() as usize;
+    let file_size: usize = metadata(&combined_path)
+        .map(|info: Metadata| info.len())
+        .unwrap_or_default() as usize;
     if &file_size <= limit_file_size {
         return combined_path;
     }
