@@ -1,5 +1,45 @@
 use super::*;
 
+/// Constructs XXH3 state backed by the immutable default secret.
+impl Default for BroadcastMapHasher {
+    /// Initializes streaming state without allocating a secret buffer.
+    ///
+    /// # Returns
+    ///
+    /// - `BroadcastMapHasher` - A hasher with the original default seed and secret.
+    #[inline(always)]
+    fn default() -> Self {
+        Self(RawHasher::new(SecretBuffer::default()))
+    }
+}
+
+/// Delegates streaming operations to the dependency's allocation-free raw state.
+impl Hasher for BroadcastMapHasher {
+    /// Appends bytes to the streaming state.
+    ///
+    /// # Arguments
+    ///
+    /// - `&[u8]` - Bytes included in the hash.
+    ///
+    /// # Returns
+    ///
+    /// - `()` - Updates the current hash state.
+    #[inline(always)]
+    fn write(&mut self, input: &[u8]) {
+        self.0.write(input);
+    }
+
+    /// Computes the digest without consuming the streaming state.
+    ///
+    /// # Returns
+    ///
+    /// - `u64` - The XXH3 digest with the original default parameters.
+    #[inline(always)]
+    fn finish(&self) -> u64 {
+        self.0.finish()
+    }
+}
+
 /// Implements the `BroadcastMapTrait` for any type that also implements `Clone` and `Debug`.
 /// This blanket implementation allows any clonable and debuggable type to be used as a value in the broadcast map system.
 impl<T: Clone + Debug> BroadcastMapTrait for T {}
@@ -33,15 +73,15 @@ impl<T: BroadcastMapTrait> BroadcastMap<T> {
         Self::default()
     }
 
-    /// Retrieves an immutable reference to the underlying `DashMapStringBroadcast`.
+    /// Retrieves an immutable reference to the private channel storage.
     ///
     /// This private helper method provides direct access to the internal map.
     ///
     /// # Returns
     ///
-    /// - `&DashMapStringBroadcast<T>` - Reference to the internal map.
+    /// - `&BroadcastMapStorage<T>` - Reference to the internal map.
     #[inline(always)]
-    fn get(&self) -> &DashMapStringBroadcast<T> {
+    fn get(&self) -> &BroadcastMapStorage<T> {
         &self.0
     }
 
@@ -121,13 +161,13 @@ impl<T: BroadcastMapTrait> BroadcastMap<T> {
         K: AsRef<str>,
     {
         let key_ref: &str = key.as_ref();
-        match self.get().get(key_ref) {
-            Some(sender) => sender.subscribe(),
-            None => {
-                self.insert(key_ref, capacity);
-                self.subscribe_or_insert(key_ref, capacity)
-            }
+        if let Some(sender) = self.get().get(key_ref) {
+            return sender.subscribe();
         }
+        self.get()
+            .entry(key_ref.to_owned())
+            .or_insert_with(|| Broadcast::new(capacity))
+            .subscribe()
     }
 
     /// Attempts to send a message to the broadcast channel associated with the given key.

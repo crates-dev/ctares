@@ -11,12 +11,18 @@ mod broadcast_map;
 
 pub use {broadcast::*, broadcast_map::*};
 
-use std::{fmt::Debug, hash::BuildHasherDefault};
+use std::{
+    fmt::Debug,
+    hash::{BuildHasherDefault, Hasher},
+};
 use {
     dashmap::{mapref::one::Ref, *},
     tokio::sync::broadcast::{
         error::SendError,
         {Receiver, Sender},
     },
-    twox_hash::XxHash3_64,
+    twox_hash::{
+        XxHash3_64,
+        xxhash3_64::{DEFAULT_SECRET_LENGTH, RawHasher, SecretBuffer},
+    },
 };
