@@ -11,3 +11,7 @@ pub type BroadcastMapSender<T> = Sender<T>;
 
 /// A concurrent, thread-safe map where keys are strings and values are broadcast channels.
 pub type DashMapStringBroadcast<T> = DashMap<String, Broadcast<T>, BuildHasherDefault<XxHash3_64>>;
+
+/// Stores channels with the same XXH3 defaults without allocating a hash secret.
+pub(super) type BroadcastMapStorage<T> =
+    DashMap<String, Broadcast<T>, BuildHasherDefault<BroadcastMapHasher>>;

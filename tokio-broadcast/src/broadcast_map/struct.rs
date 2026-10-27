@@ -5,4 +5,8 @@ use super::*;
 /// This struct provides a way to manage multiple broadcast channels, each identified by a unique string,
 /// allowing for dynamic creation, retrieval, and management of broadcast streams.
 #[derive(Clone, Debug)]
-pub struct BroadcastMap<T: BroadcastTrait>(pub(super) DashMapStringBroadcast<T>);
+pub struct BroadcastMap<T: BroadcastTrait>(pub(super) BroadcastMapStorage<T>);
+
+/// Streams XXH3 input using the dependency's immutable default secret.
+#[derive(Clone)]
+pub(super) struct BroadcastMapHasher(pub(super) RawHasher<&'static [u8; DEFAULT_SECRET_LENGTH]>);
