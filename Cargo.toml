@@ -1,5 +1,5 @@
 [workspace.package]
-version = "10.3.1"
+version = "10.4.0"
 edition = "2024"
 license = "MIT"
 readme = "README.md"
@@ -9,6 +9,7 @@ exclude = [
     "**/*.log",
     "**/*.pid",
     ".github",
+    ".codegraph",
     "Cargo.lock",
     "debug",
     "img",
@@ -48,14 +49,11 @@ members = [
 ]
 
 [workspace.dependencies]
-system-time = { path = "system-time", version = "10.3.1" }
-color-output = { path = "color-output", version = "10.3.1" }
-lombok-macros = { path = "lombok-macros", version = "10.3.1" }
-stripe-pay-core = { path = "stripe-pay-core", version = "10.3.1" }
-tokio-broadcast = { path = "tokio-broadcast", version = "10.3.1" }
-recoverable-spawn = { path = "recoverable-spawn", version = "10.3.1" }
-stripe-pay-client = { path = "stripe-pay-client", version = "10.3.1" }
-stripe-pay-server = { path = "stripe-pay-server", version = "10.3.1" }
+system-time = { path = "system-time", version = "10.4.0" }
+color-output = { path = "color-output", version = "10.4.0" }
+lombok-macros = { path = "lombok-macros", version = "10.4.0" }
+stripe-pay-core = { path = "stripe-pay-core", version = "10.4.0" }
+recoverable-spawn = { path = "recoverable-spawn", version = "10.4.0" }
 
 hex = "0.4.3"
 syn = "3.0.9"
@@ -66,9 +64,7 @@ sha2 = "0.11.1"
 which = "8.0.6"
 quote = "1.0.47"
 regex = "1.13.1"
-chrono = "0.4.45"
 dashmap = "6.2.1"
-js-sys = "0.3.106"
 tracing = "0.1.44"
 twox-hash = "2.1.5"
 once_cell = "1.21.4"
@@ -77,9 +73,6 @@ toml_edit = "0.23.9"
 serde_json = "1.0.154"
 proc-macro2 = "1.0.107"
 rust_decimal = "1.43.0"
-wasm-bindgen = "0.2.129"
-serde-wasm-bindgen = "0.6.5"
-wasm-bindgen-futures = "0.4.79"
 tokio = { version = "1.53.3", features = ["full"] }
 serde = { version = "1.0.229", features = ["derive"] }
 jsonwebtoken = { version = "11.1.0", features = ["rust_crypto"] }

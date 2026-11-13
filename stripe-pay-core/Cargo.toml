@@ -14,10 +14,7 @@ exclude.workspace = true
 [dependencies]
 lombok-macros = { workspace = true }
 
-hex = { workspace = true }
-log = { workspace = true }
 serde = { workspace = true }
-chrono = { workspace = true }
 thiserror = { workspace = true }
 serde_json = { workspace = true }
 rust_decimal = { workspace = true }
