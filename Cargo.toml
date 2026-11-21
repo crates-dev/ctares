@@ -49,11 +49,11 @@ members = [
 ]
 
 [workspace.dependencies]
-system-time = { path = "system-time", version = "10.4.1" }
-color-output = { path = "color-output", version = "10.4.1" }
-lombok-macros = { path = "lombok-macros", version = "10.4.1" }
-stripe-pay-core = { path = "stripe-pay-core", version = "10.4.1" }
-recoverable-spawn = { path = "recoverable-spawn", version = "10.4.1" }
+system-time = { path = "system-time", version = "10.5.0" }
+color-output = { path = "color-output", version = "10.5.0" }
+lombok-macros = { path = "lombok-macros", version = "10.5.0" }
+stripe-pay-core = { path = "stripe-pay-core", version = "10.5.0" }
+recoverable-spawn = { path = "recoverable-spawn", version = "10.5.0" }
 
 hex = "0.4.3"
 syn = "3.0.9"
