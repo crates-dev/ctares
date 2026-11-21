@@ -88,10 +88,7 @@ impl<'a> Charset<'a> {
         for tmp_char in charset.chars() {
             hash_set.insert(tmp_char);
         }
-        if hash_set.len() != CHARSET_LEN {
-            return false;
-        }
-        true
+        hash_set.len() == CHARSET_LEN
     }
 
     /// Sets the character set for encoding/decoding operations.
