@@ -69,7 +69,9 @@ jobs:
           toolchain: stable
           components: rustfmt
       - name: Format check
-        run: cargo fmt --all -- --check
+        run: |
+          cargo fmt --all -- --check
+          cargo run -p crate-cli -- fmt --check
 
   tests:
     needs: setup
@@ -153,8 +155,9 @@ jobs:
         id: sync_refs
         if: steps.check_branch.outputs.skip == 'false'
         run: |
-          set -e
+          set -euo pipefail
           ./target/release/crate sync
+          ./target/release/crate fmt
           ./target/release/crate fmt
           if git diff --quiet; then
             echo "sync_changed=false" >> $GITHUB_OUTPUT
@@ -163,12 +166,22 @@ jobs:
             echo "sync_changed=true" >> $GITHUB_OUTPUT
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add -A
+            git add -u
             git commit -m "chore: sync workspace member deps and apply crate fmt"
+            ./target/release/crate fmt
+            if ! git diff --quiet; then
+              git add -u
+              git commit --amend --no-edit
+            fi
+            git diff --quiet
+            git diff --cached --quiet
             git pull --no-rebase origin master
             git push origin HEAD:master
             echo "Committed and pushed sync + fmt"
           fi
+          ./target/release/crate fmt --check
+          git diff --quiet
+          git diff --cached --quiet
           SYNCED_VERSION="$(grep -E '^version[[:space:]]*=[[:space:]]*"' Cargo.toml | head -1 | sed -E 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')"
           SYNCED_TAG="v${SYNCED_VERSION}"
           echo "synced_version=$SYNCED_VERSION" >> $GITHUB_OUTPUT
