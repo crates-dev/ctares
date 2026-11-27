@@ -26,7 +26,7 @@ async fn test_server_config() {
 
 #[tokio::test]
 async fn test_context_creation() {
-    let socket: tokio::net::UdpSocket = tokio::net::UdpSocket::bind("127.0.0.1:0").await.unwrap();
+    let socket: UdpSocket = UdpSocket::bind("127.0.0.1:0").await.unwrap();
     let socket: ArcRwLockUdpSocket = ArcRwLockUdpSocket::from_socket(socket);
     let request: Request = vec![1, 2, 3, 4];
     let client_addr: SocketAddr = SocketAddr::from(([127, 0, 0, 1], 12345));

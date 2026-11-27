@@ -6,5 +6,5 @@ use super::*;
 #[derive(Clone, Data, Debug)]
 pub struct Response {
     /// The underlying response data.
-    pub data: ResponseData,
+    pub(crate) data: ResponseData,
 }

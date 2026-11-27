@@ -10,8 +10,8 @@ use super::*;
 #[derive(Clone, Data, Debug)]
 pub struct PanicData {
     /// The panic message.
-    pub message: String,
+    pub(crate) message: String,
     /// The location where the panic occurred (file and line).
     #[get(type(clone))]
-    pub location: Option<String>,
+    pub(crate) location: Option<String>,
 }

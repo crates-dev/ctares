@@ -2,13 +2,14 @@ use super::*;
 
 #[test]
 fn test_proc_macro_output_struct() {
-    output_macro!(ColorOutput {
-        text: "test_proc_macro",
-        color: ColorType::default(),
-        bg_color: ColorType::Use(Color::Yellow),
-        endl: true,
-        ..Default::default()
-    });
+    output_macro!(
+        ColorOutputBuilder::new()
+            .text("test_proc_macro")
+            .color(ColorType::default())
+            .bg_color(ColorType::Use(Color::Yellow))
+            .endl(true)
+            .build()
+    );
 }
 
 #[test]
@@ -26,13 +27,12 @@ fn test_proc_macro_output_builder() {
 #[test]
 fn test_proc_macro_multiple() {
     output_macro!(
-        ColorOutput {
-            text: "test_proc_macro",
-            color: ColorType::default(),
-            bg_color: ColorType::Use(Color::Yellow),
-            endl: true,
-            ..Default::default()
-        },
+        ColorOutputBuilder::new()
+            .text("test_proc_macro")
+            .color(ColorType::default())
+            .bg_color(ColorType::Use(Color::Yellow))
+            .endl(true)
+            .build(),
         ColorOutputBuilder::new()
             .text("test_output_builder1")
             .color(ColorType::Color256(0xffffff))
@@ -45,13 +45,12 @@ fn test_proc_macro_multiple() {
             .bold(true)
             .endl(true)
             .build(),
-        ColorOutput {
-            text: "test_proc_macro",
-            color: ColorType::default(),
-            bg_color: ColorType::Use(Color::Yellow),
-            endl: true,
-            ..Default::default()
-        }
+        ColorOutputBuilder::new()
+            .text("test_proc_macro")
+            .color(ColorType::default())
+            .bg_color(ColorType::Use(Color::Yellow))
+            .endl(true)
+            .build()
     );
 }
 

@@ -276,7 +276,7 @@ fn generate_param_type(
             ParameterType::Custom(custom_tokens) => {
                 let custom_tokens_stream: proc_macro2::TokenStream = custom_tokens
                     .parse()
-                    .unwrap_or_else(|_: proc_macro2::LexError| override_type.clone());
+                    .unwrap_or_else(|_: LexError| override_type.clone());
                 if let Ok(parsed_type) = parse2::<Type>(custom_tokens_stream.clone()) {
                     quote! { impl #parsed_type }
                 } else {
@@ -674,7 +674,7 @@ fn build_named_get_quote(
                 quote! {
                     #[inline(always)]
                     #vis fn #get_name(&self) -> #return_ty {
-                        std::clone::Clone::clone(&*self.#attr_name_ident)
+                        ::std::clone::Clone::clone(&*self.#attr_name_ident)
                     }
                 }
             } else {
@@ -1536,34 +1536,34 @@ pub(super) fn inner_display(input: TokenStream, is_format: bool) -> TokenStream 
     let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
     let expanded: proc_macro2::TokenStream = if is_format {
         quote! {
-            impl #impl_generics std::fmt::Display for #name #ty_generics #where_clause {
+            impl #impl_generics ::std::fmt::Display for #name #ty_generics #where_clause {
                 /// Formats the value using the detailed debug format.
                 ///
                 /// # Arguments
                 ///
-                /// - `&mut std::fmt::Formatter<'_>` - The formatter to write the representation into.
+                /// - `&mut ::std::fmt::Formatter<'_>` - The formatter to write the representation into.
                 ///
                 /// # Returns
                 ///
-                /// - `std::fmt::Result` - Success or failure of the formatting operation.
-                fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                /// - `::std::fmt::Result` - Success or failure of the formatting operation.
+                fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
                     write!(f, "{0:#?}", self)
                 }
             }
         }
     } else {
         quote! {
-            impl #impl_generics std::fmt::Display for #name #ty_generics #where_clause {
+            impl #impl_generics ::std::fmt::Display for #name #ty_generics #where_clause {
                 /// Formats the value using the standard debug format.
                 ///
                 /// # Arguments
                 ///
-                /// - `&mut std::fmt::Formatter<'_>` - The formatter to write the representation into.
+                /// - `&mut ::std::fmt::Formatter<'_>` - The formatter to write the representation into.
                 ///
                 /// # Returns
                 ///
-                /// - `std::fmt::Result` - Success or failure of the formatting operation.
-                fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                /// - `::std::fmt::Result` - Success or failure of the formatting operation.
+                fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
                     write!(f, "{:?}", self)
                 }
             }
@@ -1643,17 +1643,17 @@ pub(crate) fn inner_custom_debug(input: TokenStream) -> TokenStream {
                         .collect();
                     let struct_name_str: String = name.to_string();
                     let expanded: proc_macro2::TokenStream = quote! {
-                        impl #impl_generics std::fmt::Debug for #name #ty_generics #where_clause {
+                        impl #impl_generics ::std::fmt::Debug for #name #ty_generics #where_clause {
                             /// Formats the struct fields as a debug struct, skipping excluded fields.
                             ///
                             /// # Arguments
                             ///
-                            /// - `&mut std::fmt::Formatter<'_>` - The formatter to write the representation into.
+                            /// - `&mut ::std::fmt::Formatter<'_>` - The formatter to write the representation into.
                             ///
                             /// # Returns
                             ///
-                            /// - `std::fmt::Result` - Success or failure of the formatting operation.
-                            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                            /// - `::std::fmt::Result` - Success or failure of the formatting operation.
+                            fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
                                 f.debug_struct(#struct_name_str)
                                     #(#debug_fields)*
                                     .finish()
@@ -1689,17 +1689,17 @@ pub(crate) fn inner_custom_debug(input: TokenStream) -> TokenStream {
                         .collect();
                     let struct_name_str: String = name.to_string();
                     let expanded: proc_macro2::TokenStream = quote! {
-                        impl #impl_generics std::fmt::Debug for #name #ty_generics #where_clause {
+                        impl #impl_generics ::std::fmt::Debug for #name #ty_generics #where_clause {
                             /// Formats the tuple fields as a debug tuple, skipping excluded fields.
                             ///
                             /// # Arguments
                             ///
-                            /// - `&mut std::fmt::Formatter<'_>` - The formatter to write the representation into.
+                            /// - `&mut ::std::fmt::Formatter<'_>` - The formatter to write the representation into.
                             ///
                             /// # Returns
                             ///
-                            /// - `std::fmt::Result` - Success or failure of the formatting operation.
-                            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                            /// - `::std::fmt::Result` - Success or failure of the formatting operation.
+                            fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
                                 f.debug_tuple(#struct_name_str)
                                     #(#debug_fields)*
                                     .finish()
@@ -1711,17 +1711,17 @@ pub(crate) fn inner_custom_debug(input: TokenStream) -> TokenStream {
                 Fields::Unit => {
                     let struct_name_str: String = name.to_string();
                     let expanded: proc_macro2::TokenStream = quote! {
-                        impl #impl_generics std::fmt::Debug for #name #ty_generics #where_clause {
+                        impl #impl_generics ::std::fmt::Debug for #name #ty_generics #where_clause {
                             /// Formats the unit struct as a debug struct with no fields.
                             ///
                             /// # Arguments
                             ///
-                            /// - `&mut std::fmt::Formatter<'_>` - The formatter to write the representation into.
+                            /// - `&mut ::std::fmt::Formatter<'_>` - The formatter to write the representation into.
                             ///
                             /// # Returns
                             ///
-                            /// - `std::fmt::Result` - Success or failure of the formatting operation.
-                            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                            /// - `::std::fmt::Result` - Success or failure of the formatting operation.
+                            fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
                                 f.debug_struct(#struct_name_str).finish()
                             }
                         }
@@ -1838,17 +1838,17 @@ pub(crate) fn inner_custom_debug(input: TokenStream) -> TokenStream {
                 })
                 .collect();
             let expanded: proc_macro2::TokenStream = quote! {
-                impl #impl_generics std::fmt::Debug for #name #ty_generics #where_clause {
+                impl #impl_generics ::std::fmt::Debug for #name #ty_generics #where_clause {
                     /// Formats each enum variant as a debug struct or tuple, skipping excluded fields.
                     ///
                     /// # Arguments
                     ///
-                    /// - `&mut std::fmt::Formatter<'_>` - The formatter to write the representation into.
+                    /// - `&mut ::std::fmt::Formatter<'_>` - The formatter to write the representation into.
                     ///
                     /// # Returns
                     ///
-                    /// - `std::fmt::Result` - Success or failure of the formatting operation.
-                    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                    /// - `::std::fmt::Result` - Success or failure of the formatting operation.
+                    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
                         match self {
                             #(#variants)*
                         }

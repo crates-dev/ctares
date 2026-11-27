@@ -11,19 +11,19 @@ use super::*;
 pub struct ContextData {
     /// A flag indicating whether the request handling has been aborted.
     #[get(type(copy))]
-    pub aborted: bool,
+    pub(crate) aborted: bool,
     /// The underlying network socket for the connection.
     #[get(type(clone))]
-    pub socket: Option<ArcRwLockUdpSocket>,
+    pub(crate) socket: Option<ArcRwLockUdpSocket>,
     /// The incoming UDP request data.
-    pub request: Request,
+    pub(crate) request: Request,
     /// The outgoing UDP response data.
-    pub response: Response,
+    pub(crate) response: Response,
     /// The client's socket address.
     #[get(type(copy))]
-    pub client_addr: Option<SocketAddr>,
+    pub(crate) client_addr: Option<SocketAddr>,
     /// A collection of custom attributes for sharing data within the request lifecycle.
-    pub attributes: ThreadSafeAttributeStore,
+    pub(crate) attributes: ThreadSafeAttributeStore,
 }
 
 /// The main application context, providing thread-safe access to request and response data.

@@ -15,7 +15,7 @@ use {config::*, func::*, generate::*, parse::*, visibility::*};
 
 use {
     proc_macro::TokenStream,
-    proc_macro2::{Delimiter, Span, token_stream::IntoIter},
+    proc_macro2::{Delimiter, LexError, Span, TokenTree, token_stream::IntoIter},
     quote::{ToTokens, quote},
     syn::{
         AngleBracketedGenericArguments, Data, DeriveInput, Field, Fields, GenericArgument,

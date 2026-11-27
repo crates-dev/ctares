@@ -13,9 +13,9 @@ use super::*;
 pub struct FormField {
     /// The bracketed parameter name, such as `amount` or
     /// `metadata[order_id]`.
-    pub key: String,
+    pub(crate) key: String,
     /// The field's value, already stringified.
-    pub value: String,
+    pub(crate) value: String,
 }
 
 /// An ordered collection of Stripe form parameters.

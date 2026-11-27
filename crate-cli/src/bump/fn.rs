@@ -355,7 +355,7 @@ async fn bump_workspace_members(
         .get(TOML_WORKSPACE)
         .and_then(|workspace: &Item| workspace.get(TOML_MEMBERS))
         .and_then(|members_item: &Item| members_item.as_array())
-        .map(|members: &toml_edit::Array| {
+        .map(|members: &Array| {
             members
                 .iter()
                 .filter_map(|member: &toml_edit::Value| {
@@ -471,7 +471,7 @@ pub async fn execute_bump(
         .get(TOML_WORKSPACE)
         .and_then(|workspace: &Item| workspace.get(TOML_MEMBERS))
         .and_then(|members_item: &Item| members_item.as_array())
-        .is_some_and(|members: &toml_edit::Array| !members.is_empty());
+        .is_some_and(|members: &Array| !members.is_empty());
     if !has_workspace_version && !has_root_package && has_members {
         return bump_workspace_members(path, &mut doc, bump_type).await;
     }

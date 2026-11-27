@@ -2,44 +2,29 @@ use super::*;
 
 #[test]
 fn test_sync_report_creation() {
-    let report: SyncReport = SyncReport {
-        workspace_version: "1.2.3".to_string(),
-        renamed_entries: vec![("old".to_string(), "new".to_string())],
-        versioned_entries: vec![("a".to_string(), "b".to_string())],
-        file_changed: true,
-    };
-    assert_eq!(report.workspace_version, "1.2.3");
-    assert_eq!(report.renamed_entries.len(), 1);
-    assert_eq!(report.versioned_entries.len(), 1);
-    assert!(report.file_changed);
+    let report: SyncReport = SyncReport::new(
+        "1.2.3".to_string(),
+        vec![("old".to_string(), "new".to_string())],
+        vec![("a".to_string(), "b".to_string())],
+        true,
+    );
+    assert_eq!(report.get_workspace_version(), "1.2.3");
+    assert_eq!(report.get_renamed_entries().len(), 1);
+    assert_eq!(report.get_versioned_entries().len(), 1);
+    assert!(report.get_file_changed());
 }
 
 #[test]
 fn test_sync_report_clone() {
-    let report: SyncReport = SyncReport {
-        workspace_version: "0.1.0".to_string(),
-        renamed_entries: Vec::new(),
-        versioned_entries: Vec::new(),
-        file_changed: false,
-    };
+    let report: SyncReport = SyncReport::new("0.1.0".to_string(), Vec::new(), Vec::new(), false);
     let cloned: SyncReport = report.clone();
     assert_eq!(cloned, report);
 }
 
 #[test]
 fn test_sync_report_equality() {
-    let report_a: SyncReport = SyncReport {
-        workspace_version: "1.0.0".to_string(),
-        renamed_entries: vec![],
-        versioned_entries: vec![],
-        file_changed: false,
-    };
-    let report_b: SyncReport = SyncReport {
-        workspace_version: "1.0.0".to_string(),
-        renamed_entries: vec![],
-        versioned_entries: vec![],
-        file_changed: false,
-    };
+    let report_a: SyncReport = SyncReport::new("1.0.0".to_string(), vec![], vec![], false);
+    let report_b: SyncReport = SyncReport::new("1.0.0".to_string(), vec![], vec![], false);
     assert_eq!(report_a, report_b);
 }
 
@@ -94,14 +79,14 @@ edition = "2024"
     let report: SyncReport = execute_sync(workspace_manifest.to_str().unwrap())
         .await
         .unwrap();
-    assert_eq!(report.workspace_version, "0.1.0");
-    assert_eq!(report.versioned_entries.len(), 0);
-    assert_eq!(report.renamed_entries.len(), 0);
-    assert!(!report.file_changed);
+    assert_eq!(report.get_workspace_version(), "0.1.0");
+    assert_eq!(report.get_versioned_entries().len(), 0);
+    assert_eq!(report.get_renamed_entries().len(), 0);
+    assert!(!report.get_file_changed());
     let second_report: SyncReport = execute_sync(workspace_manifest.to_str().unwrap())
         .await
         .unwrap();
-    assert!(!second_report.file_changed);
+    assert!(!second_report.get_file_changed());
 }
 
 #[tokio::test]
@@ -131,15 +116,15 @@ edition = "2024"
     let report: SyncReport = execute_sync(workspace_manifest.to_str().unwrap())
         .await
         .unwrap();
-    assert_eq!(report.workspace_version, "0.2.0");
-    assert!(report.file_changed);
+    assert_eq!(report.get_workspace_version(), "0.2.0");
+    assert!(report.get_file_changed());
     let updated: String = read_to_string(&workspace_manifest).await.unwrap();
     assert!(updated.contains(r#"beta = { path = "beta", version = "0.2.0" }"#));
     assert!(!updated.contains(r#"version = "0.1.5""#));
     let second_report: SyncReport = execute_sync(workspace_manifest.to_str().unwrap())
         .await
         .unwrap();
-    assert!(!second_report.file_changed);
+    assert!(!second_report.get_file_changed());
 }
 
 #[tokio::test]
@@ -169,10 +154,10 @@ edition = "2024"
     let report: SyncReport = execute_sync(workspace_manifest.to_str().unwrap())
         .await
         .unwrap();
-    assert_eq!(report.renamed_entries.len(), 1);
-    assert_eq!(report.renamed_entries[0].0, "stale_alias");
-    assert_eq!(report.renamed_entries[0].1, "gamma");
-    assert!(report.file_changed);
+    assert_eq!(report.get_renamed_entries().len(), 1);
+    assert_eq!(report.get_renamed_entries()[0].0, "stale_alias");
+    assert_eq!(report.get_renamed_entries()[0].1, "gamma");
+    assert!(report.get_file_changed());
     let updated: String = read_to_string(&workspace_manifest).await.unwrap();
     assert!(updated.contains(r#"gamma = { path = "gamma", version = "0.3.0" }"#));
     assert!(!updated.contains("stale_alias"));
@@ -212,8 +197,8 @@ three = { path = "three", version = "0.0.0" }
     let report: SyncReport = execute_sync(workspace_manifest.to_str().unwrap())
         .await
         .unwrap();
-    assert_eq!(report.workspace_version, "9.9.9");
-    assert_eq!(report.versioned_entries.len(), 3);
+    assert_eq!(report.get_workspace_version(), "9.9.9");
+    assert_eq!(report.get_versioned_entries().len(), 3);
     let updated: String = read_to_string(&workspace_manifest).await.unwrap();
     for member in ["one", "two", "three"] {
         assert!(
@@ -301,8 +286,8 @@ beta = { path = "beta", version = "0.0.0" }
     let report: SyncReport = execute_sync(workspace_manifest.to_str().unwrap())
         .await
         .unwrap();
-    assert!(report.file_changed);
-    assert_eq!(report.versioned_entries.len(), 2);
+    assert!(report.get_file_changed());
+    assert_eq!(report.get_versioned_entries().len(), 2);
     let synced: String = read_to_string(&workspace_manifest).await.unwrap();
     assert!(synced.contains("alpha = { path = \"alpha\", version = \"1.2.1\" }"));
     assert!(synced.contains("beta = { path = \"beta\", version = \"0.7.1\" }"));
@@ -335,8 +320,8 @@ version = "0.1.0"
     let report: SyncReport = execute_sync(workspace_manifest.to_str().unwrap())
         .await
         .unwrap();
-    assert!(!report.file_changed);
-    assert_eq!(report.versioned_entries.len(), 0);
+    assert!(!report.get_file_changed());
+    assert_eq!(report.get_versioned_entries().len(), 0);
 }
 
 #[tokio::test]
@@ -388,7 +373,7 @@ edition = "2024"
     let report: SyncReport = execute_sync(workspace_manifest.to_str().unwrap())
         .await
         .unwrap();
-    assert!(report.file_changed);
+    assert!(report.get_file_changed());
     let updated: String = read_to_string(&workspace_manifest).await.unwrap();
     assert_eq!(updated, expected_content);
 }
@@ -424,8 +409,8 @@ edition = "2024"
     let report: SyncReport = execute_sync(workspace_manifest.to_str().unwrap())
         .await
         .unwrap();
-    assert_eq!(report.workspace_version, "2.0.0");
-    assert!(report.file_changed);
+    assert_eq!(report.get_workspace_version(), "2.0.0");
+    assert!(report.get_file_changed());
     let updated: String = read_to_string(&workspace_manifest).await.unwrap();
     assert!(updated.contains(r#"epsilon = { path = "epsilon", version = "2.0.0" }"#));
     assert!(updated.contains("[package]\nname = \"root\"\nversion = \"2.0.0\""));

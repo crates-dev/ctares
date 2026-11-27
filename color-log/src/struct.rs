@@ -11,24 +11,24 @@ use super::*;
 pub struct FileLogger {
     /// The directory path where log files will be stored.
     #[set(type(AsRef<str>))]
-    pub path: String,
+    pub(crate) path: String,
     /// The maximum allowed size (in bytes) for individual log files.
     /// Set to 0 to disable logging.
     #[get(type(copy))]
-    pub limit_file_size: usize,
+    pub(crate) limit_file_size: usize,
     /// Subdirectory name for trace logs.
     #[set(type(AsRef<str>))]
-    pub trace_dir: String,
+    pub(crate) trace_dir: String,
     /// Subdirectory name for debug logs.
     #[set(type(AsRef<str>))]
-    pub debug_dir: String,
+    pub(crate) debug_dir: String,
     /// Subdirectory name for info logs.
     #[set(type(AsRef<str>))]
-    pub info_dir: String,
+    pub(crate) info_dir: String,
     /// Subdirectory name for warn logs.
     #[set(type(AsRef<str>))]
-    pub warn_dir: String,
+    pub(crate) warn_dir: String,
     /// Subdirectory name for error logs.
     #[set(type(AsRef<str>))]
-    pub error_dir: String,
+    pub(crate) error_dir: String,
 }

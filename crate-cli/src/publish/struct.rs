@@ -1,29 +1,32 @@
 use super::*;
 
 /// Package information in monorepo
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, Getter, New, PartialEq)]
 pub struct Package {
     /// Package name
-    pub name: String,
+    pub(crate) name: String,
     /// Package version
-    pub version: String,
+    pub(crate) version: String,
     /// Path to package directory
-    pub path: PathBuf,
+    pub(crate) path: PathBuf,
     /// Dependencies within the monorepo
-    pub local_dependencies: Vec<String>,
+    pub(crate) local_dependencies: Vec<String>,
     /// Whether the package should be published (false skips publishing)
-    pub publish: bool,
+    #[get(type(copy))]
+    pub(crate) publish: bool,
 }
 
 /// Publish result for a single package
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Getter, New)]
 pub struct PublishResult {
     /// Package name
-    pub package_name: String,
+    pub(crate) package_name: String,
     /// Whether publish succeeded
-    pub success: bool,
+    #[get(type(copy))]
+    pub(crate) success: bool,
     /// Error message if failed
-    pub error: Option<String>,
+    pub(crate) error: Option<String>,
     /// Number of retries performed
-    pub retries: u32,
+    #[get(type(copy))]
+    pub(crate) retries: u32,
 }

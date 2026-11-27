@@ -8,9 +8,9 @@ use super::*;
 #[derive(Clone, Debug, Eq, Getter, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Refund {
     /// Stripe's identifier for this refund.
-    pub id: String,
+    pub(crate) id: String,
     /// The charge this refund belongs to.
-    pub charge: String,
+    pub(crate) charge: String,
     /// The amount returned, in minor units.
     #[get(skip)]
     pub(super) amount: i64,
@@ -19,8 +19,8 @@ pub struct Refund {
     pub(super) currency: String,
     /// Why the money was returned.
     #[get(type(copy))]
-    pub reason: RefundReason,
+    pub(crate) reason: RefundReason,
     /// Whether Stripe has fully processed the refund.
     #[get(type(copy))]
-    pub succeeded: bool,
+    pub(crate) succeeded: bool,
 }

@@ -9,19 +9,19 @@ use super::*;
 pub struct ServerConfigData {
     /// The host address the server will bind to.
     #[set(type(AsRef<str>))]
-    pub host: String,
+    pub(crate) host: String,
     /// The port number the server will listen on.
     #[get(type(copy))]
-    pub port: u16,
+    pub(crate) port: u16,
     /// The buffer size for receiving UDP packets.
     #[get(type(copy))]
-    pub buffer_size: usize,
+    pub(crate) buffer_size: usize,
     /// The `TCP_NODELAY` option for sockets (applied when applicable).
     #[get(type(copy))]
-    pub nodelay: Option<bool>,
+    pub(crate) nodelay: Option<bool>,
     /// The `IP_TTL` option for sockets (applied when applicable).
     #[get(type(copy))]
-    pub ttl: Option<u32>,
+    pub(crate) ttl: Option<u32>,
 }
 
 /// Represents the thread-safe, shareable server configuration.

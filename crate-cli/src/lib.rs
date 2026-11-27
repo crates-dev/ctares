@@ -52,6 +52,6 @@ pub(crate) use {
         time::{Duration, sleep},
     },
     toml::{Value, from_str},
-    toml_edit::{DocumentMut, Item, TableLike, TomlError, value},
+    toml_edit::{Array, DocumentMut, Item, TableLike, TomlError, value},
     which::which,
 };

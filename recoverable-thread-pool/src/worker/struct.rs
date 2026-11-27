@@ -8,5 +8,5 @@ use super::*;
 pub struct Worker {
     /// The unique identifier for this worker.
     #[get(type(copy))]
-    pub id: usize,
+    pub(crate) id: usize,
 }

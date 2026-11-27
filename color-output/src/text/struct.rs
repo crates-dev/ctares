@@ -6,15 +6,15 @@ use super::*;
 #[derive(Clone, Copy, Data, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Text<'a> {
     /// The actual text content.
-    pub text: &'a str,
+    pub(crate) text: &'a str,
     /// The color of the text.
-    pub color: ColorType,
+    pub(crate) color: ColorType,
     /// The background color of the text.
-    pub bg_color: ColorType,
+    pub(crate) bg_color: ColorType,
     /// Whether the text should be bold.
     #[get(type(copy))]
-    pub bold: bool,
+    pub(crate) bold: bool,
     /// Whether to add newline after the text
     #[get(type(copy))]
-    pub endl: bool,
+    pub(crate) endl: bool,
 }

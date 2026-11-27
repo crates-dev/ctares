@@ -13,31 +13,21 @@ fn test_bump_version_type_enum() {
 
 #[test]
 fn test_version_struct_creation() {
-    let version: Version = Version {
-        major: 1,
-        minor: 2,
-        patch: 3,
-        prerelease: Some("alpha.1".to_string()),
-    };
-    assert_eq!(version.major, 1);
-    assert_eq!(version.minor, 2);
-    assert_eq!(version.patch, 3);
-    assert_eq!(version.prerelease, Some("alpha.1".to_string()));
+    let version: Version = Version::new(1, 2, 3, Some("alpha.1".to_string()));
+    assert_eq!(version.get_major(), 1);
+    assert_eq!(version.get_minor(), 2);
+    assert_eq!(version.get_patch(), 3);
+    assert_eq!(version.try_get_prerelease().as_deref(), Some("alpha.1"));
 }
 
 #[test]
 fn test_version_clone() {
-    let version: Version = Version {
-        major: 1,
-        minor: 2,
-        patch: 3,
-        prerelease: Some("beta".to_string()),
-    };
+    let version: Version = Version::new(1, 2, 3, Some("beta".to_string()));
     let cloned: Version = version.clone();
-    assert_eq!(cloned.major, version.major);
-    assert_eq!(cloned.minor, version.minor);
-    assert_eq!(cloned.patch, version.patch);
-    assert_eq!(cloned.prerelease, version.prerelease);
+    assert_eq!(cloned.get_major(), version.get_major());
+    assert_eq!(cloned.get_minor(), version.get_minor());
+    assert_eq!(cloned.get_patch(), version.get_patch());
+    assert_eq!(cloned.try_get_prerelease(), version.try_get_prerelease());
 }
 
 #[tokio::test]

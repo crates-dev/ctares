@@ -9,7 +9,7 @@ use super::*;
 pub struct StripeId {
     /// The resource family this identifier addresses.
     #[get(type(copy))]
-    pub kind: StripeIdKind,
+    pub(crate) kind: StripeIdKind,
     /// The full wire value including its type prefix.
-    pub raw: String,
+    pub(crate) raw: String,
 }
