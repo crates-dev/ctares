@@ -1,8 +1,10 @@
-mod r#fn;
-mod r#static;
+mod driver;
+mod json;
+mod markdown;
+mod text;
+mod toml;
+mod yaml;
 
-pub use r#fn::*;
-
-pub(crate) use r#static::*;
+pub use {driver::*, json::*, markdown::*, text::*, toml::*, yaml::*};
 
 use super::*;
