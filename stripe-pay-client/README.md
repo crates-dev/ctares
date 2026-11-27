@@ -1,36 +1,62 @@
+<div align="center">
+
 # stripe-pay-client
 
-Browser and WebAssembly client for the `stripe-pay` SDK family.
+**Browser & WebAssembly Stripe Checkout Client**
+
+[![crates.io](https://img.shields.io/crates/v/stripe-pay-client.svg?style=flat-square)](https://crates.io/crates/stripe-pay-client)
+[![docs.rs](https://img.shields.io/docsrs/stripe-pay-client?style=flat-square)](https://docs.rs/stripe-pay-client)
+[![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
+[![License: MIT](https://img.shields.io/crates/l/stripe-pay-client.svg?style=flat-square)](../LICENSE)
+
+[Workspace Overview](../README.md) · [API Docs](https://docs.rs/stripe-pay-client/latest/) · [Agent Engineering Rules](../AGENTS.md)
+
+</div>
+
+---
 
 ## Overview
 
-`stripe-pay-client` builds the configuration a checkout page hands to the Stripe payment element. It carries no transport of its own: the browser binds the configuration to Stripe.js at mount time, so the crate stays free of I/O and can be unit tested off-wasm. It depends on [`stripe-pay-core`](../stripe-pay-core) for the shared domain types.
+Client-side Stripe payment element configuration and mount abstractions layered on `stripe-pay-core` for WebAssembly checkout flows.
 
-## Payment element configuration
+This package is part of the [`ctares`](../README.md) unified Rust 2024 workspace and follows the repository's strict module purity, formatting, and dependency-ordered release standards.
 
-```rust
-use stripe_pay_client::{ElementConfig, ElementKind, build_element_options};
+## Responsibilities & Module Layout
 
-let config = ElementConfig::new(client_secret).with_kind(ElementKind::Payment);
-let options = build_element_options(&config)?;
+- `element` — Stripe payment element configuration builders
+- `host` / `mount` — Checkout surface mounting and transport forwarding
+
+## Installation & Quick Start
+
+```sh
+cargo add stripe-pay-client
 ```
 
-`ElementConfig` keeps the client secret and the locale, and `effective_locale()` falls back to the crate default when the host page does not pick one.
-
-## Mount preflight
-
-`preflight` checks a page before it mounts and reports the first thing that is missing, in the order a page author would fix them: no client secret, then no mount target, then Stripe.js absent from the page.
-
 ```rust
-use stripe_pay_client::preflight;
+use stripe_pay_client::*;
 
-preflight(&config, has_mount_target, has_stripe_js)?;
+// Configure Stripe payment elements in Rust/WASM using shared stripe-pay-core types.
 ```
 
-## Target
+## Verification
 
-Builds for `wasm32-unknown-unknown`. The types are transport-free, so the same logic is testable on the host.
+Run crate-scoped formatting, lint, and test checks from the workspace root:
 
-## Licence
+```sh
+cargo run -p crate-cli -- fmt --check
+cargo clippy -p stripe-pay-client --all-features --all-targets -- -D warnings
+cargo test -p stripe-pay-client --all-features
+```
 
-MIT. See [LICENSE](LICENSE).
+## Documentation & Governance
+
+- Update this `README.md` alongside any public API, CLI flag, or module-boundary change per [`../AGENTS.md`](../AGENTS.md#4-unified-documentation--skill-maintenance-policy).
+- Project-level standards and release workflows live in [`../.agents/skills/ctares/SKILL.md`](../.agents/skills/ctares/SKILL.md).
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](../LICENSE) file for details.
+
+## Contact
+
+For inquiries, please contact the author at [root@devhub.vip](mailto:root@devhub.vip).

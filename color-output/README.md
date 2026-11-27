@@ -1,47 +1,66 @@
-<center>
+<div align="center">
 
 # color-output
 
-[![](https://img.shields.io/crates/v/color-output.svg)](https://crates.io/crates/color-output)
-[![](https://img.shields.io/crates/d/color-output.svg)](https://img.shields.io/crates/d/color-output.svg)
-[![](https://docs.rs/color-output/badge.svg)](https://docs.rs/color-output)
-[![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
-[![](https://img.shields.io/crates/l/color-output.svg)](./LICENSE)
+**Atomic ANSI Colored Console Output**
 
-</center>
+[![crates.io](https://img.shields.io/crates/v/color-output.svg?style=flat-square)](https://crates.io/crates/color-output)
+[![docs.rs](https://img.shields.io/docsrs/color-output?style=flat-square)](https://docs.rs/color-output)
+[![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
+[![License: MIT](https://img.shields.io/crates/l/color-output.svg?style=flat-square)](../LICENSE)
 
-[Api Docs](https://docs.rs/color-output/latest/)
+[Workspace Overview](../README.md) · [API Docs](https://docs.rs/color-output/latest/) · [Agent Engineering Rules](../AGENTS.md)
 
-## Description
+</div>
 
-> An atomic output library based on Rust that supports output functionalities through functions, builders, and other methods. It allows customization of text and background colors.
+---
 
-## Features
+## Overview
 
-- Supports formatted output of the current time.
-- Allows customization of text color, background color, font weight, and other configurations.
-- Supports defining structures for output messages.
-- Supports defining builders for output messages.
-- Supports single-line output for multiple tasks.
-- Supports multi-line output for multiple tasks.
-- Ensures atomic output operations.
+Atomic terminal output library supporting foreground/background ANSI colors via direct helper functions and fluent builders, re-exporting `system-time`.
 
-## Installation
+This package is part of the [`ctares`](../README.md) unified Rust 2024 workspace and follows the repository's strict module purity, formatting, and dependency-ordered release standards.
 
-To install `color-output` run cmd:
+## Responsibilities & Module Layout
 
-```shell
+- `color` — ANSI foreground/background color enums and escape formatters
+- `text` — Styled text spans and segment composition
+- `task` / `utils` — Atomic stdout writer and convenience macros/helpers
+
+## Installation & Quick Start
+
+```sh
 cargo add color-output
 ```
 
+```rust
+use color_output::*;
+
+OutputBuilder::new()
+    .text("ctares ready")
+    .color(ColorType::Color256(0x00ff00))
+    .println();
+```
+
+## Verification
+
+Run crate-scoped formatting, lint, and test checks from the workspace root:
+
+```sh
+cargo run -p crate-cli -- fmt --check
+cargo clippy -p color-output --all-features --all-targets -- -D warnings
+cargo test -p color-output --all-features
+```
+
+## Documentation & Governance
+
+- Update this `README.md` alongside any public API, CLI flag, or module-boundary change per [`../AGENTS.md`](../AGENTS.md#4-unified-documentation--skill-maintenance-policy).
+- Project-level standards and release workflows live in [`../.agents/skills/ctares/SKILL.md`](../.agents/skills/ctares/SKILL.md).
+
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request.
+This project is licensed under the MIT License. See the [LICENSE](../LICENSE) file for details.
 
 ## Contact
 
-For any inquiries, please reach out to the author at [root@devhub.vip](mailto:root@devhub.vip).
+For inquiries, please contact the author at [root@devhub.vip](mailto:root@devhub.vip).

@@ -1,49 +1,63 @@
-<center>
+<div align="center">
 
-## instrument-level
+# instrument-level
 
-[![](https://img.shields.io/crates/v/instrument-level.svg)](https://crates.io/crates/instrument-level)
-[![](https://img.shields.io/crates/d/instrument-level.svg)](https://img.shields.io/crates/d/instrument-level.svg)
-[![](https://docs.rs/instrument-level/badge.svg)](https://docs.rs/instrument-level)
-[![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
-[![](https://img.shields.io/crates/l/instrument-level.svg)](./LICENSE)
+**Level-Scoped Tracing Instrumentation Proc Macros**
 
-</center>
+[![crates.io](https://img.shields.io/crates/v/instrument-level.svg?style=flat-square)](https://crates.io/crates/instrument-level)
+[![docs.rs](https://img.shields.io/docsrs/instrument-level?style=flat-square)](https://docs.rs/instrument-level)
+[![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
+[![License: MIT](https://img.shields.io/crates/l/instrument-level.svg?style=flat-square)](../LICENSE)
 
-[Api Docs](https://docs.rs/instrument-level/latest/)
+[Workspace Overview](../README.md) · [API Docs](https://docs.rs/instrument-level/latest/) · [Agent Engineering Rules](../AGENTS.md)
 
-> A Rust procedural macro collection providing convenient tracing instrumentation macros for different log levels (trace, debug, info, warn, error). This crate simplifies the process of adding tracing spans to functions with pre-configured log levels.
+</div>
 
-## Installation
+---
 
-To use this crate, you can run cmd:
+## Overview
 
-```shell
-cargo add instrument-level
+Procedural attribute macros (`#[instrument_trace]`, `#[instrument_debug]`, `#[instrument_info]`, `#[instrument_warn]`, `#[instrument_error]`) wrapping `tracing::instrument(skip_all, level = ...)`.
+
+This package is part of the [`ctares`](../README.md) unified Rust 2024 workspace and follows the repository's strict module purity, formatting, and dependency-ordered release standards.
+
+## Responsibilities & Module Layout
+
+- `lib` — Five level-specific attribute proc-macro entry points
+- `fn` — Token expansion attaching `skip_all` and forwarding custom `tracing::instrument` arguments
+
+## Installation & Quick Start
+
+```sh
+cargo add instrument-level tracing
 ```
 
-## Usage
+```rust
+use instrument_level::*;
 
-This crate provides five attribute macros for different tracing log levels:
+#[instrument_info]
+fn handle_request() {}
+```
 
-- `#[instrument_trace]` - Trace Level Instrumentation - Use this macro to add trace-level logging instrumentation to functions. This is the most verbose log level and automatically excludes all function arguments from span fields using `skip_all`.
+## Verification
 
-- `#[instrument_debug]` - Debug Level Instrumentation - Use this macro to add debug-level logging instrumentation to functions. Ideal for development and debugging purposes.
+Run crate-scoped formatting, lint, and test checks from the workspace root:
 
-- `#[instrument_info]` - Info Level Instrumentation - Use this macro to add info-level logging instrumentation to functions. Suitable for general informational messages.
+```sh
+cargo run -p crate-cli -- fmt --check
+cargo clippy -p instrument-level --all-features --all-targets -- -D warnings
+cargo test -p instrument-level --all-features
+```
 
-- `#[instrument_warn]` - Warning Level Instrumentation - Use this macro to add warning-level logging instrumentation to functions. Use for potentially harmful situations.
+## Documentation & Governance
 
-- `#[instrument_error]` - Error Level Instrumentation - Use this macro to add error-level logging instrumentation to functions. Use for error conditions that don't necessarily stop program execution. Each macro accepts optional tracing parameters such as `target`, `name`, `skip`, `fields`, etc., which can be used to customize the span behavior according to your needs.
+- Update this `README.md` alongside any public API, CLI flag, or module-boundary change per [`../AGENTS.md`](../AGENTS.md#4-unified-documentation--skill-maintenance-policy).
+- Project-level standards and release workflows live in [`../.agents/skills/ctares/SKILL.md`](../.agents/skills/ctares/SKILL.md).
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request.
+This project is licensed under the MIT License. See the [LICENSE](../LICENSE) file for details.
 
 ## Contact
 
-For any inquiries, please reach out to the author at [root@devhub.vip](mailto:root@devhub.vip).
+For inquiries, please contact the author at [root@devhub.vip](mailto:root@devhub.vip).

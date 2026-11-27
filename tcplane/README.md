@@ -1,35 +1,63 @@
-<center>
+<div align="center">
 
-## tcplane
+# tcplane
 
-[![](https://img.shields.io/crates/v/tcplane.svg)](https://crates.io/crates/tcplane)
-[![](https://img.shields.io/crates/d/tcplane.svg)](https://img.shields.io/crates/d/tcplane.svg)
-[![](https://docs.rs/tcplane/badge.svg)](https://docs.rs/tcplane)
-[![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
-[![](https://img.shields.io/crates/l/tcplane.svg)](./LICENSE)
+**Lightweight Tokio Async TCP Server**
 
-</center>
+[![crates.io](https://img.shields.io/crates/v/tcplane.svg?style=flat-square)](https://crates.io/crates/tcplane)
+[![docs.rs](https://img.shields.io/docsrs/tcplane?style=flat-square)](https://docs.rs/tcplane)
+[![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
+[![License: MIT](https://img.shields.io/crates/l/tcplane.svg?style=flat-square)](../LICENSE)
 
-[Api Docs](https://docs.rs/tcplane/latest/)
+[Workspace Overview](../README.md) · [API Docs](https://docs.rs/tcplane/latest/) · [Agent Engineering Rules](../AGENTS.md)
 
-> tcplane is a lightweight and high-performance Rust TCP server library designed to simplify network service development. It supports TCP communication, data stream management, and connection handling, focusing on providing efficient low-level network connections and data transmission capabilities, making it ideal for building modern network services.
+</div>
 
-## Installation
+---
 
-To use this crate, you can run cmd:
+## Overview
 
-```shell
+High-performance Tokio-based TCP server providing structured configuration, connection context, lifecycle hooks, and async stream handling.
+
+This package is part of the [`ctares`](../README.md) unified Rust 2024 workspace and follows the repository's strict module purity, formatting, and dependency-ordered release standards.
+
+## Responsibilities & Module Layout
+
+- `server` / `config` — Listener binding, concurrency, and socket tuning
+- `context` / `stream` / `request` / `response` — Per-connection state and wire framing
+- `handler` / `error` — Async handler traits and typed server errors
+
+## Installation & Quick Start
+
+```sh
 cargo add tcplane
 ```
 
+```rust
+use tcplane::*;
+
+// Configure and start an async Tokio TCP server with custom connection handlers.
+```
+
+## Verification
+
+Run crate-scoped formatting, lint, and test checks from the workspace root:
+
+```sh
+cargo run -p crate-cli -- fmt --check
+cargo clippy -p tcplane --all-features --all-targets -- -D warnings
+cargo test -p tcplane --all-features
+```
+
+## Documentation & Governance
+
+- Update this `README.md` alongside any public API, CLI flag, or module-boundary change per [`../AGENTS.md`](../AGENTS.md#4-unified-documentation--skill-maintenance-policy).
+- Project-level standards and release workflows live in [`../.agents/skills/ctares/SKILL.md`](../.agents/skills/ctares/SKILL.md).
+
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request.
+This project is licensed under the MIT License. See the [LICENSE](../LICENSE) file for details.
 
 ## Contact
 
-For any inquiries, please reach out to the author at [root@devhub.vip](mailto:root@devhub.vip).
+For inquiries, please contact the author at [root@devhub.vip](mailto:root@devhub.vip).

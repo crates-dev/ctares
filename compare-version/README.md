@@ -1,42 +1,63 @@
-<center>
+<div align="center">
 
 # compare_version
 
-[![](https://img.shields.io/crates/v/compare_version.svg)](https://crates.io/crates/compare_version)
-[![](https://img.shields.io/crates/d/compare_version.svg)](https://img.shields.io/crates/d/compare_version.svg)
-[![](https://docs.rs/compare_version/badge.svg)](https://docs.rs/compare_version)
-[![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
-[![](https://img.shields.io/crates/l/compare_version.svg)](./LICENSE)
+**Semantic Version Comparison & Compatibility**
 
-</center>
+[![crates.io](https://img.shields.io/crates/v/compare_version.svg?style=flat-square)](https://crates.io/crates/compare_version)
+[![docs.rs](https://img.shields.io/docsrs/compare_version?style=flat-square)](https://docs.rs/compare_version)
+[![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
+[![License: MIT](https://img.shields.io/crates/l/compare_version.svg?style=flat-square)](../LICENSE)
 
-[Api Docs](https://docs.rs/compare_version/latest/)
+[Workspace Overview](../README.md) · [API Docs](https://docs.rs/compare_version/latest/) · [Agent Engineering Rules](../AGENTS.md)
 
-> A Rust library for comparing semantic versioning strings and checking version compatibility.
+</div>
 
-## Features
+---
 
-- **Version Comparison**: Compare two semantic versioning strings to determine their order (greater, less, equal).
-- **Version Range Matching**: Check if a specific version matches a specified range using `^` and `~` notation.
-- **Pre-release Support**: Handle pre-release versions with proper comparison logic.
-- **Error Handling**: Comprehensive error types to handle version parsing and range issues gracefully.
+## Overview
 
-## Installation
+Parses, orders, and evaluates semantic versioning strings (`major.minor.patch`) for version compatibility checks across tooling and services.
 
-To use this crate, you can run cmd:
+This package is part of the [`ctares`](../README.md) unified Rust 2024 workspace and follows the repository's strict module purity, formatting, and dependency-ordered release standards.
 
-```shell
+## Responsibilities & Module Layout
+
+- `struct` / `enum` — Parsed version segments and comparison result enums
+- `impl` — Ordering, parsing, and compatibility predicates
+- `const` — Separator and boundary constants
+
+## Installation & Quick Start
+
+```sh
 cargo add compare_version
 ```
 
+```rust
+use compare_version::*;
+
+// Parse and compare SemVer strings deterministically.
+```
+
+## Verification
+
+Run crate-scoped formatting, lint, and test checks from the workspace root:
+
+```sh
+cargo run -p crate-cli -- fmt --check
+cargo clippy -p compare_version --all-features --all-targets -- -D warnings
+cargo test -p compare_version --all-features
+```
+
+## Documentation & Governance
+
+- Update this `README.md` alongside any public API, CLI flag, or module-boundary change per [`../AGENTS.md`](../AGENTS.md#4-unified-documentation--skill-maintenance-policy).
+- Project-level standards and release workflows live in [`../.agents/skills/ctares/SKILL.md`](../.agents/skills/ctares/SKILL.md).
+
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request.
+This project is licensed under the MIT License. See the [LICENSE](../LICENSE) file for details.
 
 ## Contact
 
-For any inquiries, please reach out to the author at [root@devhub.vip](mailto:root@devhub.vip).
+For inquiries, please contact the author at [root@devhub.vip](mailto:root@devhub.vip).

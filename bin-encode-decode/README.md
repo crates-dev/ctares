@@ -1,43 +1,66 @@
-<center>
+<div align="center">
 
 # bin-encode-decode
 
-[![](https://img.shields.io/crates/v/bin-encode-decode.svg)](https://crates.io/crates/bin-encode-decode)
-[![](https://img.shields.io/crates/d/bin-encode-decode.svg)](https://img.shields.io/crates/d/bin-encode-decode.svg)
-[![](https://docs.rs/bin-encode-decode/badge.svg)](https://docs.rs/bin-encode-decode)
-[![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
-[![](https://img.shields.io/crates/l/bin-encode-decode.svg)](./LICENSE)
+**Custom-Alphabet Binary Encoding & Decoding**
 
-</center>
+[![crates.io](https://img.shields.io/crates/v/bin-encode-decode.svg?style=flat-square)](https://crates.io/crates/bin-encode-decode)
+[![docs.rs](https://img.shields.io/docsrs/bin-encode-decode?style=flat-square)](https://docs.rs/bin-encode-decode)
+[![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
+[![License: MIT](https://img.shields.io/crates/l/bin-encode-decode.svg?style=flat-square)](../LICENSE)
 
-[Api Docs](https://docs.rs/bin-encode-decode/latest/)
+[Workspace Overview](../README.md) · [API Docs](https://docs.rs/bin-encode-decode/latest/) · [Agent Engineering Rules](../AGENTS.md)
 
-> A high-performance binary encode and decode library that supports customizable character sets beyond Base64.
+</div>
 
-## Features
+---
 
-- **Custom Character Sets**: Define your own character set for encoding and decoding, allowing for flexible data representation.
-- **High Performance**: Optimized for speed, making it suitable for applications requiring efficient cryptographic operations.
-- **Simple API**: Intuitive and easy-to-use interface for both encode and decode processes.
-- **Robust Error Handling**: Provides clear and descriptive error messages to facilitate debugging.
-- **Extensive Documentation**: Comprehensive guides and examples to help you get started quickly.
+## Overview
 
-## Installation
+High-performance binary encoder and decoder supporting arbitrary custom character sets beyond standard Base64.
 
-To install `bin-encode-decode` run cmd:
+This package is part of the [`ctares`](../README.md) unified Rust 2024 workspace and follows the repository's strict module purity, formatting, and dependency-ordered release standards.
+
+## Responsibilities & Module Layout
+
+- `common` — Alphabet validation, lookup tables, and error types
+- `encode` — Deterministic binary-to-text encoding over user-supplied alphabets
+- `decode` — Strict character validation and binary reconstruction
+
+## Installation & Quick Start
 
 ```sh
 cargo add bin-encode-decode
 ```
 
+```rust
+use bin_encode_decode::*;
+
+let charset: &str = "0123456789abcdef";
+let encoded: String = encode(b"ctares", charset).unwrap();
+let decoded: Vec<u8> = decode(&encoded, charset).unwrap();
+assert_eq!(decoded, b"ctares");
+```
+
+## Verification
+
+Run crate-scoped formatting, lint, and test checks from the workspace root:
+
+```sh
+cargo run -p crate-cli -- fmt --check
+cargo clippy -p bin-encode-decode --all-features --all-targets -- -D warnings
+cargo test -p bin-encode-decode --all-features
+```
+
+## Documentation & Governance
+
+- Update this `README.md` alongside any public API, CLI flag, or module-boundary change per [`../AGENTS.md`](../AGENTS.md#4-unified-documentation--skill-maintenance-policy).
+- Project-level standards and release workflows live in [`../.agents/skills/ctares/SKILL.md`](../.agents/skills/ctares/SKILL.md).
+
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request.
+This project is licensed under the MIT License. See the [LICENSE](../LICENSE) file for details.
 
 ## Contact
 
-For any inquiries, please reach out to the author at [root@devhub.vip](mailto:root@devhub.vip).
+For inquiries, please contact the author at [root@devhub.vip](mailto:root@devhub.vip).

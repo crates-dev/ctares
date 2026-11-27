@@ -1,69 +1,64 @@
-<center>
+<div align="center">
 
 # std-macro-extensions
 
-[![](https://img.shields.io/crates/v/std-macro-extensions.svg)](https://crates.io/crates/std-macro-extensions)
-[![](https://img.shields.io/crates/d/std-macro-extensions.svg)](https://img.shields.io/crates/d/std-macro-extensions.svg)
-[![](https://docs.rs/std-macro-extensions/badge.svg)](https://docs.rs/std-macro-extensions)
-[![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
-[![](https://img.shields.io/crates/l/std-macro-extensions.svg)](./LICENSE)
+**Standard Library Collection & Sync Helper Macros**
 
-</center>
+[![crates.io](https://img.shields.io/crates/v/std-macro-extensions.svg?style=flat-square)](https://crates.io/crates/std-macro-extensions)
+[![docs.rs](https://img.shields.io/docsrs/std-macro-extensions?style=flat-square)](https://docs.rs/std-macro-extensions)
+[![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
+[![License: MIT](https://img.shields.io/crates/l/std-macro-extensions.svg?style=flat-square)](../LICENSE)
 
-[Api Docs](https://docs.rs/std-macro-extensions/latest/)
+[Workspace Overview](../README.md) · [API Docs](https://docs.rs/std-macro-extensions/latest/) · [Agent Engineering Rules](../AGENTS.md)
 
-> A collection of macro extensions for Rust's standard library data structures, simplifying the creation and manipulation of common collections such as HashMap, Vec, and more.
+</div>
 
-## Features
+---
 
-- **Simplified Initialization**: Use macros to easily create instances of common data structures.
-- **Supports Various Data Structures**: Includes macros for `Vec`, `HashMap`, `Arc`, and more.
-- **Easy to Use**: Intuitive syntax for quick data structure creation.
+## Overview
 
-## Installation
+Declarative macros streamlining creation and manipulation of `std` collections (`HashMap`, `BTreeMap`, `HashSet`, `VecDeque`, `BinaryHeap`, `LinkedList`), smart pointers (`Arc`, `Rc`, `Box`), locks (`Mutex`, `RwLock`, `RefCell`), and console I/O.
 
-To install `std-macro-extensions` run cmd:
+This package is part of the [`ctares`](../README.md) unified Rust 2024 workspace and follows the repository's strict module purity, formatting, and dependency-ordered release standards.
+
+## Responsibilities & Module Layout
+
+- `hash_map` / `b_tree_map` / `hash_set` / `b_tree_set` / `vector` / `vector_deque` / `binary_heap` / `linked_list` — Collection literal macros
+- `arc` / `rc` / `boxed` / `cell` / `ref_cell` / `mutex` / `rw_lock` — Smart pointer and synchronization wrappers
+- `cin` / `cout` / `path` / `string` / `execute` — Ergonomic I/O and formatting macros
+
+## Installation & Quick Start
 
 ```sh
 cargo add std-macro-extensions
 ```
 
-## Available Macros
+```rust
+use std_macro_extensions::*;
 
-- `arc!`: Creates an `Arc<T>`.
-- `vector!`: Creates a `Vec<T>`.
-- `map!`: Creates a `HashMap<K, V>`.
-- `set!`: Creates a `HashSet<T>`.
-- `b_tree_map!`: Creates a `BTreeMap<K, V>`.
-- `b_tree_set!`: Creates a `BTreeSet<T>`.
-- `list!`: Creates a `LinkedList<T>`.
-- `heap!`: Creates a `BinaryHeap<T>`.
-- `string!`: Creates a `String`.
-- `boxed!`: Creates a `Box<T>`.
-- `rc!`: Creates an `Rc<T>`.
-- `arc!`: Creates an `Arc<T>`.
-- `mutex!`: Creates a `Mutex<T>`.
-- `rw_lock!`: Creates a `RwLock<T>`.
-- `cell!`: Creates a `Cell<T>`.
-- `ref_cell!`: Creates a `RefCell<T>`.
-- `vector_deque!`: Creates a `VecDeque<T>`.
-- `join_paths!`: Combines multiple paths into a single valid path, handling overlapping slashes.
-- `cin!`: Reads a line of input from the standard input.
-- `cin_parse!`: Parses input into a specified type.
-- `cout!`: Prints formatted output to the standard output.
-- `endl!`: Prints a newline character to the standard output.
-- `cout_endl!`: Prints formatted output followed by a newline character to the standard output.
-- `execute!`: Executes a function with the provided arguments.
-- `execute_async!`: Executes an asynchronous function with the provided arguments.
+let map = hash_map! { "env" => "prod", "region" => "us" };
+assert_eq!(map.get("env"), Some(&"prod"));
+```
+
+## Verification
+
+Run crate-scoped formatting, lint, and test checks from the workspace root:
+
+```sh
+cargo run -p crate-cli -- fmt --check
+cargo clippy -p std-macro-extensions --all-features --all-targets -- -D warnings
+cargo test -p std-macro-extensions --all-features
+```
+
+## Documentation & Governance
+
+- Update this `README.md` alongside any public API, CLI flag, or module-boundary change per [`../AGENTS.md`](../AGENTS.md#4-unified-documentation--skill-maintenance-policy).
+- Project-level standards and release workflows live in [`../.agents/skills/ctares/SKILL.md`](../.agents/skills/ctares/SKILL.md).
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request.
+This project is licensed under the MIT License. See the [LICENSE](../LICENSE) file for details.
 
 ## Contact
 
-For any inquiries, please reach out to the author at [root@devhub.vip](mailto:root@devhub.vip).
+For inquiries, please contact the author at [root@devhub.vip](mailto:root@devhub.vip).

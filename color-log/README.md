@@ -1,41 +1,63 @@
-<center>
+<div align="center">
 
 # color-log
 
-[![](https://img.shields.io/crates/v/color-log.svg)](https://crates.io/crates/color-log)
-[![](https://img.shields.io/crates/d/color-log.svg)](https://img.shields.io/crates/d/color-log.svg)
-[![](https://docs.rs/color-log/badge.svg)](https://docs.rs/color-log)
-[![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
-[![](https://img.shields.io/crates/l/color-log.svg)](./LICENSE)
+**Sync & Async Rotating Structured Logger**
 
-</center>
+[![crates.io](https://img.shields.io/crates/v/color-log.svg?style=flat-square)](https://crates.io/crates/color-log)
+[![docs.rs](https://img.shields.io/docsrs/color-log?style=flat-square)](https://docs.rs/color-log)
+[![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
+[![License: MIT](https://img.shields.io/crates/l/color-log.svg?style=flat-square)](../LICENSE)
 
-[Api Docs](https://docs.rs/color-log/latest/)
+[Workspace Overview](../README.md) · [API Docs](https://docs.rs/color-log/latest/) · [Agent Engineering Rules](../AGENTS.md)
 
-## Description
+</div>
 
-> A Rust logging library that supports both asynchronous and synchronous logging. It provides multiple log levels, such as error, info, and debug. Users can define custom log handling methods and configure log file paths. The library supports log rotation, automatically creating a new log file when the current file reaches the specified size limit. It allows flexible logging configurations, making it suitable for both high-performance asynchronous applications and traditional synchronous logging scenarios. The asynchronous mode utilizes Tokio's async channels for efficient log buffering, while the synchronous mode writes logs directly to the file system.
+---
 
-## Log Storage Location Description
+## Overview
 
-> Three directories will be created under the user-specified directory: one for error logs, one for info logs, and one for debug logs. Each of these directories will contain a subdirectory named by the date, and the log files within these subdirectories will be named in the format `timestamp.index.log`.
+Configurable synchronous and Tokio-async logger supporting error/info/debug levels, custom handlers, and automatic size-based log file rotation.
 
-## Installation
+This package is part of the [`ctares`](../README.md) unified Rust 2024 workspace and follows the repository's strict module purity, formatting, and dependency-ordered release standards.
 
-To install `color-log` run cmd:
+## Responsibilities & Module Layout
 
-```shell
+- `struct` / `trait` — Logger configuration, rotation thresholds, and custom sink hooks
+- `fn` / `impl` — Sync file writers and Tokio channel-buffered async log writers
+- `const` — Default level prefixes and rotation limits
+
+## Installation & Quick Start
+
+```sh
 cargo add color-log
 ```
 
+```rust
+use color_log::*;
+
+// Initialize a sync or Tokio-async rotating logger with custom output paths.
+```
+
+## Verification
+
+Run crate-scoped formatting, lint, and test checks from the workspace root:
+
+```sh
+cargo run -p crate-cli -- fmt --check
+cargo clippy -p color-log --all-features --all-targets -- -D warnings
+cargo test -p color-log --all-features
+```
+
+## Documentation & Governance
+
+- Update this `README.md` alongside any public API, CLI flag, or module-boundary change per [`../AGENTS.md`](../AGENTS.md#4-unified-documentation--skill-maintenance-policy).
+- Project-level standards and release workflows live in [`../.agents/skills/ctares/SKILL.md`](../.agents/skills/ctares/SKILL.md).
+
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request.
+This project is licensed under the MIT License. See the [LICENSE](../LICENSE) file for details.
 
 ## Contact
 
-For any inquiries, please reach out to the author at [root@devhub.vip](mailto:root@devhub.vip).
+For inquiries, please contact the author at [root@devhub.vip](mailto:root@devhub.vip).

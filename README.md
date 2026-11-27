@@ -1,77 +1,158 @@
+<div align="center">
+
 # ctares
 
-A unified Cargo workspace holding 24 Rust crates under the
-[crates-dev](https://github.com/crates-dev) GitHub organization, each a
-self-contained directory with its own `Cargo.toml`, `src/`, tests, and examples,
-stitched together by the root `Cargo.toml`, with each crate's full commit history
-preserved.
+**Unified Rust 2024 Workspace for Core Macros, CLI Tooling, Async Concurrency, Networking, Security & Payments**
 
-## Packages
+[![CI Status](https://img.shields.io/github/actions/workflow/status/crates-dev/ctares/rust.yml?branch=master&style=flat-square&label=CI)](https://github.com/crates-dev/ctares/actions)
+[![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](./LICENSE)
 
-| crate                         | crates.io                                                                                                                             | docs.rs                                                                                                          |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `bin-encode-decode`           | [![crates.io](https://img.shields.io/crates/v/bin-encode-decode.svg)](https://crates.io/crates/bin-encode-decode)                     | [![docs.rs](https://docs.rs/bin-encode-decode/badge.svg)](https://docs.rs/bin-encode-decode)                     |
-| `chinese-identification-card` | [![crates.io](https://img.shields.io/crates/v/chinese-identification-card.svg)](https://crates.io/crates/chinese-identification-card) | [![docs.rs](https://docs.rs/chinese-identification-card/badge.svg)](https://docs.rs/chinese-identification-card) |
-| `chunkify`                    | [![crates.io](https://img.shields.io/crates/v/chunkify.svg)](https://crates.io/crates/chunkify)                                       | [![docs.rs](https://docs.rs/chunkify/badge.svg)](https://docs.rs/chunkify)                                       |
-| `clonelicious`                | [![crates.io](https://img.shields.io/crates/v/clonelicious.svg)](https://crates.io/crates/clonelicious)                               | [![docs.rs](https://docs.rs/clonelicious/badge.svg)](https://docs.rs/clonelicious)                               |
-| `color-log`                   | [![crates.io](https://img.shields.io/crates/v/color-log.svg)](https://crates.io/crates/color-log)                                     | [![docs.rs](https://docs.rs/color-log/badge.svg)](https://docs.rs/color-log)                                     |
-| `color-output`                | [![crates.io](https://img.shields.io/crates/v/color-output.svg)](https://crates.io/crates/color-output)                               | [![docs.rs](https://docs.rs/color-output/badge.svg)](https://docs.rs/color-output)                               |
-| `compare_version`             | [![crates.io](https://img.shields.io/crates/v/compare_version.svg)](https://crates.io/crates/compare_version)                         | [![docs.rs](https://docs.rs/compare_version/badge.svg)](https://docs.rs/compare_version)                         |
-| `crate-cli`                   | [![crates.io](https://img.shields.io/crates/v/crate-cli.svg)](https://crates.io/crates/crate-cli)                                     | [![docs.rs](https://docs.rs/crate-cli/badge.svg)](https://docs.rs/crate-cli)                                     |
-| `future-fn`                   | [![crates.io](https://img.shields.io/crates/v/future-fn.svg)](https://crates.io/crates/future-fn)                                     | [![docs.rs](https://docs.rs/future-fn/badge.svg)](https://docs.rs/future-fn)                                     |
-| `instrument-level`            | [![crates.io](https://img.shields.io/crates/v/instrument-level.svg)](https://crates.io/crates/instrument-level)                       | [![docs.rs](https://docs.rs/instrument-level/badge.svg)](https://docs.rs/instrument-level)                       |
-| `jwt-service`                 | [![crates.io](https://img.shields.io/crates/v/jwt-service.svg)](https://crates.io/crates/jwt-service)                                 | [![docs.rs](https://docs.rs/jwt-service/badge.svg)](https://docs.rs/jwt-service)                                 |
-| `lombok-macros`               | [![crates.io](https://img.shields.io/crates/v/lombok-macros.svg)](https://crates.io/crates/lombok-macros)                             | [![docs.rs](https://docs.rs/lombok-macros/badge.svg)](https://docs.rs/lombok-macros)                             |
-| `recoverable-spawn`           | [![crates.io](https://img.shields.io/crates/v/recoverable-spawn.svg)](https://crates.io/crates/recoverable-spawn)                     | [![docs.rs](https://docs.rs/recoverable-spawn/badge.svg)](https://docs.rs/recoverable-spawn)                     |
-| `recoverable-thread-pool`     | [![crates.io](https://img.shields.io/crates/v/recoverable-thread-pool.svg)](https://crates.io/crates/recoverable-thread-pool)         | [![docs.rs](https://docs.rs/recoverable-thread-pool/badge.svg)](https://docs.rs/recoverable-thread-pool)         |
-| `std-macro-extensions`        | [![crates.io](https://img.shields.io/crates/v/std-macro-extensions.svg)](https://crates.io/crates/std-macro-extensions)               | [![docs.rs](https://docs.rs/std-macro-extensions/badge.svg)](https://docs.rs/std-macro-extensions)               |
-| `stripe-pay-client`           | [![crates.io](https://img.shields.io/crates/v/stripe-pay-client.svg)](https://crates.io/crates/stripe-pay-client)                     | [![docs.rs](https://docs.rs/stripe-pay-client/badge.svg)](https://docs.rs/stripe-pay-client)                     |
-| `stripe-pay-core`             | [![crates.io](https://img.shields.io/crates/v/stripe-pay-core.svg)](https://crates.io/crates/stripe-pay-core)                         | [![docs.rs](https://docs.rs/stripe-pay-core/badge.svg)](https://docs.rs/stripe-pay-core)                         |
-| `stripe-pay-server`           | [![crates.io](https://img.shields.io/crates/v/stripe-pay-server.svg)](https://crates.io/crates/stripe-pay-server)                     | [![docs.rs](https://docs.rs/stripe-pay-server/badge.svg)](https://docs.rs/stripe-pay-server)                     |
-| `system-time`                 | [![crates.io](https://img.shields.io/crates/v/system-time.svg)](https://crates.io/crates/system-time)                                 | [![docs.rs](https://docs.rs/system-time/badge.svg)](https://docs.rs/system-time)                                 |
-| `tcp-request`                 | [![crates.io](https://img.shields.io/crates/v/tcp-request.svg)](https://crates.io/crates/tcp-request)                                 | [![docs.rs](https://docs.rs/tcp-request/badge.svg)](https://docs.rs/tcp-request)                                 |
-| `tcplane`                     | [![crates.io](https://img.shields.io/crates/v/tcplane.svg)](https://crates.io/crates/tcplane)                                         | [![docs.rs](https://docs.rs/tcplane/badge.svg)](https://docs.rs/tcplane)                                         |
-| `tokio-broadcast`             | [![crates.io](https://img.shields.io/crates/v/tokio-broadcast.svg)](https://crates.io/crates/tokio-broadcast)                         | [![docs.rs](https://docs.rs/tokio-broadcast/badge.svg)](https://docs.rs/tokio-broadcast)                         |
-| `udp`                         | [![crates.io](https://img.shields.io/crates/v/udp.svg)](https://crates.io/crates/udp)                                                 | [![docs.rs](https://docs.rs/udp/badge.svg)](https://docs.rs/udp)                                                 |
-| `udp-request`                 | [![crates.io](https://img.shields.io/crates/v/udp-request.svg)](https://crates.io/crates/udp-request)                                 | [![docs.rs](https://docs.rs/udp-request/badge.svg)](https://docs.rs/udp-request)                                 |
+[Workspace Matrix](#workspace-matrix) · [Architecture](#architecture) · [Quick Start](#quick-start) · [Unified Formatter (`crate fmt`)](#unified-formatter-crate-fmt) · [Verification](#verification) · [Agent Governance](./AGENTS.md)
 
-## Source
+</div>
 
-| crate                         | source                                                                       |
-| ----------------------------- | ---------------------------------------------------------------------------- |
-| `bin-encode-decode`           | https://github.com/crates-dev/ctares/tree/master/bin-encode-decode           |
-| `chinese-identification-card` | https://github.com/crates-dev/ctares/tree/master/chinese-identification-card |
-| `chunkify`                    | https://github.com/crates-dev/ctares/tree/master/chunkify                    |
-| `clonelicious`                | https://github.com/crates-dev/ctares/tree/master/clonelicious                |
-| `color-log`                   | https://github.com/crates-dev/ctares/tree/master/color-log                   |
-| `color-output`                | https://github.com/crates-dev/ctares/tree/master/color-output                |
-| `compare_version`             | https://github.com/crates-dev/ctares/tree/master/compare-version             |
-| `crate-cli`                   | https://github.com/crates-dev/ctares/tree/master/crate-cli                   |
-| `future-fn`                   | https://github.com/crates-dev/ctares/tree/master/future-fn                   |
-| `instrument-level`            | https://github.com/crates-dev/ctares/tree/master/instrument-level            |
-| `jwt-service`                 | https://github.com/crates-dev/ctares/tree/master/jwt-service                 |
-| `lombok-macros`               | https://github.com/crates-dev/ctares/tree/master/lombok-macros               |
-| `recoverable-spawn`           | https://github.com/crates-dev/ctares/tree/master/recoverable-spawn           |
-| `recoverable-thread-pool`     | https://github.com/crates-dev/ctares/tree/master/recoverable-thread-pool     |
-| `std-macro-extensions`        | https://github.com/crates-dev/ctares/tree/master/std-macro-extensions        |
-| `stripe-pay-client`           | https://github.com/crates-dev/ctares/tree/master/stripe-pay-client           |
-| `stripe-pay-core`             | https://github.com/crates-dev/ctares/tree/master/stripe-pay-core             |
-| `stripe-pay-server`           | https://github.com/crates-dev/ctares/tree/master/stripe-pay-server           |
-| `system-time`                 | https://github.com/crates-dev/ctares/tree/master/system-time                 |
-| `tcp-request`                 | https://github.com/crates-dev/ctares/tree/master/tcp-request                 |
-| `tcplane`                     | https://github.com/crates-dev/ctares/tree/master/tcplane                     |
-| `tokio-broadcast`             | https://github.com/crates-dev/ctares/tree/master/tokio-broadcast             |
-| `udp`                         | https://github.com/crates-dev/ctares/tree/master/udp                         |
-| `udp-request`                 | https://github.com/crates-dev/ctares/tree/master/udp-request                 |
+---
+
+## Overview
+
+**ctares** is the foundational monorepo under the [`crates-dev`](https://github.com/crates-dev) GitHub organization. It consolidates **24** independently published Rust crates into a single version-synchronized Cargo workspace while preserving each crate's isolated directory layout, unit/integration test suite, and independent `crates.io` release lifecycle.
+
+It powers upstream developer tooling and shared runtime primitives across the `euv`, `hyperlane`, `hyperlane-quick-start`, and `commerce-suite` ecosystem.
+
+---
+
+## Architecture
+
+```mermaid
+flowchart TB
+    CLI["Toolchain & Unified Formatter\ncrate-cli (bump · sync · publish · fmt)"]
+    Macros["Macro Suite\nlombok-macros · instrument-level · clonelicious · future-fn · std-macro-extensions"]
+    Runtime["Async, Logging & Time\ntokio-broadcast · recoverable-spawn · recoverable-thread-pool · color-log · color-output · system-time"]
+    Data["Encoding, Auth & Payments\nbin-encode-decode · chunkify · compare_version · chinese-identification-card · jwt-service · stripe-pay-*"]
+    Net["Transport Layer\ntcplane · tcp-request · udp · udp-request"]
+
+    CLI --> Runtime
+    Macros --> CLI
+    Macros --> Runtime
+    Macros --> Data
+    Macros --> Net
+    Data --> Net
+```
+
+---
+
+## Workspace Matrix
+
+### Toolchain & Unified Formatter
+
+| Crate                                | crates.io                                                                                         | docs.rs                                                                      | Responsibility                                                                                                        |
+| :----------------------------------- | :------------------------------------------------------------------------------------------------ | :--------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------- |
+| [`crate-cli`](./crate-cli/README.md) | [![crates.io](https://img.shields.io/crates/v/crate-cli.svg)](https://crates.io/crates/crate-cli) | [![docs.rs](https://docs.rs/crate-cli/badge.svg)](https://docs.rs/crate-cli) | Cargo lifecycle CLI (`bump`, `sync`, `publish`, `fmt`) with VS Code Prettier-aligned unified text and Rust formatting |
+
+### Procedural & Declarative Macros
+
+| Crate                                                      | crates.io                                                                                                               | docs.rs                                                                                            | Responsibility                                                                                      |
+| :--------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------- |
+| [`lombok-macros`](./lombok-macros/README.md)               | [![crates.io](https://img.shields.io/crates/v/lombok-macros.svg)](https://crates.io/crates/lombok-macros)               | [![docs.rs](https://docs.rs/lombok-macros/badge.svg)](https://docs.rs/lombok-macros)               | Derive macros for `Getter`, `GetterMut`, `Setter`, `Data`, `New`, `CustomDebug`, and `DisplayDebug` |
+| [`instrument-level`](./instrument-level/README.md)         | [![crates.io](https://img.shields.io/crates/v/instrument-level.svg)](https://crates.io/crates/instrument-level)         | [![docs.rs](https://docs.rs/instrument-level/badge.svg)](https://docs.rs/instrument-level)         | Tracing instrumentation attribute macros by log level (`trace`, `debug`, `info`, `warn`, `error`)   |
+| [`clonelicious`](./clonelicious/README.md)                 | [![crates.io](https://img.shields.io/crates/v/clonelicious.svg)](https://crates.io/crates/clonelicious)                 | [![docs.rs](https://docs.rs/clonelicious/badge.svg)](https://docs.rs/clonelicious)                 | Concise `clone!` macro for cloning captured state before closure invocation                         |
+| [`future-fn`](./future-fn/README.md)                       | [![crates.io](https://img.shields.io/crates/v/future-fn.svg)](https://crates.io/crates/future-fn)                       | [![docs.rs](https://docs.rs/future-fn/badge.svg)](https://docs.rs/future-fn)                       | Ergonomic macros for async closures capturing owned values by move                                  |
+| [`std-macro-extensions`](./std-macro-extensions/README.md) | [![crates.io](https://img.shields.io/crates/v/std-macro-extensions.svg)](https://crates.io/crates/std-macro-extensions) | [![docs.rs](https://docs.rs/std-macro-extensions/badge.svg)](https://docs.rs/std-macro-extensions) | Standard library collection, smart pointer, sync primitive, and I/O helper macros                   |
+
+### Logging, Console & Async Concurrency
+
+| Crate                                                            | crates.io                                                                                                                     | docs.rs                                                                                                  | Responsibility                                                                    |
+| :--------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- |
+| [`color-output`](./color-output/README.md)                       | [![crates.io](https://img.shields.io/crates/v/color-output.svg)](https://crates.io/crates/color-output)                       | [![docs.rs](https://docs.rs/color-output/badge.svg)](https://docs.rs/color-output)                       | Atomic ANSI colored console output functions and builder API                      |
+| [`color-log`](./color-log/README.md)                             | [![crates.io](https://img.shields.io/crates/v/color-log.svg)](https://crates.io/crates/color-log)                             | [![docs.rs](https://docs.rs/color-log/badge.svg)](https://docs.rs/color-log)                             | Sync and Tokio-async logger with custom handlers and size-based log file rotation |
+| [`tokio-broadcast`](./tokio-broadcast/README.md)                 | [![crates.io](https://img.shields.io/crates/v/tokio-broadcast.svg)](https://crates.io/crates/tokio-broadcast)                 | [![docs.rs](https://docs.rs/tokio-broadcast/badge.svg)](https://docs.rs/tokio-broadcast)                 | High-throughput `Broadcast` and keyed `BroadcastMap` pub/sub channels over Tokio  |
+| [`recoverable-spawn`](./recoverable-spawn/README.md)             | [![crates.io](https://img.shields.io/crates/v/recoverable-spawn.svg)](https://crates.io/crates/recoverable-spawn)             | [![docs.rs](https://docs.rs/recoverable-spawn/badge.svg)](https://docs.rs/recoverable-spawn)             | Panic-catching sync and async task spawners with recovery hooks                   |
+| [`recoverable-thread-pool`](./recoverable-thread-pool/README.md) | [![crates.io](https://img.shields.io/crates/v/recoverable-thread-pool.svg)](https://crates.io/crates/recoverable-thread-pool) | [![docs.rs](https://docs.rs/recoverable-thread-pool/badge.svg)](https://docs.rs/recoverable-thread-pool) | Self-healing worker thread pool built atop `recoverable-spawn`                    |
+
+### Data Processing, Auth & Payments
+
+| Crate                                                                    | crates.io                                                                                                                             | docs.rs                                                                                                          | Responsibility                                                                  |
+| :----------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------ | :--------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------ |
+| [`bin-encode-decode`](./bin-encode-decode/README.md)                     | [![crates.io](https://img.shields.io/crates/v/bin-encode-decode.svg)](https://crates.io/crates/bin-encode-decode)                     | [![docs.rs](https://docs.rs/bin-encode-decode/badge.svg)](https://docs.rs/bin-encode-decode)                     | Binary encoding and decoding with customizable character sets beyond Base64     |
+| [`chunkify`](./chunkify/README.md)                                       | [![crates.io](https://img.shields.io/crates/v/chunkify.svg)](https://crates.io/crates/chunkify)                                       | [![docs.rs](https://docs.rs/chunkify/badge.svg)](https://docs.rs/chunkify)                                       | Deterministic byte/file chunk splitting and resumable reassembly                |
+| [`compare_version`](./compare-version/README.md)                         | [![crates.io](https://img.shields.io/crates/v/compare_version.svg)](https://crates.io/crates/compare_version)                         | [![docs.rs](https://docs.rs/compare_version/badge.svg)](https://docs.rs/compare_version)                         | Semantic version parsing, ordering, and compatibility verification              |
+| [`system-time`](./system-time/README.md)                                 | [![crates.io](https://img.shields.io/crates/v/system-time.svg)](https://crates.io/crates/system-time)                                 | [![docs.rs](https://docs.rs/system-time/badge.svg)](https://docs.rs/system-time)                                 | Locale-aware system clock formatting and timestamp helpers                      |
+| [`chinese-identification-card`](./chinese-identification-card/README.md) | [![crates.io](https://img.shields.io/crates/v/chinese-identification-card.svg)](https://crates.io/crates/chinese-identification-card) | [![docs.rs](https://docs.rs/chinese-identification-card/badge.svg)](https://docs.rs/chinese-identification-card) | GB 11643 Chinese resident ID validation and checksum verification               |
+| [`jwt-service`](./jwt-service/README.md)                                 | [![crates.io](https://img.shields.io/crates/v/jwt-service.svg)](https://crates.io/crates/jwt-service)                                 | [![docs.rs](https://docs.rs/jwt-service/badge.svg)](https://docs.rs/jwt-service)                                 | Async JWT generation, verification, and typed custom claims                     |
+| [`stripe-pay-core`](./stripe-pay-core/README.md)                         | [![crates.io](https://img.shields.io/crates/v/stripe-pay-core.svg)](https://crates.io/crates/stripe-pay-core)                         | [![docs.rs](https://docs.rs/stripe-pay-core/badge.svg)](https://docs.rs/stripe-pay-core)                         | Shared Stripe payment domain types, money precision, and form encoding          |
+| [`stripe-pay-server`](./stripe-pay-server/README.md)                     | [![crates.io](https://img.shields.io/crates/v/stripe-pay-server.svg)](https://crates.io/crates/stripe-pay-server)                     | [![docs.rs](https://docs.rs/stripe-pay-server/badge.svg)](https://docs.rs/stripe-pay-server)                     | Server-side Stripe transport and constant-time HMAC-SHA256 webhook verification |
+| [`stripe-pay-client`](./stripe-pay-client/README.md)                     | [![crates.io](https://img.shields.io/crates/v/stripe-pay-client.svg)](https://crates.io/crates/stripe-pay-client)                     | [![docs.rs](https://docs.rs/stripe-pay-client/badge.svg)](https://docs.rs/stripe-pay-client)                     | Browser/WASM Stripe checkout element configuration over `stripe-pay-core`       |
+
+### Networking & Transport
+
+| Crate                                    | crates.io                                                                                             | docs.rs                                                                          | Responsibility                                                          |
+| :--------------------------------------- | :---------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------- | :---------------------------------------------------------------------- |
+| [`tcplane`](./tcplane/README.md)         | [![crates.io](https://img.shields.io/crates/v/tcplane.svg)](https://crates.io/crates/tcplane)         | [![docs.rs](https://docs.rs/tcplane/badge.svg)](https://docs.rs/tcplane)         | Lightweight Tokio async TCP server with hooks and connection lifecycle  |
+| [`tcp-request`](./tcp-request/README.md) | [![crates.io](https://img.shields.io/crates/v/tcp-request.svg)](https://crates.io/crates/tcp-request) | [![docs.rs](https://docs.rs/tcp-request/badge.svg)](https://docs.rs/tcp-request) | Raw synchronous TCP request client with redirect and response support   |
+| [`udp`](./udp/README.md)                 | [![crates.io](https://img.shields.io/crates/v/udp.svg)](https://crates.io/crates/udp)                 | [![docs.rs](https://docs.rs/udp/badge.svg)](https://docs.rs/udp)                 | Lightweight Tokio async UDP datagram server with request-response hooks |
+| [`udp-request`](./udp-request/README.md) | [![crates.io](https://img.shields.io/crates/v/udp-request.svg)](https://crates.io/crates/udp-request) | [![docs.rs](https://docs.rs/udp-request/badge.svg)](https://docs.rs/udp-request) | Raw UDP datagram request/response client                                |
+
+---
+
+## Quick Start
+
+Install the workspace CLI globally or invoke any crate directly from `crates.io`:
+
+```sh
+cargo install crate-cli
+crate fmt --check
+```
+
+Or add any individual library crate to your project:
+
+```sh
+cargo add lombok-macros color-output tokio-broadcast
+```
+
+---
+
+## Unified Formatter (`crate fmt`)
+
+`crate-cli` provides the ecosystem's single source of truth for multi-language text and Rust formatting, aligned with VS Code's `esbenp.prettier-vscode` (`tabWidth: 2`, `singleQuote: true`, `printWidth: 80`, `proseWrap: "preserve"`, `endOfLine: "lf"`) and `rustfmt`:
+
+- **Markdown** (`.md`, `.markdown`, `.mdx`): YAML frontmatter, CJK-width-aware GFM tables, lists, blockquotes, fenced code blocks with embedded `json`/`yaml` formatting.
+- **YAML** (`.yml`, `.yaml`): 2-space indentation, single-quoted scalars, flow sequences/mappings, verbatim block scalars, and GitHub Actions `${{ ... }}` preservation.
+- **JSON / JSONC** (`.json`, `.jsonc`): Order-preserving 2-space Prettier layout with comment retention for JSONC.
+- **TOML** (`.toml`): Cargo-compatible 4-space array indentation and clean key/table spacing.
+- **Rust** (`.rs`): Deterministic `#[derive(...)]` sorting + `cargo fmt`.
+- **Library Entry Points**: Downstream CLIs (`euv fmt`, `hyperlane fmt`) invoke `crate_cli::execute_unified_fmt` / `crate_cli::format_workspace_text_files` as their first pass before framework-specific formatting.
+
+---
+
+## Verification
+
+Run the complete local verification suite matching `.github/workflows/rust.yml`:
+
+```sh
+cargo run -p crate-cli -- fmt
+cargo run -p crate-cli -- fmt --check
+cargo fmt --all -- --check
+cargo clippy --workspace --all-features --all-targets -- -D warnings
+cargo test --workspace --all-features
+cargo check --release --workspace --all-features
+```
+
+---
+
+## Documentation & Governance
+
+- Engineering architecture, crate boundaries, release cascade, and documentation maintenance triggers are defined in [`AGENTS.md`](./AGENTS.md).
+- Project-specific agent workflow standards are maintained in [`.agents/skills/ctares/SKILL.md`](./.agents/skills/ctares/SKILL.md).
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request.
+Contributions are welcome! Please follow the rules in [`AGENTS.md`](./AGENTS.md) and open a pull request.
 
 ## Contact
 
-For any inquiries, please reach out to the author at [root@devhub.vip](mailto:root@devhub.vip).
+For inquiries, please contact the author at [root@devhub.vip](mailto:root@devhub.vip).

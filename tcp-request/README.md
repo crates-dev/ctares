@@ -1,39 +1,63 @@
-<center>
+<div align="center">
 
-## tcp-request
+# tcp-request
 
-[![](https://img.shields.io/crates/v/tcp-request.svg)](https://crates.io/crates/tcp-request)
-[![](https://img.shields.io/crates/d/tcp-request.svg)](https://img.shields.io/crates/d/tcp-request.svg)
-[![](https://docs.rs/tcp-request/badge.svg)](https://docs.rs/tcp-request)
-[![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
-[![](https://img.shields.io/crates/l/tcp-request.svg)](./LICENSE)
+**Raw Synchronous TCP Request Client**
 
-</center>
+[![crates.io](https://img.shields.io/crates/v/tcp-request.svg?style=flat-square)](https://crates.io/crates/tcp-request)
+[![docs.rs](https://img.shields.io/docsrs/tcp-request?style=flat-square)](https://docs.rs/tcp-request)
+[![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
+[![License: MIT](https://img.shields.io/crates/l/tcp-request.svg?style=flat-square)](../LICENSE)
 
-[Api Docs](https://docs.rs/tcp-request/latest/)
+[Workspace Overview](../README.md) · [API Docs](https://docs.rs/tcp-request/latest/) · [Agent Engineering Rules](../AGENTS.md)
 
-> A Rust library for sending raw TCP requests, with features for handling responses, managing redirects, and working with compressed data over TCP connections.
+</div>
 
-## Installation
+---
 
-To use this crate, you can run cmd:
+## Overview
 
-```shell
+Synchronous TCP request builder and response reader supporting timeouts, redirects, and raw byte-stream framing over `std::net::TcpStream`.
+
+This package is part of the [`ctares`](../README.md) unified Rust 2024 workspace and follows the repository's strict module purity, formatting, and dependency-ordered release standards.
+
+## Responsibilities & Module Layout
+
+- `request` — Fluent TCP request configuration and builder
+- `response` — Raw response framing, headers/body inspection, and error handling
+- `common` — Shared socket timeout and stream helpers
+
+## Installation & Quick Start
+
+```sh
 cargo add tcp-request
 ```
 
-## Help
+```rust
+use tcp_request::*;
 
-Ensure that CMake is installed on the system
+// Configure a synchronous TCP request with explicit timeout and inspect the raw response.
+```
+
+## Verification
+
+Run crate-scoped formatting, lint, and test checks from the workspace root:
+
+```sh
+cargo run -p crate-cli -- fmt --check
+cargo clippy -p tcp-request --all-features --all-targets -- -D warnings
+cargo test -p tcp-request --all-features
+```
+
+## Documentation & Governance
+
+- Update this `README.md` alongside any public API, CLI flag, or module-boundary change per [`../AGENTS.md`](../AGENTS.md#4-unified-documentation--skill-maintenance-policy).
+- Project-level standards and release workflows live in [`../.agents/skills/ctares/SKILL.md`](../.agents/skills/ctares/SKILL.md).
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request.
+This project is licensed under the MIT License. See the [LICENSE](../LICENSE) file for details.
 
 ## Contact
 
-For any inquiries, please reach out to the author at [root@devhub.vip](mailto:root@devhub.vip).
+For inquiries, please contact the author at [root@devhub.vip](mailto:root@devhub.vip).

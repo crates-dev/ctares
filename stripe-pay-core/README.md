@@ -1,31 +1,63 @@
+<div align="center">
+
 # stripe-pay-core
 
-Shared Stripe domain types for the `stripe-pay` SDK family.
+**Shared Stripe Payment Domain Types**
+
+[![crates.io](https://img.shields.io/crates/v/stripe-pay-core.svg?style=flat-square)](https://crates.io/crates/stripe-pay-core)
+[![docs.rs](https://img.shields.io/docsrs/stripe-pay-core?style=flat-square)](https://docs.rs/stripe-pay-core)
+[![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
+[![License: MIT](https://img.shields.io/crates/l/stripe-pay-core.svg?style=flat-square)](../LICENSE)
+
+[Workspace Overview](../README.md) · [API Docs](https://docs.rs/stripe-pay-core/latest/) · [Agent Engineering Rules](../AGENTS.md)
+
+</div>
+
+---
 
 ## Overview
 
-`stripe-pay-core` holds the value types every other crate in the family agrees on. It performs no I/O, so it runs anywhere — host binaries, servers, and `wasm32` builds alike.
+Runtime-agnostic Stripe domain crate shared by `stripe-pay-server` and `stripe-pay-client`: decimal money handling, typed Stripe identifiers, payment intents, charges, refunds, structured errors, and bracketed form encoding.
 
-Amounts are stored as integers in the currency's minor unit. No float ever touches a money value.
+This package is part of the [`ctares`](../README.md) unified Rust 2024 workspace and follows the repository's strict module purity, formatting, and dependency-ordered release standards.
 
-## Domain
+## Responsibilities & Module Layout
 
-- **`Money` / `Currency`** — minor-unit amounts, ISO codes, and per-currency decimal places. Zero-decimal currencies such as JPY are handled without a decimal point.
-- **`StripeId` / `StripeIdKind`** — prefixed identifiers (`pi_`, `ch_`, `re_`) with kind validation on construction.
-- **`PaymentIntent`** — the seven-state machine, including `is_terminal()` and `can_transition_to()`.
-- **`Charge` / `Refund`** — status, reason, and amount modelling.
-- **`CardBrand` / `CardDetails`** — PCI-safe card data. Only the brand, last four digits, and expiry are modelled; a full PAN or CVC is never stored.
-- **`FormParams` / `FormField`** — Stripe form encoding, including RFC 3986 percent-encoding of bracketed `metadata` keys.
+- `money` / `id` — Exact `rust_decimal` monetary representation and strongly typed Stripe object IDs
+- `payment_intent` / `payment_method` / `charge` / `refund` — Typed Stripe API payloads
+- `form` / `protocol` / `error` — Bracketed `application/x-www-form-urlencoded` encoder and typed error contracts
 
-## Usage
+## Installation & Quick Start
 
-```rust
-use stripe_pay_core::{Currency, Money};
-
-let amount: Money = Money::from_major(1999, Currency::Usd);
-assert_eq!(amount.get_amount(), 199_900);
+```sh
+cargo add stripe-pay-core
 ```
 
-## Licence
+```rust
+use stripe_pay_core::*;
 
-MIT. See [LICENSE](LICENSE).
+// Share exact typed Stripe domain models across backend and WebAssembly checkout clients.
+```
+
+## Verification
+
+Run crate-scoped formatting, lint, and test checks from the workspace root:
+
+```sh
+cargo run -p crate-cli -- fmt --check
+cargo clippy -p stripe-pay-core --all-features --all-targets -- -D warnings
+cargo test -p stripe-pay-core --all-features
+```
+
+## Documentation & Governance
+
+- Update this `README.md` alongside any public API, CLI flag, or module-boundary change per [`../AGENTS.md`](../AGENTS.md#4-unified-documentation--skill-maintenance-policy).
+- Project-level standards and release workflows live in [`../.agents/skills/ctares/SKILL.md`](../.agents/skills/ctares/SKILL.md).
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](../LICENSE) file for details.
+
+## Contact
+
+For inquiries, please contact the author at [root@devhub.vip](mailto:root@devhub.vip).

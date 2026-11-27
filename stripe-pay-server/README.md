@@ -1,36 +1,62 @@
+<div align="center">
+
 # stripe-pay-server
 
-Server-side transport for the `stripe-pay` SDK family.
+**Server-Side Stripe Transport & Webhook Verification**
+
+[![crates.io](https://img.shields.io/crates/v/stripe-pay-server.svg?style=flat-square)](https://crates.io/crates/stripe-pay-server)
+[![docs.rs](https://img.shields.io/docsrs/stripe-pay-server?style=flat-square)](https://docs.rs/stripe-pay-server)
+[![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
+[![License: MIT](https://img.shields.io/crates/l/stripe-pay-server.svg?style=flat-square)](../LICENSE)
+
+[Workspace Overview](../README.md) · [API Docs](https://docs.rs/stripe-pay-server/latest/) · [Agent Engineering Rules](../AGENTS.md)
+
+</div>
+
+---
 
 ## Overview
 
-`stripe-pay-server` verifies that a webhook payload really came from Stripe, and builds the form bodies the Stripe API expects. It depends on [`stripe-pay-core`](../stripe-pay-core) for the shared domain types.
+Server-side Stripe integration built on `stripe-pay-core`, providing constant-time HMAC-SHA256 webhook signature verification and payload parsing.
 
-## Webhook verification
+This package is part of the [`ctares`](../README.md) unified Rust 2024 workspace and follows the repository's strict module purity, formatting, and dependency-ordered release standards.
 
-Stripe signs `"{timestamp}.{payload}"` with HMAC-SHA256 and delivers the hex digest in the `Stripe-Signature` header alongside the timestamp. `stripe-pay-server` parses that header, enforces a timestamp tolerance, and compares digests in **constant time** so a forged request cannot learn how many leading bytes matched by timing the response.
+## Responsibilities & Module Layout
 
-```rust
-use stripe_pay_server::{DEFAULT_TOLERANCE_SECONDS, verify_webhook};
+- `signature` — `Stripe-Signature` header parsing, timestamp tolerance, and constant-time HMAC-SHA256 verification
+- `webhook` — Typed webhook event decoding layered over `stripe-pay-core`
 
-let event = verify_webhook(header, payload, secret, now, DEFAULT_TOLERANCE_SECONDS)?;
+## Installation & Quick Start
+
+```sh
+cargo add stripe-pay-server
 ```
 
-Rejections are typed: `MissingSignature`, `TimestampOutOfTolerance`, `EmptySecret`, and `SignatureMismatch`.
-
-## Request bodies
-
-`encode_create_payment_intent`, `encode_create_refund`, `encode_confirm_payment_intent`, and `encode_create_customer` produce percent-encoded bodies matching Stripe's `application/x-www-form-urlencoded` contract.
-
-## Usage
-
 ```rust
-use stripe_pay_server::{WebhookEvent, DEFAULT_TOLERANCE_SECONDS};
+use stripe_pay_server::*;
 
-let digest = WebhookEvent::new(payload, timestamp, String::new())
-    .compute_signature(secret)?;
+// Verify incoming Stripe-Signature headers with constant-time HMAC-SHA256 checks.
 ```
 
-## Licence
+## Verification
 
-MIT. See [LICENSE](LICENSE).
+Run crate-scoped formatting, lint, and test checks from the workspace root:
+
+```sh
+cargo run -p crate-cli -- fmt --check
+cargo clippy -p stripe-pay-server --all-features --all-targets -- -D warnings
+cargo test -p stripe-pay-server --all-features
+```
+
+## Documentation & Governance
+
+- Update this `README.md` alongside any public API, CLI flag, or module-boundary change per [`../AGENTS.md`](../AGENTS.md#4-unified-documentation--skill-maintenance-policy).
+- Project-level standards and release workflows live in [`../.agents/skills/ctares/SKILL.md`](../.agents/skills/ctares/SKILL.md).
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](../LICENSE) file for details.
+
+## Contact
+
+For inquiries, please contact the author at [root@devhub.vip](mailto:root@devhub.vip).

@@ -1,41 +1,64 @@
-<center>
+<div align="center">
 
 # chinese-identification-card
 
-[![](https://img.shields.io/crates/v/chinese-identification-card.svg)](https://crates.io/crates/chinese-identification-card)
-[![](https://img.shields.io/crates/d/chinese-identification-card.svg)](https://img.shields.io/crates/d/chinese-identification-card.svg)
-[![](https://docs.rs/chinese-identification-card/badge.svg)](https://docs.rs/chinese-identification-card)
-[![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
-[![](https://img.shields.io/crates/l/chinese-identification-card.svg)](./LICENSE)
+**GB 11643 Chinese Resident ID Validator**
 
-</center>
+[![crates.io](https://img.shields.io/crates/v/chinese-identification-card.svg?style=flat-square)](https://crates.io/crates/chinese-identification-card)
+[![docs.rs](https://img.shields.io/docsrs/chinese-identification-card?style=flat-square)](https://docs.rs/chinese-identification-card)
+[![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
+[![License: MIT](https://img.shields.io/crates/l/chinese-identification-card.svg?style=flat-square)](../LICENSE)
 
-[Api Docs](https://docs.rs/chinese-identification-card/latest/)
+[Workspace Overview](../README.md) · [API Docs](https://docs.rs/chinese-identification-card/latest/) · [Agent Engineering Rules](../AGENTS.md)
 
-> A Rust library for validating Chinese identification card numbers based on official rules and checksums.
+</div>
 
-## Features
+---
 
-- Validates the length and format of a Chinese identification card number
-- Calculates and verifies the checksum according to official weight factors
-- Lightweight and easy to integrate
+## Overview
 
-## Installation
+Validates 18-digit Chinese resident identification card numbers using official administrative region rules, birth date checks, and ISO 7064 MOD 11-2 checksums.
 
-To use this crate, you can run cmd:
+This package is part of the [`ctares`](../README.md) unified Rust 2024 workspace and follows the repository's strict module purity, formatting, and dependency-ordered release standards.
 
-```shell
+## Responsibilities & Module Layout
+
+- `const` — Official weight factors, check digits, and length boundaries
+- `struct` — Typed ID card descriptor encapsulating parsed metadata
+- `impl` — Validation, birth date verification, and checksum computation
+
+## Installation & Quick Start
+
+```sh
 cargo add chinese-identification-card
 ```
 
+```rust
+use chinese_identification_card::*;
+
+let valid: bool = ChineseIdCard::is_valid("11010519491231002X");
+assert!(valid);
+```
+
+## Verification
+
+Run crate-scoped formatting, lint, and test checks from the workspace root:
+
+```sh
+cargo run -p crate-cli -- fmt --check
+cargo clippy -p chinese-identification-card --all-features --all-targets -- -D warnings
+cargo test -p chinese-identification-card --all-features
+```
+
+## Documentation & Governance
+
+- Update this `README.md` alongside any public API, CLI flag, or module-boundary change per [`../AGENTS.md`](../AGENTS.md#4-unified-documentation--skill-maintenance-policy).
+- Project-level standards and release workflows live in [`../.agents/skills/ctares/SKILL.md`](../.agents/skills/ctares/SKILL.md).
+
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request.
+This project is licensed under the MIT License. See the [LICENSE](../LICENSE) file for details.
 
 ## Contact
 
-For any inquiries, please reach out to the author at [root@devhub.vip](mailto:root@devhub.vip).
+For inquiries, please contact the author at [root@devhub.vip](mailto:root@devhub.vip).

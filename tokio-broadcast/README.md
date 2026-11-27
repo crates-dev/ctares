@@ -1,37 +1,64 @@
-<center>
+<div align="center">
 
 # tokio-broadcast
 
-[![](https://img.shields.io/crates/v/tokio-broadcast.svg)](https://crates.io/crates/tokio-broadcast)
-[![](https://img.shields.io/crates/d/tokio-broadcast.svg)](https://img.shields.io/crates/d/tokio-broadcast.svg)
-[![](https://docs.rs/tokio-broadcast/badge.svg)](https://docs.rs/tokio-broadcast)
-[![](https://github.com/crates-dev/ctares/workflows/Rust/badge.svg)](https://github.com/crates-dev/ctares/actions?query=workflow:Rust)
-[![](https://img.shields.io/crates/l/tokio-broadcast.svg)](./LICENSE)
+**Ergonomic Typed Tokio Broadcast & Keyed BroadcastMap**
 
-</center>
+[![crates.io](https://img.shields.io/crates/v/tokio-broadcast.svg?style=flat-square)](https://crates.io/crates/tokio-broadcast)
+[![docs.rs](https://img.shields.io/docsrs/tokio-broadcast?style=flat-square)](https://docs.rs/tokio-broadcast)
+[![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
+[![License: MIT](https://img.shields.io/crates/l/tokio-broadcast.svg?style=flat-square)](../LICENSE)
 
-[Api Docs](https://docs.rs/tokio-broadcast/latest/)
+[Workspace Overview](../README.md) · [API Docs](https://docs.rs/tokio-broadcast/latest/) · [Agent Engineering Rules](../AGENTS.md)
 
-## Description
+</div>
 
-> tokio-broadcast is a lightweight and ergonomic wrapper over Tokio's broadcast channel designed for easy-to-use publish-subscribe messaging in async Rust applications. It simplifies the native Tokio broadcast API by providing a straightforward interface for broadcasting messages to multiple subscribers with minimal boilerplate.
+---
 
-## Installation
+## Overview
 
-To install `tokio-broadcast` run cmd:
+Lightweight publish-subscribe wrapper over `tokio::sync::broadcast` providing `Broadcast<T>` and keyed `BroadcastMap<K, T>` backed by `DashMap` and `XxHash3_64`.
 
-```shell
+This package is part of the [`ctares`](../README.md) unified Rust 2024 workspace and follows the repository's strict module purity, formatting, and dependency-ordered release standards.
+
+## Responsibilities & Module Layout
+
+- `broadcast` — Single-channel typed pub/sub wrapper with concise `send`/`subscribe` ergonomics
+- `broadcast_map` — Keyed multi-room broadcast map with automatic channel lifecycle management
+
+## Installation & Quick Start
+
+```sh
 cargo add tokio-broadcast
 ```
 
+```rust
+use tokio_broadcast::*;
+
+let bus: Broadcast<String> = Broadcast::new(16);
+let mut rx = bus.subscribe();
+let _ = bus.send("hello".to_string());
+```
+
+## Verification
+
+Run crate-scoped formatting, lint, and test checks from the workspace root:
+
+```sh
+cargo run -p crate-cli -- fmt --check
+cargo clippy -p tokio-broadcast --all-features --all-targets -- -D warnings
+cargo test -p tokio-broadcast --all-features
+```
+
+## Documentation & Governance
+
+- Update this `README.md` alongside any public API, CLI flag, or module-boundary change per [`../AGENTS.md`](../AGENTS.md#4-unified-documentation--skill-maintenance-policy).
+- Project-level standards and release workflows live in [`../.agents/skills/ctares/SKILL.md`](../.agents/skills/ctares/SKILL.md).
+
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request.
+This project is licensed under the MIT License. See the [LICENSE](../LICENSE) file for details.
 
 ## Contact
 
-For any inquiries, please reach out to the author at [root@devhub.vip](mailto:root@devhub.vip).
+For inquiries, please contact the author at [root@devhub.vip](mailto:root@devhub.vip).
