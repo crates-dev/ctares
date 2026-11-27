@@ -63,11 +63,11 @@ pub(crate) fn parse_tokens(tokens: proc_macro2::TokenStream, config: &mut Config
                 } else if ident_str == PRIVATE {
                     config.visibility = Visibility::Private;
                 } else if ident_str == CUSTOM_TYPE
-                    && let Some(proc_macro2::TokenTree::Group(group)) = tokens_iter.peek()
+                    && let Some(TokenTree::Group(group)) = tokens_iter.peek()
                     && group.delimiter() == Delimiter::Parenthesis
                 {
-                    let type_group: proc_macro2::TokenTree = tokens_iter.next().unwrap();
-                    if let proc_macro2::TokenTree::Group(group) = type_group {
+                    let type_group: TokenTree = tokens_iter.next().unwrap();
+                    if let TokenTree::Group(group) = type_group {
                         config.return_type = group
                             .stream()
                             .to_string()
@@ -77,7 +77,7 @@ pub(crate) fn parse_tokens(tokens: proc_macro2::TokenStream, config: &mut Config
                     }
                 }
             }
-            proc_macro2::TokenTree::Group(group) => {
+            TokenTree::Group(group) => {
                 parse_tokens(group.stream(), config);
             }
             _ => {}

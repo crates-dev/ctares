@@ -16,14 +16,14 @@ pub struct ServerControlHook {
     #[get(type(clone))]
     #[get_mut(pub(crate))]
     #[set(pub(crate))]
-    pub wait_hook: Arc<dyn Fn() -> SendableAsyncTask<()> + Send + Sync>,
+    pub(crate) wait_hook: Arc<dyn Fn() -> SendableAsyncTask<()> + Send + Sync>,
     /// A hook that, when called, initiates a graceful shutdown of the server.
     /// This will stop the server from accepting new connections and allow existing ones
     /// to complete.
     #[get(type(clone))]
     #[get_mut(pub(crate))]
     #[set(pub(crate))]
-    pub shutdown_hook: Arc<dyn Fn() -> SendableAsyncTask<()> + Send + Sync>,
+    pub(crate) shutdown_hook: Arc<dyn Fn() -> SendableAsyncTask<()> + Send + Sync>,
 }
 
 /// Represents the state associated with a single connection handler.

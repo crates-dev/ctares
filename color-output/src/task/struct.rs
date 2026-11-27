@@ -4,5 +4,5 @@ use super::*;
 #[derive(Clone, Data, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Task<'a> {
     /// Collection of text configurations to process
-    pub text_list: Vec<Text<'a>>,
+    pub(crate) text_list: Vec<Text<'a>>,
 }

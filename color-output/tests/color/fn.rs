@@ -30,33 +30,32 @@ fn test_bg_color_get_str() {
 
 #[test]
 fn test_output_struct_function() {
-    output(ColorOutput {
-        text: "test_output_struct",
-        color: ColorType::Use(Color::Default),
-        bg_color: ColorType::Color256(0x000000),
-        endl: true,
-        ..Default::default()
-    });
+    output(
+        ColorOutputBuilder::new()
+            .text("test_output_struct")
+            .color(ColorType::Use(Color::Default))
+            .bg_color(ColorType::Color256(0x000000))
+            .endl(true)
+            .build(),
+    );
 }
 
 #[test]
 fn test_output_struct_output_method() {
-    ColorOutput {
-        text: "test_output_struct_output",
-        color: ColorType::Use(Color::Default),
-        bg_color: ColorType::Use(Color::Blue),
-        endl: true,
-        ..Default::default()
-    }
-    .output();
-    ColorOutput {
-        text: "test_output_struct_output",
-        color: ColorType::Use(Color::White),
-        bg_color: ColorType::Use(Color::Blue),
-        endl: true,
-        ..Default::default()
-    }
-    .output();
+    ColorOutputBuilder::new()
+        .text("test_output_struct_output")
+        .color(ColorType::Use(Color::Default))
+        .bg_color(ColorType::Use(Color::Blue))
+        .endl(true)
+        .build()
+        .output();
+    ColorOutputBuilder::new()
+        .text("test_output_struct_output")
+        .color(ColorType::Use(Color::White))
+        .bg_color(ColorType::Use(Color::Blue))
+        .endl(true)
+        .build()
+        .output();
 }
 
 #[test]
@@ -96,20 +95,18 @@ fn test_output_builder() {
 #[test]
 fn test_output_list_struct() {
     ColorOutputList(vec![
-        ColorOutput {
-            text: "test_output_list_struct_1",
-            color: ColorType::Use(Color::Default),
-            bg_color: ColorType::Color256(0x000000),
-            endl: false,
-            ..Default::default()
-        },
-        ColorOutput {
-            text: "test_output_struct_output_2",
-            color: ColorType::Use(Color::Default),
-            bg_color: ColorType::Use(Color::Blue),
-            endl: true,
-            ..Default::default()
-        },
+        ColorOutputBuilder::new()
+            .text("test_output_list_struct_1")
+            .color(ColorType::Use(Color::Default))
+            .bg_color(ColorType::Color256(0x000000))
+            .endl(false)
+            .build(),
+        ColorOutputBuilder::new()
+            .text("test_output_struct_output_2")
+            .color(ColorType::Use(Color::Default))
+            .bg_color(ColorType::Use(Color::Blue))
+            .endl(true)
+            .build(),
     ])
     .output();
 }
@@ -124,20 +121,22 @@ fn test_new_output_list_builder() {
                 .endl(false)
                 .build(),
         )
-        .add(ColorOutput {
-            text: "test_new_output_list_builder_1",
-            color: ColorType::Use(Color::Default),
-            bg_color: ColorType::Color256(0x3f3f3f),
-            endl: false,
-            ..Default::default()
-        })
-        .add(ColorOutput {
-            text: "test_new_output_list_builder_2",
-            color: ColorType::Use(Color::Default),
-            bg_color: ColorType::Use(Color::Cyan),
-            endl: true,
-            ..Default::default()
-        })
+        .add(
+            ColorOutputBuilder::new()
+                .text("test_new_output_list_builder_1")
+                .color(ColorType::Use(Color::Default))
+                .bg_color(ColorType::Color256(0x3f3f3f))
+                .endl(false)
+                .build(),
+        )
+        .add(
+            ColorOutputBuilder::new()
+                .text("test_new_output_list_builder_2")
+                .color(ColorType::Use(Color::Default))
+                .bg_color(ColorType::Use(Color::Cyan))
+                .endl(true)
+                .build(),
+        )
         .run();
 }
 
@@ -151,19 +150,21 @@ fn test_new_from_output_list_builder() {
                 .endl(false)
                 .build(),
         )
-        .add(ColorOutput {
-            text: "test_new_from_output_list_builder_1",
-            color: ColorType::Use(Color::Default),
-            bg_color: ColorType::Color256(0x3f3f3f),
-            endl: false,
-            ..Default::default()
-        })
-        .add(ColorOutput {
-            text: "test_new_from_output_list_builder_2",
-            color: ColorType::Use(Color::Default),
-            bg_color: ColorType::Use(Color::Cyan),
-            endl: true,
-            ..Default::default()
-        })
+        .add(
+            ColorOutputBuilder::new()
+                .text("test_new_from_output_list_builder_1")
+                .color(ColorType::Use(Color::Default))
+                .bg_color(ColorType::Color256(0x3f3f3f))
+                .endl(false)
+                .build(),
+        )
+        .add(
+            ColorOutputBuilder::new()
+                .text("test_new_from_output_list_builder_2")
+                .color(ColorType::Use(Color::Default))
+                .bg_color(ColorType::Use(Color::Cyan))
+                .endl(true)
+                .build(),
+        )
         .run();
 }

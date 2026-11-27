@@ -2,92 +2,82 @@ use super::*;
 
 #[test]
 fn test_package_creation() {
-    let package: Package = Package {
-        name: "test-package".to_string(),
-        version: "0.1.0".to_string(),
-        path: PathBuf::from("."),
-        local_dependencies: vec![],
-        publish: true,
-    };
-    assert_eq!(package.name, "test-package");
-    assert_eq!(package.version, "0.1.0");
-    assert!(package.local_dependencies.is_empty());
+    let package: Package = Package::new(
+        "test-package".to_string(),
+        "0.1.0".to_string(),
+        PathBuf::from("."),
+        vec![],
+        true,
+    );
+    assert_eq!(package.get_name(), "test-package");
+    assert_eq!(package.get_version(), "0.1.0");
+    assert!(package.get_local_dependencies().is_empty());
 }
 
 #[test]
 fn test_package_clone() {
-    let package: Package = Package {
-        name: "test-package".to_string(),
-        version: "0.1.0".to_string(),
-        path: PathBuf::from("."),
-        local_dependencies: vec!["dep1".to_string()],
-        publish: true,
-    };
+    let package: Package = Package::new(
+        "test-package".to_string(),
+        "0.1.0".to_string(),
+        PathBuf::from("."),
+        vec!["dep1".to_string()],
+        true,
+    );
     let cloned: Package = package.clone();
-    assert_eq!(cloned.name, package.name);
-    assert_eq!(cloned.version, package.version);
-    assert_eq!(cloned.local_dependencies.len(), 1);
+    assert_eq!(cloned.get_name(), package.get_name());
+    assert_eq!(cloned.get_version(), package.get_version());
+    assert_eq!(cloned.get_local_dependencies().len(), 1);
 }
 
 #[test]
 fn test_package_equality() {
-    let package1: Package = Package {
-        name: "test".to_string(),
-        version: "0.1.0".to_string(),
-        path: PathBuf::from("."),
-        local_dependencies: vec![],
-        publish: true,
-    };
-    let package2: Package = Package {
-        name: "test".to_string(),
-        version: "0.1.0".to_string(),
-        path: PathBuf::from("."),
-        local_dependencies: vec![],
-        publish: true,
-    };
+    let package1: Package = Package::new(
+        "test".to_string(),
+        "0.1.0".to_string(),
+        PathBuf::from("."),
+        vec![],
+        true,
+    );
+    let package2: Package = Package::new(
+        "test".to_string(),
+        "0.1.0".to_string(),
+        PathBuf::from("."),
+        vec![],
+        true,
+    );
     assert_eq!(package1, package2);
 }
 
 #[test]
 fn test_publish_result_success() {
-    let result: PublishResult = PublishResult {
-        package_name: "test".to_string(),
-        success: true,
-        error: None,
-        retries: 0,
-    };
-    assert_eq!(result.package_name, "test");
-    assert!(result.success);
-    assert!(result.error.is_none());
-    assert_eq!(result.retries, 0);
+    let result: PublishResult = PublishResult::new("test".to_string(), true, None, 0);
+    assert_eq!(result.get_package_name(), "test");
+    assert!(result.get_success());
+    assert!(result.try_get_error().is_none());
+    assert_eq!(result.get_retries(), 0);
 }
 
 #[test]
 fn test_publish_result_failure() {
-    let result: PublishResult = PublishResult {
-        package_name: "test".to_string(),
-        success: false,
-        error: Some("network error".to_string()),
-        retries: 3,
-    };
-    assert!(!result.success);
-    assert_eq!(result.error, Some("network error".to_string()));
-    assert_eq!(result.retries, 3);
+    let result: PublishResult = PublishResult::new(
+        "test".to_string(),
+        false,
+        Some("network error".to_string()),
+        3,
+    );
+    assert!(!result.get_success());
+    assert_eq!(result.try_get_error().as_deref(), Some("network error"));
+    assert_eq!(result.get_retries(), 3);
 }
 
 #[test]
 fn test_publish_result_clone() {
-    let result: PublishResult = PublishResult {
-        package_name: "test".to_string(),
-        success: true,
-        error: None,
-        retries: 0,
-    };
+    let result: PublishResult = PublishResult::new("test".to_string(), true, None, 0);
     let cloned: PublishResult = result.clone();
-    assert_eq!(cloned.package_name, result.package_name);
-    assert_eq!(cloned.success, result.success);
-    assert_eq!(cloned.error, result.error);
-    assert_eq!(cloned.retries, result.retries);
+    assert_eq!(cloned.get_package_name(), result.get_package_name());
+    assert_eq!(cloned.get_success(), result.get_success());
+    assert_eq!(cloned.try_get_error(), result.try_get_error());
+    assert_eq!(cloned.get_retries(), result.get_retries());
 }
 
 #[test]
@@ -119,7 +109,7 @@ async fn create_test_package(base: &Path, name: &str, dependencies: &str) {
 fn package_names(packages: &[Package]) -> Vec<&str> {
     packages
         .iter()
-        .map(|package: &Package| package.name.as_str())
+        .map(|package: &Package| package.get_name().as_str())
         .collect()
 }
 
@@ -404,7 +394,7 @@ async fn test_resolve_publish_order_resolves_workspace_inherited_version() {
     let manifest_path: String = temp_dir.join("Cargo.toml").to_string_lossy().to_string();
     let packages: Vec<Package> = resolve_publish_order(&manifest_path).await.unwrap();
     assert_eq!(packages.len(), 1);
-    assert_eq!(packages[0].version, "9.9.9");
+    assert_eq!(packages[0].get_version(), "9.9.9");
     let _ = fs::remove_dir_all(&temp_dir).await;
 }
 
@@ -430,10 +420,10 @@ async fn test_resolve_publish_order_reads_publish_flag() {
     create_test_package(&temp_dir, "shipme", "").await;
     let manifest_path: String = temp_dir.join("Cargo.toml").to_string_lossy().to_string();
     let packages: Vec<Package> = resolve_publish_order(&manifest_path).await.unwrap();
-    assert_eq!(packages[0].name, "skipme");
-    assert!(!packages[0].publish);
-    assert_eq!(packages[1].name, "shipme");
-    assert!(packages[1].publish);
+    assert_eq!(packages[0].get_name(), "skipme");
+    assert!(!packages[0].get_publish());
+    assert_eq!(packages[1].get_name(), "shipme");
+    assert!(packages[1].get_publish());
     let _ = fs::remove_dir_all(&temp_dir).await;
 }
 

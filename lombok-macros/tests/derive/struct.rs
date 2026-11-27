@@ -1,15 +1,15 @@
 use super::*;
 #[derive(Clone, Data, Debug, New)]
 pub struct Skipped {
-    pub name: String,
+    pub(crate) name: String,
     #[new(skip)]
     #[get(type(copy))]
-    pub schema: u8,
+    pub(crate) schema: u8,
 }
 
 #[derive(Clone, Data, Debug, New)]
 pub struct NoSkip {
-    pub name: String,
+    pub(crate) name: String,
     #[get(type(copy))]
-    pub count: u8,
+    pub(crate) count: u8,
 }

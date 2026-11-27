@@ -11,22 +11,22 @@ pub struct ColorContrast;
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct ColorOutput<'a> {
     /// The text content to output.
-    pub text: &'a str,
+    pub(crate) text: &'a str,
     /// The text color.
-    pub color: ColorType,
+    pub(crate) color: ColorType,
     /// The background color.
-    pub bg_color: ColorType,
+    pub(crate) bg_color: ColorType,
     /// Whether the text should be bold.
-    pub bold: bool,
+    pub(crate) bold: bool,
     /// Whether to add a newline after the text.
-    pub endl: bool,
+    pub(crate) endl: bool,
 }
 
 /// Builder pattern for constructing ColorOutput configurations.
 #[derive(Clone, Copy, Data, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct ColorOutputBuilder<'a> {
     /// The ColorOutput configuration being built.
-    pub output: ColorOutput<'a>,
+    pub(crate) output: ColorOutput<'a>,
 }
 
 /// Represents a list of ColorOutput configurations for sequential execution.
@@ -40,5 +40,5 @@ pub struct ColorOutputList<'a>(
 #[derive(Clone, Data, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct ColorOutputListBuilder<'a> {
     /// Collection of ColorOutput configurations being built.
-    pub output_list: Vec<ColorOutput<'a>>,
+    pub(crate) output_list: Vec<ColorOutput<'a>>,
 }

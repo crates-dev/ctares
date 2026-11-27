@@ -1,16 +1,18 @@
 use super::*;
 
 /// Parsed command line arguments
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Getter, New)]
 pub struct Args {
     /// The command to execute
-    pub command: CommandType,
+    pub(crate) command: CommandType,
     /// Check mode for fmt
-    pub check: bool,
+    #[get(type(copy))]
+    pub(crate) check: bool,
     /// Manifest path for fmt, bump, publish and sync
-    pub manifest_path: Option<String>,
+    pub(crate) manifest_path: Option<String>,
     /// Bump type for bump command
-    pub bump_type: Option<BumpVersionType>,
+    pub(crate) bump_type: Option<BumpVersionType>,
     /// Maximum retry attempts for publish command
-    pub max_retries: u32,
+    #[get(type(copy))]
+    pub(crate) max_retries: u32,
 }
