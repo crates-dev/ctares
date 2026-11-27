@@ -6,7 +6,9 @@ pub fn print_help() {
     log::info!(
         "  bump      Bump version (single crate, workspace root version, or all workspace members)"
     );
-    log::info!("  fmt       Format Rust code using cargo fmt");
+    log::info!(
+        "  fmt       Format Rust, Markdown, YAML, JSON, TOML, and text files (VS Code Prettier-aligned)"
+    );
     log::info!("  publish   Publish packages in [workspace.members] order");
     log::info!(
         "  sync      Sync [workspace.dependencies] versions/aliases to workspace.package.version"

@@ -14,4 +14,4 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use tokio::fs::{self, create_dir_all, read_to_string, write};
+use tokio::fs::{self, create_dir_all, read_to_string, remove_dir_all, write};
