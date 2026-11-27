@@ -4,10 +4,10 @@
 
 **Level-Scoped Tracing Instrumentation Proc Macros**
 
-[![crates.io](https://img.shields.io/crates/v/instrument-level.svg?style=flat-square)](https://crates.io/crates/instrument-level)
+[![crates.io](https://flat.badgen.net/crates/v/instrument-level)](https://crates.io/crates/instrument-level)
 [![docs.rs](https://img.shields.io/docsrs/instrument-level?style=flat-square)](https://docs.rs/instrument-level)
 [![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
-[![License: MIT](https://img.shields.io/crates/l/instrument-level.svg?style=flat-square)](../LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](../LICENSE)
 
 [Workspace Overview](../README.md) · [API Docs](https://docs.rs/instrument-level/latest/) · [Agent Engineering Rules](../AGENTS.md)
 

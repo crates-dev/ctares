@@ -4,10 +4,10 @@
 
 **Self-Healing Worker Thread Pool**
 
-[![crates.io](https://img.shields.io/crates/v/recoverable-thread-pool.svg?style=flat-square)](https://crates.io/crates/recoverable-thread-pool)
+[![crates.io](https://flat.badgen.net/crates/v/recoverable-thread-pool)](https://crates.io/crates/recoverable-thread-pool)
 [![docs.rs](https://img.shields.io/docsrs/recoverable-thread-pool?style=flat-square)](https://docs.rs/recoverable-thread-pool)
 [![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
-[![License: MIT](https://img.shields.io/crates/l/recoverable-thread-pool.svg?style=flat-square)](../LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](../LICENSE)
 
 [Workspace Overview](../README.md) · [API Docs](https://docs.rs/recoverable-thread-pool/latest/) · [Agent Engineering Rules](../AGENTS.md)
 

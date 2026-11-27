@@ -4,10 +4,10 @@
 
 **Raw Synchronous UDP Datagram Client**
 
-[![crates.io](https://img.shields.io/crates/v/udp-request.svg?style=flat-square)](https://crates.io/crates/udp-request)
+[![crates.io](https://flat.badgen.net/crates/v/udp-request)](https://crates.io/crates/udp-request)
 [![docs.rs](https://img.shields.io/docsrs/udp-request?style=flat-square)](https://docs.rs/udp-request)
 [![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
-[![License: MIT](https://img.shields.io/crates/l/udp-request.svg?style=flat-square)](../LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](../LICENSE)
 
 [Workspace Overview](../README.md) · [API Docs](https://docs.rs/udp-request/latest/) · [Agent Engineering Rules](../AGENTS.md)
 

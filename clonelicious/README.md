@@ -4,10 +4,10 @@
 
 **Ergonomic Closure Clone Macro**
 
-[![crates.io](https://img.shields.io/crates/v/clonelicious.svg?style=flat-square)](https://crates.io/crates/clonelicious)
+[![crates.io](https://flat.badgen.net/crates/v/clonelicious)](https://crates.io/crates/clonelicious)
 [![docs.rs](https://img.shields.io/docsrs/clonelicious?style=flat-square)](https://docs.rs/clonelicious)
 [![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
-[![License: MIT](https://img.shields.io/crates/l/clonelicious.svg?style=flat-square)](../LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](../LICENSE)
 
 [Workspace Overview](../README.md) · [API Docs](https://docs.rs/clonelicious/latest/) · [Agent Engineering Rules](../AGENTS.md)
 

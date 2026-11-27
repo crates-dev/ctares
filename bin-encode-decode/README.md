@@ -4,10 +4,10 @@
 
 **Custom-Alphabet Binary Encoding & Decoding**
 
-[![crates.io](https://img.shields.io/crates/v/bin-encode-decode.svg?style=flat-square)](https://crates.io/crates/bin-encode-decode)
+[![crates.io](https://flat.badgen.net/crates/v/bin-encode-decode)](https://crates.io/crates/bin-encode-decode)
 [![docs.rs](https://img.shields.io/docsrs/bin-encode-decode?style=flat-square)](https://docs.rs/bin-encode-decode)
 [![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
-[![License: MIT](https://img.shields.io/crates/l/bin-encode-decode.svg?style=flat-square)](../LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](../LICENSE)
 
 [Workspace Overview](../README.md) · [API Docs](https://docs.rs/bin-encode-decode/latest/) · [Agent Engineering Rules](../AGENTS.md)
 

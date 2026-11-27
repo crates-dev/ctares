@@ -4,10 +4,10 @@
 
 **Standard Library Collection & Sync Helper Macros**
 
-[![crates.io](https://img.shields.io/crates/v/std-macro-extensions.svg?style=flat-square)](https://crates.io/crates/std-macro-extensions)
+[![crates.io](https://flat.badgen.net/crates/v/std-macro-extensions)](https://crates.io/crates/std-macro-extensions)
 [![docs.rs](https://img.shields.io/docsrs/std-macro-extensions?style=flat-square)](https://docs.rs/std-macro-extensions)
 [![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
-[![License: MIT](https://img.shields.io/crates/l/std-macro-extensions.svg?style=flat-square)](../LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](../LICENSE)
 
 [Workspace Overview](../README.md) · [API Docs](https://docs.rs/std-macro-extensions/latest/) · [Agent Engineering Rules](../AGENTS.md)
 

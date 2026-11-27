@@ -4,10 +4,10 @@
 
 **GB 11643 Chinese Resident ID Validator**
 
-[![crates.io](https://img.shields.io/crates/v/chinese-identification-card.svg?style=flat-square)](https://crates.io/crates/chinese-identification-card)
+[![crates.io](https://flat.badgen.net/crates/v/chinese-identification-card)](https://crates.io/crates/chinese-identification-card)
 [![docs.rs](https://img.shields.io/docsrs/chinese-identification-card?style=flat-square)](https://docs.rs/chinese-identification-card)
 [![Rust 2024](https://img.shields.io/badge/edition-2024-orange.svg?style=flat-square)](https://www.rust-lang.org)
-[![License: MIT](https://img.shields.io/crates/l/chinese-identification-card.svg?style=flat-square)](../LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](../LICENSE)
 
 [Workspace Overview](../README.md) · [API Docs](https://docs.rs/chinese-identification-card/latest/) · [Agent Engineering Rules](../AGENTS.md)
 
