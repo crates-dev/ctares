@@ -23,3 +23,20 @@ pub struct UnifiedFmtReport {
     #[get_mut(pub(crate))]
     pub(crate) changed_files: Vec<String>,
 }
+
+/// Single parsed rule from a workspace-root `.prettierignore` file.
+#[derive(Clone, Debug, Eq, Getter, New, PartialEq)]
+pub(crate) struct PrettierIgnoreRule {
+    /// Raw normalized glob pattern (with leading `!`/`/` and trailing `/` stripped).
+    #[get(pub(crate))]
+    pub(crate) pattern: String,
+    /// Whether this rule negates (`!`) an earlier ignore match.
+    #[get(pub(crate), type(copy))]
+    pub(crate) negated: bool,
+    /// Whether this rule applies only to directories (trailing `/`).
+    #[get(pub(crate), type(copy))]
+    pub(crate) dir_only: bool,
+    /// Whether this rule matches against the full relative path rather than a single segment.
+    #[get(pub(crate), type(copy))]
+    pub(crate) anchored: bool,
+}

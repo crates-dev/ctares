@@ -13,8 +13,8 @@ metadata:
 
 1. Load `rust-standards` before editing any `.rs` or `Cargo.toml` file in `ctares`.
 2. Respect the 24-crate dependency order declared in root `Cargo.toml` (`[workspace] members`). Never introduce cyclic workspace dependencies.
-3. Keep all unified multi-format text formatting logic (`.md`, `.yml`/`.yaml`, `.json`/`.jsonc`, `.toml`, plain text, `#[derive(...)]` sorting, `cargo fmt`) inside `crate-cli/src/fmt/`.
-4. Preserve exact VS Code Prettier 3.7.4 parity in `crate-cli`: `tabWidth: 2`, `singleQuote: true`, `semi: true`, `endOfLine: "lf"`, `printWidth: 80`, `proseWrap: "preserve"`, `bracketSpacing: true`.
+3. Keep all unified multi-format formatting logic (Markdown, YAML, JSON/JSON-Stringify/JSONC, TOML, JS/TS/TSX, CSS/SCSS/Less, HTML, Vue, VS Code no-op preservation, `.prettierignore`, `#[derive(...)]` sorting, and `cargo fmt`) inside `crate-cli/src/fmt/`.
+4. Preserve exact VS Code formatting parity in `crate-cli`: Prettier 3.7.4 (`tabWidth: 2`, `singleQuote: true`, `semi: true`, `endOfLine: "lf"`, `printWidth: 80`, `proseWrap: "preserve"`, `bracketSpacing: true`, `trailingComma: "all"`, `arrowParens: "always"`, `jsxSingleQuote: false`, `objectWrap: "preserve"`, `vueIndentScriptAndStyle: false`, `embeddedLanguageFormatting: "auto"`) for Markdown/YAML/JSON/JSONC/JS/TS/TSX/CSS/SCSS/Less/HTML/Vue; Taplo 0.7.0 (`tabSize: 4`, `column_width: 80`, `allowed_blank_lines: 2`, `align_comments: true`) for TOML; byte-for-byte no-op preservation for VS Code unformatted files (`LICENSE`, `.gitattributes`, `.gitignore`, `pre-commit`, `.sh`, `.bash`, `Makefile`, `Dockerfile`, `.env`, etc.); and workspace-root `.prettierignore` honoring.
 5. Keep all public APIs backward-compatible within the same major version; export library entry points (`execute_unified_fmt`, `format_workspace_text_files`, `format_text_by_path`) cleanly for downstream CLIs (`euv-cli`, `hyperlane-cli`).
 6. Keep all code, comments, commit messages, PR descriptions, docs, and skills strictly English-only.
 
@@ -33,7 +33,7 @@ python3 ~/.agents/skills/rust-standards/scripts/staged_file_gate.py .
 python3 ~/.agents/skills/rust-standards/scripts/verify_dep_order.py .
 ```
 
-When changing `crate-cli/src/fmt/`, also verify differential parity against the installed VS Code Prettier bundle across representative `.md` and `.yml`/`.yaml` files and add regression tests in `crate-cli/tests/fmt/`.
+When changing `crate-cli/src/fmt/`, also verify differential parity against the installed VS Code Prettier and Taplo bundles across representative Markdown, YAML, JSON/JSONC, TOML, Web, and no-op files and add regression tests in `crate-cli/tests/fmt/`.
 
 ## Release & Downstream Cascade Workflow
 
@@ -44,9 +44,9 @@ When changing `crate-cli/src/fmt/`, also verify differential parity against the 
 3. Validate commit/PR text with `~/.agents/skills/git-standards/scripts/verify_english_only.py`.
 4. Merge/push to `master` and wait until `.github/workflows/rust.yml` (`setup`, `check`, `tests`, `clippy`, `build`, `publish`, `release`) finishes green and the new version is live on `crates.io`.
 5. Cascade upgrades in strict order:
-  - Tier 2: `euv` (`crate-cli`, `lombok-macros`) and `hyperlane` (`crate-cli`, `color-output`, `lombok-macros`, `tokio-broadcast`).
-  - Tier 3: `hyperlane-quick-start` and `commerce-suite`.
-  - Tier 4: `web-frameworks`.
+   - Tier 2: `euv` (`crate-cli`, `lombok-macros`) and `hyperlane` (`crate-cli`, `color-output`, `lombok-macros`, `tokio-broadcast`).
+   - Tier 3: `hyperlane-quick-start` and `commerce-suite`.
+   - Tier 4: `web-frameworks`.
 
 ## Documentation & Skill Governance
 

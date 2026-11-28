@@ -28,7 +28,10 @@ pub(crate) use {cli::*, message::*, tool::*};
 pub(crate) use std::{
     collections::HashMap,
     env::args,
-    fs::{self, DirEntry},
+    error::Error,
+    ffi::OsStr,
+    fmt::Arguments,
+    fs::{self, DirEntry, FileType},
     io::{self, ErrorKind},
     path::{Path, PathBuf},
     process::{ExitStatus, Output, Stdio},
@@ -42,7 +45,13 @@ pub(crate) use {
     log::{self, SetLoggerError},
     lombok_macros::*,
     regex::{Captures, Regex},
-    std::{error::Error, ffi::OsStr, fmt::Arguments},
+    tidy::{
+        self, Eol, Language, Options, Shared, Whitespace, Wrap,
+        css::Dialect,
+        embed::{Kind, Request, Verbatim},
+        js::TrailingComma,
+        markdown::{Code, Heading},
+    },
     tokio::{
         fs::{ReadDir, read_dir, read_to_string, write},
         process::Command,

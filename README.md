@@ -46,9 +46,9 @@ flowchart TB
 
 ### Toolchain & Unified Formatter
 
-| Crate                                | crates.io                                                                                      | docs.rs                                                                                            | Responsibility                                                                                                        |
-| :----------------------------------- | :--------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------- |
-| [`crate-cli`](./crate-cli/README.md) | [![crates.io](https://flat.badgen.net/crates/v/crate-cli)](https://crates.io/crates/crate-cli) | [![docs.rs](https://img.shields.io/docsrs/crate-cli?style=flat-square)](https://docs.rs/crate-cli) | Cargo lifecycle CLI (`bump`, `sync`, `publish`, `fmt`) with VS Code Prettier-aligned unified text and Rust formatting |
+| Crate                                | crates.io                                                                                      | docs.rs                                                                                            | Responsibility                                                                                                                            |
+| :----------------------------------- | :--------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------- |
+| [`crate-cli`](./crate-cli/README.md) | [![crates.io](https://flat.badgen.net/crates/v/crate-cli)](https://crates.io/crates/crate-cli) | [![docs.rs](https://img.shields.io/docsrs/crate-cli?style=flat-square)](https://docs.rs/crate-cli) | Cargo lifecycle CLI (`bump`, `sync`, `publish`, `fmt`) with VS Code Prettier 3.7.4 & Taplo 0.7.0 aligned unified text and Rust formatting |
 
 ### Procedural & Declarative Macros
 
@@ -114,14 +114,16 @@ cargo add lombok-macros color-output tokio-broadcast
 
 ## Unified Formatter (`crate fmt`)
 
-`crate-cli` provides the ecosystem's single source of truth for multi-language text and Rust formatting, aligned with VS Code's `esbenp.prettier-vscode` (`tabWidth: 2`, `singleQuote: true`, `printWidth: 80`, `proseWrap: "preserve"`, `endOfLine: "lf"`) and `rustfmt`:
+`crate-cli` provides the ecosystem's single source of truth for multi-language text and Rust formatting, aligned with VS Code's `esbenp.prettier-vscode` (Prettier 3.7.4: `tabWidth: 2`, `singleQuote: true`, `semi: true`, `printWidth: 80`, `proseWrap: "preserve"`, `bracketSpacing: true`, `trailingComma: "all"`, `arrowParens: "always"`, `jsxSingleQuote: false`, `objectWrap: "preserve"`, `vueIndentScriptAndStyle: false`, `endOfLine: "lf"`), `tamasfe.even-better-toml` (Taplo 0.7.0 `tabSize = 4`), and `rustfmt`:
 
-- **Markdown** (`.md`, `.markdown`, `.mdx`): YAML frontmatter, CJK-width-aware GFM tables, lists, blockquotes, fenced code blocks with embedded `json`/`yaml` formatting.
-- **YAML** (`.yml`, `.yaml`): 2-space indentation, single-quoted scalars, flow sequences/mappings, verbatim block scalars, and GitHub Actions `${{ ... }}` preservation.
-- **JSON / JSONC** (`.json`, `.jsonc`): Order-preserving 2-space Prettier layout with comment retention for JSONC.
-- **TOML** (`.toml`): Cargo-compatible 4-space array indentation and clean key/table spacing.
+- **Markdown** (`.md`, `.markdown`, `.mdx`): YAML frontmatter, CJK/emoji-width-aware GFM tables, lists, blockquotes, Prettier `singleQuote: true` link titles, empty fenced code blocks, and Prettier-supported embedded fences (`js`/`ts`/`json`/`yaml`/`css`/`scss`/`less`/`html`/`vue`/`md`, leaving `toml`/`sh`/`bash`/`rust` verbatim).
+- **YAML** (`.yml`, `.yaml`, `.prettierrc`): 2-space indentation, single-quoted scalars, 80-column flow wrapping/collapse, verbatim block scalars, GitHub Actions `${{ ... }}` preservation, and `.prettierrc` JSON/YAML auto-detection.
+- **JSON / JSON-Stringify / JSONC** (`.json`, `package.json`, `package-lock.json`, `composer.json`, `.jsonc`, `.cjson`): `objectWrap: "preserve"` for `.json` (with comments allowed and trailing commas stripped for `tsconfig.json`/`.vscode/settings.json`), always-expanded `json-stringify` for package manifests, and comment plus trailing-comma retention for `.jsonc`/`.cjson`.
+- **TOML** (`.toml`): Taplo 0.7.0 defaults (`tabSize = 4`, 80-column array/inline-table auto-expand, short-array auto-collapse, `allowed_blank_lines = 2`, `align_comments = true`, verbatim fallback on invalid TOML).
+- **Web Languages** (`.js`, `.mjs`, `.cjs`, `.wxs`, `.ts`, `.mts`, `.cts`, `.tsx`, `.css`, `.wxss`, `.scss`, `.less`, `.html`, `.htm`, `.vue`): Full Prettier 3.7.4 formatting including embedded HTML/Vue `<script>` and `<style>` blocks.
+- **VS Code No-Op Preservation & `.prettierignore`**: Unformatted text/config/script files (`LICENSE`, `.gitattributes`, `.gitignore`, `.dockerignore`, `.editorconfig`, `pre-commit`, `.sh`/`.bash`/`.zsh`, `Makefile`, `Dockerfile`, `.env`, `.txt`, `.conf`, `.ini`, `.xml`, `.svg`, `.py`, `.sql`, `.jsx`, `Cargo.lock`) are preserved byte-for-byte; workspace-root `.prettierignore` rules and symlink-loop guards are honored during traversal.
 - **Rust** (`.rs`): Deterministic `#[derive(...)]` sorting + `cargo fmt`.
-- **Library Entry Points**: Downstream CLIs (`euv fmt`, `hyperlane fmt`) invoke `crate_cli::execute_unified_fmt` / `crate_cli::format_workspace_text_files` as their first pass before framework-specific formatting.
+- **Library Entry Points**: Downstream CLIs (`euv fmt`, `hyperlane fmt`) invoke `crate_cli::execute_unified_fmt`, `crate_cli::format_workspace_text_files`, and `crate_cli::format_text_by_path` as their first pass before framework-specific formatting.
 
 ---
 

@@ -7,6 +7,8 @@ mod version;
 
 use crate_cli::*;
 
+#[cfg(unix)]
+use std::os::unix::fs::symlink;
 use std::{
     env::temp_dir,
     error,

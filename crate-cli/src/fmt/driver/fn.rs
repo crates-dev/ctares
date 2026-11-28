@@ -1,6 +1,6 @@
 use super::*;
 
-/// Resolves the unified formatting strategy for `path` based on filename and extension.
+/// Resolves the unified formatting strategy for `path` based on filename and extension matching VS Code `settings.json`.
 ///
 /// # Arguments
 ///
@@ -11,10 +11,19 @@ use super::*;
 /// - `FileFormatKind` - Matched formatting strategy or `FileFormatKind::Unsupported`.
 pub fn detect_format_kind(path: &Path) -> FileFormatKind {
     if let Some(name) = path.file_name().and_then(OsStr::to_str) {
+        if FMT_NAME_JSON_STRINGIFY.contains(&name) {
+            return FileFormatKind::JsonStringify;
+        }
+        if FMT_NAME_YAML.contains(&name) {
+            return FileFormatKind::Yaml;
+        }
         if FMT_NAME_PRESERVE_TABS.contains(&name) {
             return FileFormatKind::PlainTextPreserveTabs;
         }
-        if FMT_NAME_PLAIN_TEXT.contains(&name) {
+        if FMT_NAME_PLAIN_TEXT.contains(&name)
+            || name.starts_with(FMT_PREFIX_DOCKERFILE)
+            || name.starts_with(FMT_PREFIX_DOTENV)
+        {
             return FileFormatKind::PlainText;
         }
     }
@@ -32,14 +41,38 @@ pub fn detect_format_kind(path: &Path) -> FileFormatKind {
     if FMT_EXT_YAML.contains(&ext) {
         return FileFormatKind::Yaml;
     }
-    if FMT_EXT_JSON.contains(&ext) {
-        return FileFormatKind::Json;
-    }
     if FMT_EXT_JSONC.contains(&ext) {
         return FileFormatKind::Jsonc;
     }
+    if FMT_EXT_JSON.contains(&ext) {
+        return FileFormatKind::Json;
+    }
     if FMT_EXT_TOML.contains(&ext) {
         return FileFormatKind::Toml;
+    }
+    if FMT_EXT_JAVASCRIPT.contains(&ext) {
+        return FileFormatKind::JavaScript;
+    }
+    if FMT_EXT_TYPESCRIPT.contains(&ext) {
+        return FileFormatKind::TypeScript;
+    }
+    if FMT_EXT_TSX.contains(&ext) {
+        return FileFormatKind::TypeScriptReact;
+    }
+    if FMT_EXT_CSS.contains(&ext) {
+        return FileFormatKind::Css;
+    }
+    if FMT_EXT_SCSS.contains(&ext) {
+        return FileFormatKind::Scss;
+    }
+    if FMT_EXT_LESS.contains(&ext) {
+        return FileFormatKind::Less;
+    }
+    if FMT_EXT_HTML.contains(&ext) {
+        return FileFormatKind::Html;
+    }
+    if FMT_EXT_VUE.contains(&ext) {
+        return FileFormatKind::Vue;
     }
     if FMT_EXT_PLAIN_TEXT.contains(&ext) {
         return FileFormatKind::PlainText;
@@ -47,7 +80,7 @@ pub fn detect_format_kind(path: &Path) -> FileFormatKind {
     FileFormatKind::Unsupported
 }
 
-/// Formats text content in memory according to the file type inferred from `path`.
+/// Formats text content in memory according to the file type inferred from `path` matching VS Code save behavior.
 ///
 /// # Arguments
 ///
@@ -56,19 +89,29 @@ pub fn detect_format_kind(path: &Path) -> FileFormatKind {
 ///
 /// # Returns
 ///
-/// - `String` - Formatted text content (or unchanged input when unsupported).
+/// - `String` - Formatted text content (or unchanged input when no-op, unsupported, or syntactically invalid).
 pub fn format_text_by_path(path: &Path, input: &str) -> String {
     match detect_format_kind(path) {
         FileFormatKind::Markdown => format_markdown(input),
-        FileFormatKind::Yaml => format_yaml(input),
-        FileFormatKind::Json => {
-            format_json(input).unwrap_or_else(|_: io::Error| format_jsonc(input))
+        FileFormatKind::Yaml => format_yaml_with_path(input, path),
+        FileFormatKind::Json => format_json(input).unwrap_or_else(|_: io::Error| input.to_string()),
+        FileFormatKind::JsonStringify => {
+            format_json_stringify(input).unwrap_or_else(|_: io::Error| input.to_string())
         }
         FileFormatKind::Jsonc => format_jsonc(input),
         FileFormatKind::Toml => format_toml(input),
-        FileFormatKind::PlainText => format_plain_text(input, false),
-        FileFormatKind::PlainTextPreserveTabs => format_plain_text(input, true),
-        FileFormatKind::Rust | FileFormatKind::Unsupported => input.to_string(),
+        FileFormatKind::JavaScript => format_javascript_with_path(input, path),
+        FileFormatKind::TypeScript => format_typescript_with_path(input, path),
+        FileFormatKind::TypeScriptReact => format_tsx_with_path(input, path),
+        FileFormatKind::Css => format_css(input),
+        FileFormatKind::Scss => format_scss(input),
+        FileFormatKind::Less => format_less(input),
+        FileFormatKind::Html => format_html_with_path(input, path),
+        FileFormatKind::Vue => format_vue_with_path(input, path),
+        FileFormatKind::PlainText
+        | FileFormatKind::PlainTextPreserveTabs
+        | FileFormatKind::Rust
+        | FileFormatKind::Unsupported => input.to_string(),
     }
 }
 
@@ -86,8 +129,13 @@ pub fn format_workspace_text_files(
     root: &Path,
     check: bool,
 ) -> Result<UnifiedFmtReport, io::Error> {
+    let ignore_rules: Vec<PrettierIgnoreRule> = if root.is_dir() {
+        load_prettier_ignore(root)
+    } else {
+        Vec::new()
+    };
     let mut files: Vec<PathBuf> = Vec::new();
-    collect_text_files(root, true, &mut files)?;
+    collect_text_files(root, root, true, &ignore_rules, &mut files)?;
     files.sort();
     let mut report: UnifiedFmtReport = UnifiedFmtReport::new(files.len(), 0, check, Vec::new());
     for file_path in files {
@@ -132,6 +180,7 @@ pub async fn execute_unified_fmt(root: &Path, check: bool) -> Result<UnifiedFmtR
     let (workspace_root, manifest_path): (PathBuf, PathBuf) = if root.is_file() {
         let parent: PathBuf = root
             .parent()
+            .filter(|p: &&Path| !p.as_os_str().is_empty())
             .map(Path::to_path_buf)
             .unwrap_or_else(|| PathBuf::from("."));
         (parent, root.to_path_buf())
@@ -149,21 +198,48 @@ pub async fn execute_unified_fmt(root: &Path, check: bool) -> Result<UnifiedFmtR
     Ok(report)
 }
 
-/// Recursively collects all supported non-Rust text files beneath `path`.
+/// Returns `true` when `kind` has an active non-Rust formatter in VS Code and should be scanned and formatted.
 ///
 /// # Arguments
 ///
-/// - `&Path` - Directory or single file path.
+/// - `FileFormatKind` - Classified file format kind.
+///
+/// # Returns
+///
+/// - `bool` - Whether the file is actively formatted by `format_workspace_text_files`.
+fn is_active_text_format(kind: FileFormatKind) -> bool {
+    !matches!(
+        kind,
+        FileFormatKind::Rust
+            | FileFormatKind::PlainText
+            | FileFormatKind::PlainTextPreserveTabs
+            | FileFormatKind::Unsupported
+    )
+}
+
+/// Recursively collects all actively formatted non-Rust text files beneath `path` without following symlinks.
+///
+/// # Arguments
+///
+/// - `&Path` - Workspace root used to compute relative paths for `.prettierignore`.
+/// - `&Path` - Current directory or single file path.
 /// - `bool` - Whether `path` is the top-level target (never skipped by directory name filters).
+/// - `&[PrettierIgnoreRule]` - Parsed `.prettierignore` rules from the workspace root.
 /// - `&mut Vec<PathBuf>` - Output accumulator.
 ///
 /// # Returns
 ///
 /// - `Result<(), io::Error>` - Traversal status.
-fn collect_text_files(path: &Path, is_root: bool, out: &mut Vec<PathBuf>) -> Result<(), io::Error> {
+fn collect_text_files(
+    root: &Path,
+    path: &Path,
+    is_root: bool,
+    ignore_rules: &[PrettierIgnoreRule],
+    out: &mut Vec<PathBuf>,
+) -> Result<(), io::Error> {
     if path.is_file() {
         let kind: FileFormatKind = detect_format_kind(path);
-        if !matches!(kind, FileFormatKind::Rust | FileFormatKind::Unsupported) {
+        if is_active_text_format(kind) {
             out.push(path.to_path_buf());
         }
         return Ok(());
@@ -179,17 +255,240 @@ fn collect_text_files(path: &Path, is_root: bool, out: &mut Vec<PathBuf>) -> Res
     }
     for entry_res in fs::read_dir(path)? {
         let entry: DirEntry = entry_res?;
+        let file_type: FileType = entry.file_type()?;
+        if file_type.is_symlink() {
+            continue;
+        }
         let child: PathBuf = entry.path();
-        if child.is_dir() {
-            collect_text_files(&child, false, out)?;
-        } else if child.is_file() {
+        let rel_posix: String = to_relative_posix(root, &child);
+        if file_type.is_dir() {
+            if is_prettier_ignored(&rel_posix, true, ignore_rules) {
+                continue;
+            }
+            collect_text_files(root, &child, false, ignore_rules, out)?;
+        } else if file_type.is_file() {
+            if is_prettier_ignored(&rel_posix, false, ignore_rules) {
+                continue;
+            }
             let kind: FileFormatKind = detect_format_kind(&child);
-            if !matches!(kind, FileFormatKind::Rust | FileFormatKind::Unsupported) {
+            if is_active_text_format(kind) {
                 out.push(child);
             }
         }
     }
     Ok(())
+}
+
+/// Parses `.prettierignore` at `root` if present into gitignore-style matching rules.
+///
+/// # Arguments
+///
+/// - `&Path` - Workspace root directory.
+///
+/// # Returns
+///
+/// - `Vec<PrettierIgnoreRule>` - Ordered list of parsed ignore rules.
+fn load_prettier_ignore(root: &Path) -> Vec<PrettierIgnoreRule> {
+    let ignore_path: PathBuf = root.join(FMT_PRETTIER_IGNORE_FILE);
+    let content: String = match fs::read_to_string(&ignore_path) {
+        Ok(text) => text,
+        Err(_) => return Vec::new(),
+    };
+    let mut rules: Vec<PrettierIgnoreRule> = Vec::new();
+    for raw_line in normalize_line_endings(&content).split(TEXT_LF) {
+        let trimmed: &str = raw_line.trim();
+        if trimmed.is_empty() || trimmed.starts_with('#') {
+            continue;
+        }
+        let (negated, after_bang): (bool, &str) = match trimmed.strip_prefix('!') {
+            Some(rest) => (true, rest),
+            None => (false, trimmed),
+        };
+        let (dir_only, after_slash): (bool, &str) = match after_bang.strip_suffix('/') {
+            Some(rest) => (true, rest),
+            None => (false, after_bang),
+        };
+        let (leading_slash, body): (bool, &str) = match after_slash.strip_prefix('/') {
+            Some(rest) => (true, rest),
+            None => (false, after_slash),
+        };
+        if body.is_empty() {
+            continue;
+        }
+        let anchored: bool = leading_slash || body.contains('/');
+        rules.push(PrettierIgnoreRule::new(
+            body.to_string(),
+            negated,
+            dir_only,
+            anchored,
+        ));
+    }
+    rules
+}
+
+/// Converts `child` into a forward-slash relative path string rooted at `root`.
+///
+/// # Arguments
+///
+/// - `&Path` - Base directory path.
+/// - `&Path` - Descendant path.
+///
+/// # Returns
+///
+/// - `String` - Forward-slash relative path.
+fn to_relative_posix(root: &Path, child: &Path) -> String {
+    let rel: &Path = child.strip_prefix(root).unwrap_or(child);
+    rel.to_string_lossy().replace('\\', "/")
+}
+
+/// Evaluates `.prettierignore` rules in order for a relative POSIX path.
+///
+/// # Arguments
+///
+/// - `&str` - Forward-slash relative path from workspace root.
+/// - `bool` - Whether the path refers to a directory.
+/// - `&[PrettierIgnoreRule]` - Ordered ignore rules.
+///
+/// # Returns
+///
+/// - `bool` - `true` when the path should be skipped.
+fn is_prettier_ignored(rel_path: &str, is_dir: bool, rules: &[PrettierIgnoreRule]) -> bool {
+    if rules.is_empty() || rel_path.is_empty() {
+        return false;
+    }
+    let mut ignored: bool = false;
+    for rule in rules {
+        if rule_matches_path(rule, rel_path, is_dir) {
+            ignored = !rule.get_negated();
+        }
+    }
+    ignored
+}
+
+/// Tests whether a single `.prettierignore` rule matches `rel_path` (checking ancestor directories only for non-negated rules).
+///
+/// # Arguments
+///
+/// - `&PrettierIgnoreRule` - Ignore rule to test.
+/// - `&str` - Forward-slash relative path.
+/// - `bool` - Whether `rel_path` itself is a directory.
+///
+/// # Returns
+///
+/// - `bool` - Whether the rule matches.
+fn rule_matches_path(rule: &PrettierIgnoreRule, rel_path: &str, is_dir: bool) -> bool {
+    let pattern: &str = rule.get_pattern();
+    let anchored: bool = rule.get_anchored();
+    if rule.get_negated() {
+        if rule.get_dir_only() && !is_dir {
+            return false;
+        }
+        return match_pattern_against(pattern, anchored, rel_path);
+    }
+    if (!rule.get_dir_only() || is_dir) && match_pattern_against(pattern, anchored, rel_path) {
+        return true;
+    }
+    let mut cursor: usize = 0;
+    while let Some(pos) = rel_path[cursor..].find('/') {
+        let dir_prefix: &str = &rel_path[..(cursor + pos)];
+        if match_pattern_against(pattern, anchored, dir_prefix) {
+            return true;
+        }
+        cursor += pos + 1;
+    }
+    false
+}
+
+/// Matches a normalized glob pattern against either the full path (if anchored) or the final path segment.
+///
+/// # Arguments
+///
+/// - `&str` - Normalized glob pattern.
+/// - `bool` - Whether the pattern is anchored to the workspace root.
+/// - `&str` - Relative POSIX path candidate.
+///
+/// # Returns
+///
+/// - `bool` - Whether the glob matches.
+fn match_pattern_against(pattern: &str, anchored: bool, rel_path: &str) -> bool {
+    if anchored {
+        return glob_match_path(pattern.as_bytes(), rel_path.as_bytes());
+    }
+    let base: &str = rel_path.rsplit('/').next().unwrap_or(rel_path);
+    glob_match_path(pattern.as_bytes(), base.as_bytes())
+}
+
+/// Iterative glob matcher supporting `*` (non-slash), segment-bounded `**/`, `**` (cross-slash), and `?` (single non-slash char).
+///
+/// # Arguments
+///
+/// - `&[u8]` - Pattern bytes.
+/// - `&[u8]` - Candidate path bytes.
+///
+/// # Returns
+///
+/// - `bool` - `true` when the entire candidate matches the pattern.
+fn glob_match_path(pat: &[u8], text: &[u8]) -> bool {
+    let plen: usize = pat.len();
+    let tlen: usize = text.len();
+    let mut prev: Vec<bool> = vec![false; tlen + 1];
+    let mut curr: Vec<bool> = vec![false; tlen + 1];
+    prev[0] = true;
+    let mut pi: usize = 0;
+    while pi < plen {
+        curr.fill(false);
+        if (pi == 0 || pat[pi - 1] == b'/')
+            && pi + 2 < plen
+            && pat[pi] == b'*'
+            && pat[pi + 1] == b'*'
+            && pat[pi + 2] == b'/'
+        {
+            let mut seen: bool = false;
+            for ti in 0..=tlen {
+                if prev[ti] {
+                    curr[ti] = true;
+                    seen = true;
+                }
+                if seen && ti < tlen && text[ti] == b'/' {
+                    curr[ti + 1] = true;
+                }
+            }
+            pi += 3;
+        } else if pat[pi] == b'*' && pi + 1 < plen && pat[pi + 1] == b'*' {
+            let mut seen: bool = false;
+            for ti in 0..=tlen {
+                if prev[ti] {
+                    seen = true;
+                }
+                curr[ti] = seen;
+            }
+            pi += 2;
+        } else if pat[pi] == b'*' {
+            for ti in 0..=tlen {
+                if prev[ti] || (ti > 0 && curr[ti - 1] && text[ti - 1] != b'/') {
+                    curr[ti] = true;
+                }
+            }
+            pi += 1;
+        } else if pat[pi] == b'?' {
+            for ti in 1..=tlen {
+                if prev[ti - 1] && text[ti - 1] != b'/' {
+                    curr[ti] = true;
+                }
+            }
+            pi += 1;
+        } else {
+            let expected: u8 = pat[pi];
+            for ti in 1..=tlen {
+                if prev[ti - 1] && text[ti - 1] == expected {
+                    curr[ti] = true;
+                }
+            }
+            pi += 1;
+        }
+        prev.clone_from(&curr);
+    }
+    prev[tlen]
 }
 
 /// Sort derive traits in a single line
@@ -556,8 +855,10 @@ pub async fn execute_fmt(args: &Args) -> Result<(), io::Error> {
 /// - `Result<(), io::Error>` - Success or error
 pub async fn format_path(path: &Path) -> Result<(), io::Error> {
     let kind: FileFormatKind = detect_format_kind(path);
-    if path.is_file() && !matches!(kind, FileFormatKind::Rust | FileFormatKind::Unsupported) {
-        let _: UnifiedFmtReport = format_workspace_text_files(path, false)?;
+    if path.is_file() && kind != FileFormatKind::Rust {
+        if is_active_text_format(kind) {
+            let _: UnifiedFmtReport = format_workspace_text_files(path, false)?;
+        }
         return Ok(());
     }
     if path.is_dir() {

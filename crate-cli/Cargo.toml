@@ -20,6 +20,7 @@ color-output = { workspace = true }
 lombok-macros = { workspace = true }
 
 log = { workspace = true }
+tidy = { workspace = true }
 toml = { workspace = true }
 regex = { workspace = true }
 tokio = { workspace = true }

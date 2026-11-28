@@ -1,5 +1,5 @@
 [workspace.package]
-version = "10.9.0"
+version = "10.10.0"
 edition = "2024"
 license = "MIT"
 readme = "README.md"
@@ -49,11 +49,11 @@ members = [
 ]
 
 [workspace.dependencies]
-system-time = { path = "system-time", version = "10.9.0" }
-color-output = { path = "color-output", version = "10.9.0" }
-lombok-macros = { path = "lombok-macros", version = "10.9.0" }
-stripe-pay-core = { path = "stripe-pay-core", version = "10.9.0" }
-recoverable-spawn = { path = "recoverable-spawn", version = "10.9.0" }
+system-time = { path = "system-time", version = "10.10.0" }
+color-output = { path = "color-output", version = "10.10.0" }
+lombok-macros = { path = "lombok-macros", version = "10.10.0" }
+stripe-pay-core = { path = "stripe-pay-core", version = "10.10.0" }
+recoverable-spawn = { path = "recoverable-spawn", version = "10.10.0" }
 
 hex = "0.4.3"
 syn = "3.0.9"
@@ -76,6 +76,7 @@ rust_decimal = "1.43.0"
 tokio = { version = "1.53.3", features = ["full"] }
 serde = { version = "1.0.229", features = ["derive"] }
 jsonwebtoken = { version = "11.1.0", features = ["rust_crypto"] }
+tidy = { version = "2.1.0", default-features = false, features = ["js"] }
 
 [profile.dev]
 incremental = false
